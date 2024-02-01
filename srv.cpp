@@ -16,12 +16,14 @@ int main()
   int end_server = false;
   int compress_array = false;
   int on = 1;
+  struct sockaddr_storage their_addr;
 
   memset(&hints, 0, sizeof hints);
 
+
+  ip4addr.sin_port = htons(3490);
   ip4addr.sin_family = AF_INET;
-  ip4addr.sin_port = htons(8080);
-  // inet_pton(AF_INET, "127.0.0.1", &ip4addr.sin_addr.s_addr);
+  ip4addr.sin_addr.s_addr = INADDR_ANY;
   int socket_fd = socket(AF_INET, SOCK_STREAM, 0);
   if (socket_fd == -1)
   {
@@ -43,14 +45,9 @@ int main()
     close(socket_fd);
     exit(-2);
   }
-  puts("jh");
-  // std::cout << data_bind << std::endl;
-  // std::cout << socket_fd << std::endl;
-  // std::cout << res->ai_addr << std::endl;
-  // std::cout << res->ai_addrlen << std::endl;
-  // data_bind = bind(socket_fd, res->ai_addr, res->ai_addrlen);
-  data_bind = bind(socket_fd, (struct sockaddr*)&ip4addr, sizeof(ip4addr));
   puts("here");
+  // data_bind = bind(socket_fd, res->ai_addr, res->ai_addrlen);
+  data_bind = bind(socket_fd, (struct sockaddr*)&ip4addr, sizeof ip4addr);
   if (data_bind == -1)
   {
     std::cerr << "bind failed" << std::endl;
@@ -58,21 +55,28 @@ int main()
     close(socket_fd);
     exit(-3);
   }
-  data_bind = listen(socket_fd, 5);
+  data_bind = listen(socket_fd, 10);
   if (data_bind == -1)
   {
     std::cerr << "listen failed" << std::endl;
     close(socket_fd);
     exit(-4);
   }
-  int new_fd;
-  new_fd = accept(socket_fd, NULL, NULL);
-  if (data_bind != new_fd)
-  {
-    std::cerr << "accept failed" << std::endl;
-    close(socket_fd);
-    exit(-5);
-  }
+  // int new_fd;
+  // puts("here");
+  // std::cout << new_fd << std::endl;
+  // std::cout << data_bind << std::endl;
+  // // new_fd = accept(socket_fd, NULL, NULL);
+  // addr_size = sizeof their_addr;
+  // new_fd = accept(socket_fd,  (struct sockaddr *)&their_addr, &addr_size);
+  // std::cout << new_fd << std::endl;
+  // if (new_fd == -1)
+  // {
+  //   perror(NULL);
+  //   std::cerr << "accept failed" << std::endl;
+  //   close(socket_fd);
+  //   exit(-5);
+  // }
   puts("kd");
   fds[0].fd = socket_fd;
   fds[0].events = POLLIN;
