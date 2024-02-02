@@ -1,3 +1,5 @@
+#pragma once
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/ioctl.h>
@@ -15,4 +17,16 @@
 #include <sys/fcntl.h>
 
 #define BACKLOG 10
+
+class Server{
+  private:
+    int socket_fd;
+    struct sockaddr_in ip4addr;
+    unsigned int port;
+    std::string password;
+    struct pollfd fds[200]; //container..
+    vector<struct pollfd> fds; 
+    int current_size;
+
+};
 

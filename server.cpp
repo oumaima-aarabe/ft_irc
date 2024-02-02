@@ -1,13 +1,12 @@
-#include "srv.hpp"
+#include "server.hpp"
 
 int main()
 {
   struct sockaddr_in ip4addr;
-  struct addrinfo hints, *res;
-  socklen_t addr_size;
-  char buf[512];
+  // struct addrinfo hints, *res;
+  // socklen_t addr_size;
+  // char buf[512];
   struct pollfd fds[200];
-  int nfds = 1;
   char buffer[80];
   int current_size = 0;
   int timeout;
@@ -18,7 +17,7 @@ int main()
   int on = 1;
   struct sockaddr_storage their_addr;
 
-  memset(&hints, 0, sizeof hints);
+  // memset(&hints, 0, sizeof hints);
 
   ip4addr.sin_port = htons(3490);
   ip4addr.sin_family = AF_INET;
@@ -65,7 +64,7 @@ int main()
   int i;
   while (true)
   {
-    data_bind = poll(fds, nfds, timeout);
+    data_bind = poll(fds, sizeof(fds), timeout);
     if (data_bind < 0)
     {
       std::cout << "poll() failed" << std::endl;
@@ -78,7 +77,7 @@ int main()
     }
     else
     {
-      current_size = nfds;
+      current_size = sizeof(fds);
       for (i = 0; i < current_size; i++)
       {
         if (fds[i].revents == 0)
@@ -106,7 +105,7 @@ int main()
               break;
             }
             std::cout << "New incoming connection " << new_sd << std::endl;
-            fds[nfds].fd = new_sd;
+            //container new_sd..
             fds[nfds].events = POLLIN;
             nfds++;
           }
