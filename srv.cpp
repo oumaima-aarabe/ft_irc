@@ -20,7 +20,6 @@ int main()
 
   memset(&hints, 0, sizeof hints);
 
-
   ip4addr.sin_port = htons(3490);
   ip4addr.sin_family = AF_INET;
   ip4addr.sin_addr.s_addr = INADDR_ANY;
@@ -31,7 +30,7 @@ int main()
     close(socket_fd);
     exit(-1);
   }
- int data_bind = setsockopt(socket_fd, SOL_SOCKET,  SO_REUSEADDR,(char *)&on, sizeof(on));
+  int data_bind = setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, (char *)&on, sizeof(on));
   if (data_bind < 0)
   {
     perror("setsockopt() failed");
@@ -45,9 +44,7 @@ int main()
     close(socket_fd);
     exit(-2);
   }
-  puts("here");
-  // data_bind = bind(socket_fd, res->ai_addr, res->ai_addrlen);
-  data_bind = bind(socket_fd, (struct sockaddr*)&ip4addr, sizeof ip4addr);
+  data_bind = bind(socket_fd, (struct sockaddr *)&ip4addr, sizeof ip4addr);
   if (data_bind == -1)
   {
     std::cerr << "bind failed" << std::endl;
@@ -62,22 +59,6 @@ int main()
     close(socket_fd);
     exit(-4);
   }
-  // int new_fd;
-  // puts("here");
-  // std::cout << new_fd << std::endl;
-  // std::cout << data_bind << std::endl;
-  // // new_fd = accept(socket_fd, NULL, NULL);
-  // addr_size = sizeof their_addr;
-  // new_fd = accept(socket_fd,  (struct sockaddr *)&their_addr, &addr_size);
-  // std::cout << new_fd << std::endl;
-  // if (new_fd == -1)
-  // {
-  //   perror(NULL);
-  //   std::cerr << "accept failed" << std::endl;
-  //   close(socket_fd);
-  //   exit(-5);
-  // }
-  puts("kd");
   fds[0].fd = socket_fd;
   fds[0].events = POLLIN;
   timeout = (3 * 60 * 1000);
@@ -128,7 +109,8 @@ int main()
             fds[nfds].fd = new_sd;
             fds[nfds].events = POLLIN;
             nfds++;
-          } while (new_sd != -1);
+          }
+          while (new_sd != -1);
         }
         else
         {
@@ -148,6 +130,7 @@ int main()
 
             if (data_bind == 0)
             {
+              // delete users
               printf("  Connection closed\n");
               close_conn = true;
               break;
@@ -158,13 +141,12 @@ int main()
             data_bind = send(fds[i].fd, buffer, len, 0);
             if (data_bind < 0)
             {
-              std::cout << "send() failed"<< std::endl;
+              std::cout << "send() failed" << std::endl;
               close_conn = true;
               break;
             }
 
-          } 
-          while (true);
+          } while (true);
           if (close_conn)
           {
             close(fds[i].fd);
