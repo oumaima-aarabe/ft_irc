@@ -3,11 +3,7 @@
 int main()
 {
   struct sockaddr_in ip4addr;
-  // struct addrinfo hints, *res;
-  // socklen_t addr_size;
-  // char buf[512];
-  struct pollfd fds[200];
-  char buffer[80];
+  char buffer[200];
   int current_size = 0;
   int timeout;
   int new_sd;
@@ -16,6 +12,7 @@ int main()
   int compress_array = false;
   int on = 1;
   struct sockaddr_storage their_addr;
+  std::vector<struct pollfd> fds; 
 
   // memset(&hints, 0, sizeof hints);
 
@@ -58,13 +55,16 @@ int main()
     close(socket_fd);
     exit(-4);
   }
-  fds[0].fd = socket_fd;
-  fds[0].events = POLLIN;
+  struct  pollfd k;
+  k.fd = socket_fd;
+  k.events = POLLIN;
+  fds.push_back(k);
   timeout = (3 * 60 * 1000);
   int i;
+  
   while (true)
   {
-    data_bind = poll(fds, sizeof(fds), timeout);
+    data_bind = poll(fds.data(), fds.size(), timeout);
     if (data_bind < 0)
     {
       std::cout << "poll() failed" << std::endl;
@@ -77,7 +77,7 @@ int main()
     }
     else
     {
-      current_size = sizeof(fds);
+      current_size = fds.size();
       for (i = 0; i < current_size; i++)
       {
         if (fds[i].revents == 0)
@@ -92,7 +92,7 @@ int main()
         }
         if (fds[i].fd == socket_fd)
         {
-          do
+          while (true)
           {
             new_sd = accept(socket_fd, NULL, NULL);
             if (new_sd < 0)
@@ -106,16 +106,18 @@ int main()
             }
             std::cout << "New incoming connection " << new_sd << std::endl;
             //container new_sd..
-            fds[nfds].events = POLLIN;
-            nfds++;
+            struct  pollfd k;
+            k.fd = new_sd;
+            k.events = POLLIN;
+            fds.push_back(k);
           }
-          while (new_sd != -1);
         }
         else
         {
           close_conn = false;
-          do
+          while (true)
           {
+            // std::cout << "buf <"<<buffer<< ">" << std::endl;
             data_bind = recv(fds[i].fd, buffer, sizeof(buffer), 0);
             if (data_bind < 0)
             {
@@ -134,9 +136,16 @@ int main()
               close_conn = true;
               break;
             }
-
             int len = data_bind;
-            std::cout << len << "bytes recieved\n";
+            // std::cout << len << "bytes recieved\n";
+            //check if the user authenticated...
+            bool authenticated = false;
+            //if no : check if we have authentication commandes in buffer
+            // {
+            //   if yes : i must add this user to authentificated users;
+            //   else : send msg that the cmnd is not an authen cmnds;
+            // }
+            //if yrs : i take the commande and parse it
             data_bind = send(fds[i].fd, buffer, len, 0);
             if (data_bind < 0)
             {
@@ -144,8 +153,7 @@ int main()
               close_conn = true;
               break;
             }
-
-          } while (true);
+          }
           if (close_conn)
           {
             close(fds[i].fd);

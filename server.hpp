@@ -15,6 +15,7 @@
 #include <arpa/inet.h>
 #include <sys/poll.h>
 #include <sys/fcntl.h>
+#include <vector>
 
 #define BACKLOG 10
 
@@ -24,9 +25,6 @@ class Server{
     struct sockaddr_in ip4addr;
     unsigned int port;
     std::string password;
-    struct pollfd fds[200]; //container..
-    vector<struct pollfd> fds; 
+    std::vector<struct pollfd> fds;
     int current_size;
-
 };
-

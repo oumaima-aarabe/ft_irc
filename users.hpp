@@ -4,5 +4,5 @@
 
 class Users{
   private:
-    
+    char buffer[200];
 };
