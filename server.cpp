@@ -14,8 +14,6 @@ int main()
   struct sockaddr_storage their_addr;
   std::vector<struct pollfd> fds; 
 
-  // memset(&hints, 0, sizeof hints);
-
   ip4addr.sin_port = htons(3490);
   ip4addr.sin_family = AF_INET;
   ip4addr.sin_addr.s_addr = INADDR_ANY;
@@ -80,7 +78,7 @@ int main()
       current_size = fds.size();
       for (i = 0; i < current_size; i++)
       {
-        if (fds[i].revents == 0)
+        if (fds[i].revents == 0 || fds[i].revents == 17)
         {
           continue;
         }
@@ -105,7 +103,6 @@ int main()
               break;
             }
             std::cout << "New incoming connection " << new_sd << std::endl;
-            //container new_sd..
             struct  pollfd k;
             k.fd = new_sd;
             k.events = POLLIN;
@@ -117,7 +114,7 @@ int main()
           close_conn = false;
           while (true)
           {
-            // std::cout << "buf <"<<buffer<< ">" << std::endl;
+            std::cout << "buf <"<<buffer<< ">" << std::endl;
             data_bind = recv(fds[i].fd, buffer, sizeof(buffer), 0);
             if (data_bind < 0)
             {
@@ -137,15 +134,33 @@ int main()
               break;
             }
             int len = data_bind;
-            // std::cout << len << "bytes recieved\n";
             //check if the user authenticated...
             bool authenticated = false;
-            //if no : check if we have authentication commandes in buffer
-            // {
-            //   if yes : i must add this user to authentificated users;
-            //   else : send msg that the cmnd is not an authen cmnds;
-            // }
-            //if yrs : i take the commande and parse it
+            std::map<std::string , std::string> key_val;
+            std::string authData(buffer, len);
+            std::size_t found = authData.find("\r\n");
+            if (found != std::string::npos) {
+                std::string username = authData.substr(0, found);
+                authData = authData.substr(found + 2);
+                found = authData.find("\r\n");
+                if (found != std::string::npos) {
+                    std::string nickname = authData.substr(0, found);
+                    authData = authData.substr(found + 2);
+
+                    found = authData.find("\r\n");
+                    if (found != std::string::npos) {
+                        std::string password = authData.substr(0, found);
+                        authData = authData.substr(found + 2);
+                        found = password.find(" ");
+                        if (found != std::string::npos){
+                          std::string password_auth = password.substr(0, found);
+
+
+                        }
+                    }
+                }
+                
+        }
             data_bind = send(fds[i].fd, buffer, len, 0);
             if (data_bind < 0)
             {
