@@ -1,6 +1,5 @@
 #include "server.hpp"
 
-
 void my_trim_(std::string& s) {
     size_t p = s.find_first_not_of(" ");
     s.erase(0, p);
