@@ -11,7 +11,6 @@ void my_trim_(std::string& s) {
 
 std::map<int, std::string> my_split_(const std::string& line, char delimiter) {
     std::map<int, std::string> mp;
-    // std::istringstream iss(line);
     std::string token;
     int index = 0;
     size_t found = line.find(delimiter);
