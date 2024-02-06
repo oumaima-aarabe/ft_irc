@@ -1,26 +1,64 @@
 #include "server.hpp"
 
-void my_trim_(std::string& s) {
-    size_t p = s.find_first_not_of(" ");
+
+
+
+Server::Server(unsigned int port, std::string password){
+  this->port = port;
+  this->password=password;
+}
+
+Server::~Server(){
+
+}
+
+void parse_pair(std::pair<std::string, std::string> pair)
+{
+  // if (pair.first == "PASS"){
+  //   if (pair)
+  // }
+}
+
+void my_trim_(std::string& s, char delimiter) {
+    size_t p = s.find_first_not_of(delimiter);
     s.erase(0, p);
-    p = s.find_last_not_of(" ");
+    p = s.find_last_not_of(delimiter);
     if (std::string::npos != p)
         s.erase(p + 1);
 }
 
-std::map<int, std::string> my_split_(const std::string& line, char delimiter) {
-    std::map<int, std::string> mp;
-    std::string token;
-    int index = 0;
+std::pair<std::string, std::string> my_split_(const std::string& line, char delimiter) {
+    std::pair<std::string, std::string> pair;
     size_t found = line.find(delimiter);
     std::string cmnd = line.substr(0, found);
-    std::string val = line.substr(found+1, line.size()-2);
-    my_trim_(val);
-    my_trim_(cmnd);
+    std::string val = line.substr(found+1);
+    my_trim_(val, delimiter);
+    my_trim_(val, '\n');
+    my_trim_(cmnd, delimiter);
+    pair = make_pair(cmnd, val);
+    return pair;
 }
 
-void parse_buffer(std::string buffer)//from nc
+std::vector<std::pair<std::string, std::string> > my_split_buffer(const std::string& line, std::string delimiter) {
+    std::vector<std::pair<std::string, std::string> > pairs;
+    std::pair<std::string, std::string> pair;
+    size_t found = line.find(delimiter);
+    while (found != std::string::npos)
+    {
+      std::string rec = line.substr(0, found);
+      my_trim_(rec, ' ');
+      pair = my_split_(rec, ' ');
+      parse_pair(pair);
+      found = line.find(delimiter);
+    }
+    return pairs;
+}
+
+void Server::parse_buffer_nc(std::string buffer)//from nc
 {
+  std::vector<std::pair<std::string, std::string> > pairs;
+  pairs = my_split_buffer(buffer, "\n");
+
   
   //split buffer with space must be 2 params
   // the first one must be PASS, USER OR NICK
@@ -28,39 +66,27 @@ void parse_buffer(std::string buffer)//from nc
 
 }
 
-void parse_buffer_br(std::string buffer)
+void Server::parse_buffer_limechat(std::string buffer)
 {
 
 }
 
-int main(int ac, char **av)
+void Server::create_server()
 {
-  struct sockaddr_in ip4addr;
-  int current_size = 0;
-  int timeout;
-  int new_sd;
   int on = 1;
-  struct sockaddr_storage their_addr;
-  std::vector<struct pollfd> fds; 
-  std::string passe;
 
-  if (ac != 3)
-  {
-    std::cout << "ERROR : ./exec port password" << std::endl;
-    return(0);
-  }
-
-  passe = av[2];
-  ip4addr.sin_port = htons(atoi(av[1]));
+  ip4addr.sin_port = htons(port);
   ip4addr.sin_family = AF_INET;
   ip4addr.sin_addr.s_addr = INADDR_ANY;
-  int socket_fd = socket(AF_INET, SOCK_STREAM, 0);
+  // create socket
+  socket_fd = socket(AF_INET, SOCK_STREAM, 0);
   if (socket_fd == -1)
   {
     std::cerr << "socket failed" << std::endl;
     close(socket_fd);
     exit(-1);
   }
+  // set socket options
   int data_bind = setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, (char *)&on, sizeof(on));
   if (data_bind < 0)
   {
@@ -75,6 +101,7 @@ int main(int ac, char **av)
     close(socket_fd);
     exit(-2);
   }
+  // define this socket with ip and  port
   data_bind = bind(socket_fd, (struct sockaddr *)&ip4addr, sizeof ip4addr);
   if (data_bind == -1)
   {
@@ -83,6 +110,7 @@ int main(int ac, char **av)
     close(socket_fd);
     exit(-3);
   }
+  //listen for connections
   data_bind = listen(socket_fd, 10);
   if (data_bind == -1)
   {
@@ -90,22 +118,78 @@ int main(int ac, char **av)
     close(socket_fd);
     exit(-4);
   }
+  //add server fd to pollfds
   struct  pollfd k;
   k.fd = socket_fd;
   k.events = POLLIN;
   fds.push_back(k);
-  timeout = (3 * 60 * 1000);
-  int i;
+}
+
+int Server::is_server_connection(){
+  //accept connection from server and add it to fds 
+  int new_sd = accept(socket_fd, NULL, NULL);
+  if (new_sd < 0)
+  {
+    if (errno != EWOULDBLOCK)
+    {
+      std::cout << "accept() failed" << std::endl;
+    }
+    return(-1);
+  }
+  std::cout << "New incoming connection " << new_sd << std::endl;
+  struct  pollfd k;
+  k.fd = new_sd;
+  k.events = POLLIN;
+  k.revents = 0;
+  fds.push_back(k);
+
+  return 0;
+}
+
+int Server::is_client_connection(int i){
+
+  char buffer[1024] = {0}; //memset \0
+
+  //read the buffer from client (user || new connection)
+  int checker = recv(fds[i].fd, buffer, sizeof(buffer), 0);
+  if (checker < 0)
+  {
+    if (errno != EWOULDBLOCK)
+    {
+      perror("  recv() failed");
+    }
+    return -1;
+  }
+
+  if (checker == 0)
+  {
+    // delete user
+    printf("  Connection closed\n");
+    return -1;
+  }
+
+  std::string buf = buffer;
+  if (buf.find('\r') != std::string::npos)
+    parse_buffer_limechat(buf); //parse buffer with back slach r
+  else
+    parse_buffer_nc(buf); //parse buffer without backslash r
+  return 0;
+}
+
+void Server::waiting_for_connctions(){
+
+  int timeout = (3 * 60 * 1000);
+  int checker;
   
   while (true)
   {
-    data_bind = poll(fds.data(), fds.size(), timeout);
-    if (data_bind < 0)
+    checker = poll(fds.data(), fds.size(), timeout);
+    if (checker < 0)
     {
       std::cout << "poll() failed" << std::endl;
       break;
     }
-    if (data_bind == 0)
+    if (checker == 0)
     {
       std::cout << "poll() timeout" << std::endl;
       break;
@@ -113,7 +197,7 @@ int main(int ac, char **av)
     else
     {
       current_size = fds.size();
-      for (i = 0; i < current_size; i++)
+      for (int i = 0; i < current_size; i++)
       {
         if (fds[i].revents == 0)
         {
@@ -126,99 +210,13 @@ int main(int ac, char **av)
         }
         if (fds[i].fd == socket_fd)
         {
-            new_sd = accept(socket_fd, NULL, NULL);
-            if (new_sd < 0)
-            {
-              if (errno != EWOULDBLOCK)
-              {
-                std::cout << "accept() failed" << std::endl;
-              }
+            if(is_server_connection() == -1)
               break;
-            }
-            std::cout << "New incoming connection " << new_sd << std::endl;
-            struct  pollfd k;
-            k.fd = new_sd;
-            k.events = POLLIN;
-            k.revents = 0;
-            fds.push_back(k);
         }
         else
         {
-            char buffer[1024] = {0};
-            data_bind = recv(fds[i].fd, buffer, sizeof(buffer), 0);
-            std::cout << "buf <";
-            for (size_t i = 0; buffer[i] != '\0';i++)
-            {
-              if (isprint(buffer[i]))
-                std::cout << buffer[i];
-              else
-                std::cout << (int)buffer[i];
-            }
-            std::cout << ">" << std::endl;
-            if (data_bind < 0)
-            {
-              if (errno != EWOULDBLOCK)
-              {
-                perror("  recv() failed");
-              }
+            if (is_client_connection(i) == -1)
               break;
-            }
-
-            if (data_bind == 0)
-            {
-              // delete user
-              printf("  Connection closed\n");
-              // close_conn = true;
-              break;
-            }
-
-            std::string buf = buffer;
-            if (buf.find('\r') != std::string::npos)
-              parse_buffer_br(buf); //parse buffer with back slach r
-            else
-              parse_buffer(buf); //parse buffer without backslash r
-
-            // int len = data_bind;
-            //check if the user authenticated...
-            // bool authenticated = false;
-            // std::map<std::string , std::string> key_val;
-            // std::string authData(buffer, len);
-            // std::size_t found = authData.find("\r\n");
-            // if (found != std::string::npos) {
-            //     std::string username = authData.substr(0, found);
-            //     authData = authData.substr(found + 2);
-            //     found = authData.find("\r\n");
-            //     if (found != std::string::npos) {
-            //         std::string nickname = authData.substr(0, found);
-            //         authData = authData.substr(found + 2);
-
-            //         found = authData.find("\r\n");
-            //         if (found != std::string::npos) {
-            //             std::string password = authData.substr(0, found);
-            //             authData = authData.substr(found + 2);
-            //             found = password.find(" ");
-            //             if (found != std::string::npos){
-            //               std::string password_auth = password.substr(0, found);
-
-
-            //             }
-            //         }
-            //     }
-                
-            // data_bind = send(fds[i].fd, buffer, len, 0);
-            // if (data_bind < 0)
-            // {
-            //   std::cout << "send() failed" << std::endl;
-            //   close_conn = true;
-            //   break;
-            // }
-          // }
-          // if (close_conn)
-          // {
-          //   close(fds[i].fd);
-          //   fds[i].fd = -1;
-          //   compress_array = true;
-          // }
         }
       }
     }

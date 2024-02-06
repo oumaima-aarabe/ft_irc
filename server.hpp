@@ -21,11 +21,22 @@
 #define BACKLOG 10
 
 class Server{
-  private:
+  public:
     int socket_fd;
     struct sockaddr_in ip4addr;
     unsigned int port;
     std::string password;
     std::vector<struct pollfd> fds;
     int current_size;
+
+    Server(unsigned int port, std::string password);
+    ~Server();
+    void create_server();
+    void waiting_for_connctions();
+    int is_server_connection();
+    int is_client_connection(int i);
+    void parse_buffer_nc(std::string buffer);
+    void parse_buffer_limechat(std::string buffer);
+    void parse_pair(std::pair<std::string, std::string> pair);
+
 };
