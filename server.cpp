@@ -1,23 +1,9 @@
 #include "server.hpp"
 
-
-
-
-Server::Server(unsigned int port, std::string password){
-  this->port = port;
-  this->password=password;
-}
-
-Server::~Server(){
-
-}
-
-void parse_pair(std::pair<std::string, std::string> pair)
+<<<<<<<<< Temporary merge branch 1
+void parse_buffer(std::string buffer)//from nc
 {
-  // if (pair.first == "PASS"){
-  //   if (pair)
-  // }
-}
+=========
 
 void my_trim_(std::string& s, char delimiter) {
     size_t p = s.find_first_not_of(delimiter);
@@ -56,10 +42,8 @@ std::vector<std::pair<std::string, std::string> > my_split_buffer(const std::str
 
 void Server::parse_buffer_nc(std::string buffer)//from nc
 {
-  std::vector<std::pair<std::string, std::string> > pairs;
-  pairs = my_split_buffer(buffer, "\n");
-
   
+>>>>>>>>> Temporary merge branch 2
   //split buffer with space must be 2 params
   // the first one must be PASS, USER OR NICK
   // if PASS compare second one with thw password of server
@@ -74,8 +58,28 @@ void Server::parse_buffer_limechat(std::string buffer)
 void Server::create_server()
 {
   int on = 1;
+  struct sockaddr_storage their_addr;
+  std::vector<struct pollfd> fds; 
+  std::string passe;
+<<<<<<<<< Temporary merge branch 1
 
-  ip4addr.sin_port = htons(port);
+  if (ac != 3)
+  {
+    std::cout << "ERROR : ./exec port password" << std::endl;
+    return(0);
+  }
+
+=========
+
+  if (ac != 3)
+  {
+    std::cout << "ERROR : ./exec port password" << std::endl;
+    return(0);
+  }
+
+>>>>>>>>> Temporary merge branch 2
+  passe = av[2];
+  ip4addr.sin_port = htons(atoi(av[1]));
   ip4addr.sin_family = AF_INET;
   ip4addr.sin_addr.s_addr = INADDR_ANY;
   // create socket
