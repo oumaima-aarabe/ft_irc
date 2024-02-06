@@ -1,9 +1,18 @@
 #include "server.hpp"
 
-<<<<<<<<< Temporary merge branch 1
-void parse_buffer(std::string buffer)//from nc
+Server::Server(unsigned int port, std::string password){
+  this->port = port;
+  this->password = password;
+}
+
+Server::~Server(){
+  
+}
+
+void parse_pair(std::pair<std::string, std::string> pair)
 {
-=========
+
+}
 
 void my_trim_(std::string& s, char delimiter) {
     size_t p = s.find_first_not_of(delimiter);
@@ -42,11 +51,10 @@ std::vector<std::pair<std::string, std::string> > my_split_buffer(const std::str
 
 void Server::parse_buffer_nc(std::string buffer)//from nc
 {
-  
->>>>>>>>> Temporary merge branch 2
-  //split buffer with space must be 2 params
+    //split buffer with space must be 2 params
   // the first one must be PASS, USER OR NICK
   // if PASS compare second one with thw password of server
+  my_split_buffer(buffer, "\n");
 
 }
 
@@ -58,28 +66,8 @@ void Server::parse_buffer_limechat(std::string buffer)
 void Server::create_server()
 {
   int on = 1;
-  struct sockaddr_storage their_addr;
-  std::vector<struct pollfd> fds; 
-  std::string passe;
-<<<<<<<<< Temporary merge branch 1
 
-  if (ac != 3)
-  {
-    std::cout << "ERROR : ./exec port password" << std::endl;
-    return(0);
-  }
-
-=========
-
-  if (ac != 3)
-  {
-    std::cout << "ERROR : ./exec port password" << std::endl;
-    return(0);
-  }
-
->>>>>>>>> Temporary merge branch 2
-  passe = av[2];
-  ip4addr.sin_port = htons(atoi(av[1]));
+  ip4addr.sin_port = htons(port);
   ip4addr.sin_family = AF_INET;
   ip4addr.sin_addr.s_addr = INADDR_ANY;
   // create socket
@@ -91,8 +79,8 @@ void Server::create_server()
     exit(-1);
   }
   // set socket options
-  int data_bind = setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, (char *)&on, sizeof(on));
-  if (data_bind < 0)
+  int checker = setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, (char *)&on, sizeof(on));
+  if (checker < 0)
   {
     perror("setsockopt() failed");
     close(socket_fd);
@@ -106,8 +94,8 @@ void Server::create_server()
     exit(-2);
   }
   // define this socket with ip and  port
-  data_bind = bind(socket_fd, (struct sockaddr *)&ip4addr, sizeof ip4addr);
-  if (data_bind == -1)
+  checker = bind(socket_fd, (struct sockaddr *)&ip4addr, sizeof ip4addr);
+  if (checker == -1)
   {
     std::cerr << "bind failed" << std::endl;
     perror(NULL);
@@ -115,8 +103,8 @@ void Server::create_server()
     exit(-3);
   }
   //listen for connections
-  data_bind = listen(socket_fd, 10);
-  if (data_bind == -1)
+  checker = listen(socket_fd, 10);
+  if (checker == -1)
   {
     std::cerr << "listen failed" << std::endl;
     close(socket_fd);
