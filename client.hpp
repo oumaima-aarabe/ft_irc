@@ -14,3 +14,5 @@ class Client{
     Client(const Client &client);
     ~Client();
 };
+
+void my_trim_(std::string& s, char delimiter);
