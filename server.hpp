@@ -17,8 +17,11 @@
 #include <sys/fcntl.h>
 #include <vector>
 #include <map>
+#include "client.hpp"
 
 #define BACKLOG 10
+
+class Client;
 
 class Server{
   public:
@@ -29,14 +32,23 @@ class Server{
     std::vector<struct pollfd> fds;
     int current_size;
 
+    std::map<int ,Client> connections;
+    std::map<int ,Client> users;
+
     Server(unsigned int port, std::string password);
     ~Server();
     void create_server();
     void waiting_for_connctions();
     int is_server_connection();
-    int is_client_connection(int i);
-    void parse_buffer_nc(std::string buffer);
-    void parse_buffer_limechat(std::string buffer);
-    void parse_pair(std::pair<std::string, std::string> pair);
-
+    int is_client_connection(struct pollfd fds);
+    void parse_buffer_nc(Client client);
+    void parse_buffer_limechat(Client client);
+    std::vector<std::string> split_user(std::string& line, char delimiter);
+    std::vector<std::pair<std::string, std::string> > my_split_buffer(Client client, std::string delimiter);
+    int  if_nick_exist(std::string value);
+    int  if_user_exist(std::string value);
+    int  parse_pass(Client client, std::string value);
+    int  parse_nick(Client client, std::string value);
+    int  parse_user(Client client, std::string value);
+    int  parse_pair(Client client, std::pair<std::string, std::string> pair);
 };

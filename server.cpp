@@ -6,12 +6,135 @@ Server::Server(unsigned int port, std::string password){
 }
 
 Server::~Server(){
-  
+
 }
 
-void parse_pair(std::pair<std::string, std::string> pair)
-{
+int Server::if_nick_exist(std::string value){
+  std::map<int, Client>::iterator it;
+  for (it = users.begin();it != users.end();it++)
+  {
+    if (it->second.nickname == value)
+      return (1);
+  }
+  for (it = connections.begin();it != connections.end();it++)
+  {
+    if (it->second.nickname == value)
+      return (1);
+  }
+  return (0);
+}
 
+int Server::if_user_exist(std::string value){
+  std::map<int, Client>::iterator it;
+  for (it = users.begin();it != users.end();it++)
+  {
+    if (it->second.username == value)
+      return (1);
+  }
+  for (it = connections.begin();it != connections.end();it++)
+  {
+    if (it->second.username == value)
+      return (1);
+  }
+  return (0);
+}
+
+int  Server::parse_pass(Client client, std::string value){
+  if (value != password)
+  {
+    std::cout << "ERROR : " << password << " not valid\n"; //SEND()
+    return (-1);
+  }
+  else{
+    client.password = password;
+  }
+  return (0);
+}
+
+int  Server::parse_nick(Client client, std::string value){
+  if (!client.password.empty()){
+    if (value.empty()){
+      std::cout << "ERROR : 461 PARAMETR ENOUTHG\n";//SEND()
+      return (-1);
+    }
+    else if (if_nick_exist(value)) {
+      std::cout << "error: already exist\n";//SEND()
+      return (-1);
+    }
+    else
+    {
+      client.nickname = value;
+    }
+  }
+  else
+  {
+    std::cout << "password not set" << std::endl;
+    return (-1);
+  }
+  if (!client.username.empty()){
+    //welcome message send()
+    // users.insert({client.fds.fd, Client(client)});
+    users[client.fds.fd] = Client(client);
+    // users[client.fds.fd] = Client(client.fds, client.username, client.nickname, client.password, client.buffer);
+  }
+  return (0);
+}
+
+int  Server::parse_user(Client client, std::string value){
+  if (!client.password.empty()){
+    std::vector<std::string> ret = split_user(value, ' ');
+    if (ret.size() != 4){
+      std::cout << "error : must be 4\n" ;//send()
+      return (-1);
+    }
+    else if (if_user_exist(ret[0])) {
+      std::cout << "error: reregister\n";//SEND()
+      return (-1);
+    }
+    else{
+      client.username = ret[0];
+    }
+  }
+  else
+  {
+    std::cout << "password not set" << std::endl;
+    return (-1);
+  }
+  if (!client.nickname.empty()){
+    //welcome message send()
+    // users.insert({client.fds.fd, Client(client)});
+    users[client.fds.fd] = Client(client);
+    // users[client.fds.fd] = Client(client.fds, client.username, client.nickname, client.password, client.buffer);
+  }
+  return (0);
+}
+
+
+int  Server::parse_pair(Client client, std::pair<std::string, std::string> pair)
+{
+  std::cout << "first:<<" << pair.first << ">>" << std::endl; 
+  std::cout << "second:<<" << pair.second << ">>" << std::endl;
+  if (pair.first == "PASS")
+  {
+    if (parse_pass(client, pair.second) == -1)
+      return (-1);
+  }
+  else if (pair.first == "USER")
+  {
+    if (parse_user(client, pair.second) == -1)
+      return (-1);
+  }
+  else if (pair.first == "NICK")
+  {
+    if (parse_nick(client, pair.second) == -1)
+      return (-1);
+  }
+  else
+  {
+    std::cout << "BAD COMMAND" << std::endl;
+    return (-1);
+  }
+  return (0);
 }
 
 void my_trim_(std::string& s, char delimiter) {
@@ -22,7 +145,28 @@ void my_trim_(std::string& s, char delimiter) {
         s.erase(p + 1);
 }
 
-std::pair<std::string, std::string> my_split_(const std::string& line, char delimiter) {
+std::vector<std::string> Server::split_user(std::string& line, char delimiter) {
+    std::vector<std::string> ret;
+    my_trim_(line, ' ');
+    size_t found = line.find(delimiter);
+    if (found == std::string::npos)
+      return ret;
+    size_t i = 0;
+    while (found != std::string::npos){
+      std::string str = line.substr(i, found);
+      my_trim_(str, ' ');
+      ret.push_back(str);
+      i = found;
+      line = line.substr(found);
+      my_trim_(line, ' ');
+      found = line.find(delimiter);
+    }
+    if (!line.empty()){
+      ret.push_back(line);
+    }
+    return (ret);
+}
+std::pair<std::string, std::string> my_split_pair(const std::string& line, char delimiter) {
     std::pair<std::string, std::string> pair;
     size_t found = line.find(delimiter);
     std::string cmnd = line.substr(0, found);
@@ -34,32 +178,42 @@ std::pair<std::string, std::string> my_split_(const std::string& line, char deli
     return pair;
 }
 
-std::vector<std::pair<std::string, std::string> > my_split_buffer(const std::string& line, std::string delimiter) {
+std::vector<std::pair<std::string, std::string> > Server::my_split_buffer(Client client, std::string delimiter) {
     std::vector<std::pair<std::string, std::string> > pairs;
     std::pair<std::string, std::string> pair;
-    size_t found = line.find(delimiter);
+    size_t found = client.buffer.find(delimiter);
     while (found != std::string::npos)
     {
-      std::string rec = line.substr(0, found);
+      std::string rec = client.buffer.substr(0, found);
       my_trim_(rec, ' ');
-      pair = my_split_(rec, ' ');
-      parse_pair(pair);
-      found = line.find(delimiter);
+      pair = my_split_pair(rec, ' ');
+      parse_pair(client, pair);
+      found = client.buffer.find(delimiter);
     }
     return pairs;
 }
 
-void Server::parse_buffer_nc(std::string buffer)//from nc
+void Server::parse_buffer_nc(Client client)//from nc
 {
-    //split buffer with space must be 2 params
+  //split buffer with space must be 2 params
   // the first one must be PASS, USER OR NICK
   // if PASS compare second one with thw password of server
-  my_split_buffer(buffer, "\n");
+  std::pair<std::string, std::string> pair;
+  std::vector<std::pair<std::string, std::string> > p;
+  std::cout << "Parse using nc" << std::endl;
+  p = my_split_buffer(client, "\n");
+  // if (client.buffer.find('\n') != client.buffer.end())
+  // {
+
+  // }
+  pair = my_split_pair(client.buffer , ' ');
+  // if (client.buffer[3] !- )
 
 }
 
-void Server::parse_buffer_limechat(std::string buffer)
+void Server::parse_buffer_limechat(Client client)
 {
+  std::cout << "Parse using limeChat" << std::endl;
 
 }
 
@@ -138,12 +292,12 @@ int Server::is_server_connection(){
   return 0;
 }
 
-int Server::is_client_connection(int i){
+int Server::is_client_connection(struct pollfd fds){
 
   char buffer[1024] = {0}; //memset \0
 
   //read the buffer from client (user || new connection)
-  int checker = recv(fds[i].fd, buffer, sizeof(buffer), 0);
+  int checker = recv(fds.fd, buffer, sizeof(buffer), 0);
   if (checker < 0)
   {
     if (errno != EWOULDBLOCK)
@@ -159,12 +313,26 @@ int Server::is_client_connection(int i){
     printf("  Connection closed\n");
     return -1;
   }
-
-  std::string buf = buffer;
-  if (buf.find('\r') != std::string::npos)
-    parse_buffer_limechat(buf); //parse buffer with back slach r
+  //client exist in users
+  if (users.find(fds.fd) != users.end())
+  {
+    // parse_cmnds(fds[i].fd);
+  }
   else
-    parse_buffer_nc(buf); //parse buffer without backslash r
+  {
+    //new client
+    std::string buf = buffer;
+    if (connections.find(fds.fd) == connections.end())
+    {
+      // connections.insert({fds.fd, Client(fds, "", "", "", buf)})
+      connections[fds.fd] = Client(fds, "", "", "", buf);
+    }
+    connections[fds.fd].buffer = buf;
+    if (connections[fds.fd].buffer.find('\r') != std::string::npos)
+      parse_buffer_limechat(connections[fds.fd]); //parse buffer with back slach r
+    else
+      parse_buffer_nc(connections[fds.fd]); //parse buffer without backslash r
+  }
   return 0;
 }
 
@@ -207,7 +375,7 @@ void Server::waiting_for_connctions(){
         }
         else
         {
-            if (is_client_connection(i) == -1)
+            if (is_client_connection(fds[i]) == -1)
               break;
         }
       }
