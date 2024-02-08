@@ -31,6 +31,8 @@ class Server{
     std::string password;
     std::vector<struct pollfd> fds;
     int current_size;
+    std::string hostname ;
+
 
     std::map<int ,Client> connections;
     std::map<int ,Client> users;
@@ -51,4 +53,5 @@ class Server{
     int  parse_nick(Client client, std::string value);
     int  parse_user(Client client, std::string value);
     int  parse_pair(Client client, std::pair<std::string, std::string> pair);
+    void WelcomeMessage(Client client);
 };

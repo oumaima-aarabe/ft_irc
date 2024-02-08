@@ -8,8 +8,25 @@ Client::Client(struct pollfd fds, std::string username, std::string nickname, st
   this->buffer = buffer;
 }
 
-Client::Client(const Client &client): fds(client.fds), username(client.username), nickname(client.nickname), password(client.password), buffer(client.buffer){
+Client::Client(){
+
 }
+
+
+// Client& Client::operator=(const Client& other){
+//   if (this != &other){
+//     fds= other.fds;
+//     username = other.username;
+//     nickname = other.nickname;
+// }     password = other.password;
+//     buffer = other.buffer;
+//   }
+//   return(*this);
+// }
+
+// Client::Client(const Client &other){
+//   *this = other;
+//
 
 Client::~Client(){
 

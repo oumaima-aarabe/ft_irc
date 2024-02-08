@@ -38,15 +38,21 @@ int Server::if_user_exist(std::string value){
 }
 
 int  Server::parse_user(Client client, std::string value){
+  int fd = client.fds.fd;
+  std::string clt = std::to_string(fd);
+  std::string user = client.username;
+  std::string message_error;
   if (!client.password.empty()){
     std::vector<std::string> ret = split_user(value, ' ');
     if (ret.size() != 4){
-      std::cout << "error : must be 4\n" ;//send()
-      return (-1);
+      message_error = clt + " " + user + " :Not enough parameters";
+      send(client.fds.fd, message_error.c_str(), message_error.size() + 1, MSG_OOB);
+      // (461);
     }
     else if (if_user_exist(ret[0])) {
-      std::cout << "error: reregister\n";//SEND()
-      return (-1);
+      message_error =  clt + " :You may not reregister";
+      send(client.fds.fd, message_error.c_str(), message_error.size() + 1, MSG_OOB);
+      // (462);
     }
     else{
       client.username = ret[0];
@@ -58,10 +64,8 @@ int  Server::parse_user(Client client, std::string value){
     return (-1);
   }
   if (!client.nickname.empty()){
-    //welcome message send()
-    // users.insert({client.fds.fd, Client(client)});
     users[client.fds.fd] = Client(client);
-    // users[client.fds.fd] = Client(client.fds, client.username, client.nickname, client.password, client.buffer);
+    WelcomeMessage(client);
   }
   return (0);
 }

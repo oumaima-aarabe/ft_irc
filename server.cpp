@@ -1,8 +1,14 @@
 #include "server.hpp"
 
 Server::Server(unsigned int port, std::string password){
+  char hostnam[256];
+  if (gethostname(hostnam, sizeof(hostnam)) == -1){
+    std::cout << "error getting hostname\n";
+    return;
+  }
   this->port = port;
   this->password = password;
+  this->hostname = hostnam;
 }
 
 Server::~Server(){
@@ -114,8 +120,7 @@ int Server::is_client_connection(struct pollfd fds){
     std::string buf = buffer;
     if (connections.find(fds.fd) == connections.end())
     {
-      // connections.insert({fds.fd, Client(fds, "", "", "", buf)})
-      connections[fds.fd] = Client(fds, "", "", "", buf);
+      connections.insert(std::pair<int, Client>(fds.fd, Client(fds, "", "", "", buf)));
     }
     connections[fds.fd].buffer = buf;
     if (connections[fds.fd].buffer.find('\r') != std::string::npos)
@@ -128,7 +133,7 @@ int Server::is_client_connection(struct pollfd fds){
 
 void Server::waiting_for_connctions(){
 
-  int timeout = (5 * 60 * 1000);
+  int timeout = (4 * 60 * 1000);
   int checker;
   
   while (true)

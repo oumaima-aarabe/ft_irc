@@ -16,14 +16,21 @@ int Server::if_nick_exist(std::string value){
 }
 
 int  Server::parse_nick(Client client, std::string value){
+  int clt = client.fds.fd;
+  std::string nick = client.nickname;
+  std::string cltt = std::to_string(clt);
+  std::string message_error = cltt + " " + nick + " :Nickname is already in use";
+  int len = message_error.size();
   if (!client.password.empty()){
     if (value.empty()){
-      std::cout << "ERROR : 461 PARAMETR ENOUTHG\n";//SEND()
-      return (-1);
+      std::string err = cltt + " :Nickname is already in use";
+      send(client.fds.fd, err.c_str(), err.size() +1, MSG_OOB); 
+      // (431);
     }
     else if (if_nick_exist(value)) {
       std::cout << "error: already exist\n";//SEND()
-      return (-1);
+      send(client.fds.fd, message_error.c_str(), len + 1, MSG_OOB);
+      // (433);
     }
     else
     {
@@ -36,10 +43,8 @@ int  Server::parse_nick(Client client, std::string value){
     return (-1);
   }
   if (!client.username.empty()){
-    //welcome message send()
-    // users.insert({client.fds.fd, Client(client)});
     users[client.fds.fd] = Client(client);
-    // users[client.fds.fd] = Client(client.fds, client.username, client.nickname, client.password, client.buffer);
+    WelcomeMessage(client);
   }
   return (0);
 }
