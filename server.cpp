@@ -120,6 +120,7 @@ int Server::is_client_connection(struct pollfd fds){
     std::string buf = buffer;
     if (connections.find(fds.fd) == connections.end())
     {
+      std::cout << "kjsdhfks\n";
       connections.insert(std::pair<int, Client>(fds.fd, Client(fds, "", "", "", buf)));
     }
     connections[fds.fd].buffer = buf;
@@ -133,7 +134,7 @@ int Server::is_client_connection(struct pollfd fds){
 
 void Server::waiting_for_connctions(){
 
-  int timeout = (4 * 60 * 1000);
+  int timeout = (60 * 60 * 1000);
   int checker;
   
   while (true)

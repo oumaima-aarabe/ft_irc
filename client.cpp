@@ -12,22 +12,6 @@ Client::Client(){
 
 }
 
-
-// Client& Client::operator=(const Client& other){
-//   if (this != &other){
-//     fds= other.fds;
-//     username = other.username;
-//     nickname = other.nickname;
-// }     password = other.password;
-//     buffer = other.buffer;
-//   }
-//   return(*this);
-// }
-
-// Client::Client(const Client &other){
-//   *this = other;
-//
-
 Client::~Client(){
 
 }
