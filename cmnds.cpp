@@ -2,8 +2,6 @@
 
 int  Server::parse_pair(Client &client, std::pair<std::string, std::string> pair)
 {
-  // std::cout << "first:<<" << pair.first << ">>" << std::endl; 
-  // std::cout << "second:<<" << pair.second << ">>" << std::endl;
   if (pair.first == "PASS")
   {
     if (parse_pass(client, pair.second) == -1)

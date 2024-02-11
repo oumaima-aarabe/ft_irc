@@ -9,15 +9,6 @@ void my_trim_(std::string& s, char delimiter) {
         s.erase(p + 1);
 }
 
-// std::string find_until_delimiter(const std::string& str, size_t start_index, char delimiter) {
-//     size_t delimiter_index = str.find(delimiter, start_index);
-//     if (delimiter_index != std::string::npos) {
-//         return str.substr(start_index, delimiter_index - start_index);
-//     } else {
-//         return "";
-//     }
-// }
-
 std::pair<std::string, std::string> my_split_pair(const std::string& line, char delimiter) {
     std::pair<std::string, std::string> pair;
     size_t found = line.find(delimiter);
@@ -35,8 +26,7 @@ std::pair<std::string, std::string> my_split_pair(const std::string& line, char 
     return pair;
 }
 
-std::vector<std::pair<std::string, std::string> > Server::my_split_buffer(Client &client, std::string delimiter) {
-    std::vector<std::pair<std::string, std::string> > pairs;
+void Server::my_split_buffer(Client &client, std::string delimiter) {
     std::pair<std::string, std::string> pair;
     size_t found = client.buffer.find(delimiter);
     while (found != std::string::npos)
@@ -44,28 +34,24 @@ std::vector<std::pair<std::string, std::string> > Server::my_split_buffer(Client
       std::string rec = client.buffer.substr(0, found);
       my_trim_(rec, ' ');
       pair = my_split_pair(rec, ' ');
-      std::cout << "pair.first:<" << pair.first << ">" << std::endl;
-      std::cout << "pair.second:<" << pair.second << ">" << std::endl;
+      // std::cout << "pair.first:<" << pair.first << ">" << std::endl;
+      // std::cout << "pair.second:<" << pair.second << ">" << std::endl;
       parse_pair(client, pair);
-      client.buffer = client.buffer.substr(found + 1);
-      found = client.buffer.find(delimiter, found);
+      //eliminer xxx xxx\r\n (if limechat) 
+      client.buffer = client.buffer.substr(found + 2);
+      found = client.buffer.find(delimiter);
     }
-    return pairs;
+    return;
 }
 
 void Server::parse_buffer_nc(Client &client)//from nc
 {
-  std::pair<std::string, std::string> pair;
-  std::vector<std::pair<std::string, std::string> > p;
   std::cout << "Parse using nc" << std::endl;
-  p = my_split_buffer(client, "\n");
+  my_split_buffer(client, "\n");
 }
 
 void Server::parse_buffer_limechat(Client &client)
 {
     std::cout << "Parse using limeChat" << std::endl;
-    std::pair<std::string, std::string> pair;
-    std::vector<std::pair<std::string, std::string> > p;
-    std::cout << "Parse using nc" << std::endl;
-    p = my_split_buffer(client, "\r\n");
+    my_split_buffer(client, "\r\n");
 }

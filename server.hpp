@@ -35,7 +35,10 @@ class Server{
 
 
     std::map<int ,Client> connections;
+
+    //>>>>>>>>>>>
     std::map<int ,Client> users;
+    //>>>>>>>>>>>
 
     Server(unsigned int port, std::string password);
     ~Server();
@@ -46,7 +49,7 @@ class Server{
     void parse_buffer_nc(Client &client);
     void parse_buffer_limechat(Client &client);
     std::vector<std::string> split_user(std::string& line, char delimiter);
-    std::vector<std::pair<std::string, std::string> > my_split_buffer(Client &client, std::string delimiter);
+    void my_split_buffer(Client &client, std::string delimiter);
     int  if_nick_exist(std::string value);
     int  if_user_exist(std::string value);
     int  parse_pass(Client &client, std::string value);
