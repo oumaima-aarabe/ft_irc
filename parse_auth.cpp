@@ -29,16 +29,18 @@ std::pair<std::string, std::string> my_split_pair(const std::string& line, char 
 void Server::my_split_buffer(Client &client, std::string delimiter) {
     std::pair<std::string, std::string> pair;
     size_t found = client.buffer.find(delimiter);
+    puts("1");
     while (found != std::string::npos)
     {
       std::string rec = client.buffer.substr(0, found);
       my_trim_(rec, ' ');
       pair = my_split_pair(rec, ' ');
-      // std::cout << "pair.first:<" << pair.first << ">" << std::endl;
-      // std::cout << "pair.second:<" << pair.second << ">" << std::endl;
       parse_pair(client, pair);
-      //eliminer xxx xxx\r\n (if limechat) 
-      client.buffer = client.buffer.substr(found + 2);
+      //Deliminer xxx xxx\r\n (if limechat) 
+      if(delimiter.size() == 2)
+        client.buffer = client.buffer.substr(found + 2);
+      else if (delimiter.size() == 1)
+        client.buffer = client.buffer.substr(found + 1);
       found = client.buffer.find(delimiter);
     }
     return;

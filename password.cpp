@@ -15,8 +15,6 @@ void Server::WelcomeMessage(Client &client)
 
 int  Server::parse_pass(Client &client, std::string value){
   std::string error = "464 :Password incorrect";
-  // std::string clent = std::to_string(clt);
-  // std::string message_error = clent + error;
   std::string message_err = client.nickname + " "; 
   int len = error.size() + 1;
 
@@ -26,9 +24,7 @@ int  Server::parse_pass(Client &client, std::string value){
     send(client.fds.fd, error.c_str(), len, 0);
   }
   else{
-
     client.password = password;
-    
   }
   return (0);
 }

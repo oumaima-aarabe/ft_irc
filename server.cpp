@@ -163,7 +163,9 @@ void Server::waiting_for_connctions(){
         if (fds[i].revents != POLLIN)
         {
           std::cout << "Error! revents = " << fds[i].revents << std::endl;
-          break;
+          close(fds[i].fd);
+          fds.erase(fds.begin() + i);
+          continue;
         }
         if (fds[i].fd == socket_fd)
         {
