@@ -121,7 +121,6 @@ int Server::is_client_connection(struct pollfd fds){
     std::string buf = buffer;
     if (connections.find(fds.fd) == connections.end())
     {
-      std::cout << "kjsdhfks\n";
       connections.insert(std::pair<int, Client>(fds.fd, Client(fds, "", "", "", buf)));
     }
     connections[fds.fd].buffer = buf;
@@ -165,6 +164,15 @@ void Server::waiting_for_connctions(){
           std::cout << "Error! revents = " << fds[i].revents << std::endl;
           close(fds[i].fd);
           fds.erase(fds.begin() + i);
+          std::map<int, Client>::iterator it = users.find(fds[i].fd);
+          if (it != users.end()) {
+              users.erase(it);
+              // std::cout << "--------------------------\n";
+              // std::cout << users[fds[i].fd].username << std::endl;
+              // std::cout << users[fds[i].fd].nickname << std::endl;
+              // std::cout << users[fds[i].fd].buffer << std::endl;
+              // std::cout << "--------------------------\n";
+          }
           continue;
         }
         if (fds[i].fd == socket_fd)

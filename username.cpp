@@ -38,21 +38,17 @@ int Server::if_user_exist(std::string value){
 }
 
 int  Server::parse_user(Client &client, std::string value){
-  // int fd = client.fds.fd;
-  // std::string clt = std::to_string(fd);
   std::string user = client.username;
   std::string message_error;
   if (!client.password.empty()){
     std::vector<std::string> ret = split_user(value, ' ');
     if (ret.size() != 4){
-      message_error = " " + user + " :Not enough parameters";
+      message_error =  ":* 461 * :Not enough parameters\n";
       send(client.fds.fd, message_error.c_str(), message_error.size() + 1, MSG_OOB);
-      // (461);
     }
     else if (if_user_exist(ret[0])) {
-      message_error = " :You may not reregister";
+      message_error = ":* 462 * :You may not reregister\n";
       send(client.fds.fd, message_error.c_str(), message_error.size() + 1, MSG_OOB);
-      // (462);
     }
     else{
       client.username = ret[0];
