@@ -18,8 +18,13 @@
 #include <vector>
 #include <map>
 #include "client.hpp"
+#include "Replies.hpp"
 
 #define BACKLOG 10
+#define MAX_CLIENTS_PER_CHANNEL 255
+#define MAX_BUFFER_SIZE 512
+#define MAX_CONNECTIONS 300
+#define MAX_CHANNELS 5
 
 class Client;
 
