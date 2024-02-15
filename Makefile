@@ -1,9 +1,7 @@
 NAME = irc
-SRCS = client.cpp cmnds.cpp main.cpp nickname.cpp \
-	password.cpp server.cpp username.cpp parse_auth.cpp \
+SRCS = find . -iname '*.cpp'
 
-INC = client.hpp server.hpp
-
+INC = find . -iname '*.hpp'
 OBJS = $(SRCS:.cpp=.o)
 
 RM = rm -f
