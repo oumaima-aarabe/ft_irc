@@ -17,6 +17,7 @@
 #include <sys/fcntl.h>
 #include <vector>
 #include <map>
+#include <string>
 #include "client.hpp"
 
 #define BACKLOG 10

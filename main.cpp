@@ -8,9 +8,17 @@ int main(int ac, char **av)
     return(0);
   }
 
-  Server server(atoi(av[1]), av[2]);
+  std::string port = av[1];
+  std::string pass = av[2];
 
-  server.create_server();
-  server.waiting_for_connctions();
+  if (!port.empty() || !pass.empty()){
+    Server server(std::stoi(port), pass);
+    server.create_server();
+    server.waiting_for_connctions();
+  }
+  else
+    std::cout << "emty parametr\n";
+
+  return -1;
   
 }

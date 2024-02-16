@@ -109,6 +109,9 @@ int Server::is_client_connection(struct pollfd fds){
     printf("  Connection closed\n");
     return -1;
   }
+  std::cout << "users count: " << users.size() << std::endl;
+  std::cout << "connections count: " << connections.size() << std::endl;
+  std::cout << "buffer: <" << buffer << ">" << std::endl;
   //client authenticated , exist in users
   if (users.find(fds.fd) != users.end())
   {
@@ -167,11 +170,10 @@ void Server::waiting_for_connctions(){
           std::map<int, Client>::iterator it = users.find(fds[i].fd);
           if (it != users.end()) {
               users.erase(it);
-              // std::cout << "--------------------------\n";
-              // std::cout << users[fds[i].fd].username << std::endl;
-              // std::cout << users[fds[i].fd].nickname << std::endl;
-              // std::cout << users[fds[i].fd].buffer << std::endl;
-              // std::cout << "--------------------------\n";
+          }
+          it = connections.find(fds[i].fd);
+          if (it != connections.end()) {
+              connections.erase(it);
           }
           continue;
         }
