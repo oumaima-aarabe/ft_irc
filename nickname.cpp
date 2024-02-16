@@ -17,16 +17,23 @@ int Server::if_nick_exist(std::string value){
 
 int  Server::parse_nick(Client &client, std::string value){
   std::string nick = client.nickname;
-  int len = value.size();
   std::string err;
+  std::vector<std::string> ret = split_user(value, ' ');
   if (!client.password.empty()){
     if (value.empty()){
       err =  ":* 431 * :No nickname given\n";
       send(client.fds.fd, err.c_str(), err.size() +1, 0); 
+      return (0);
     }
     else if (if_nick_exist(value)) {
       err = ":* 433 * :Nickname is already in use\n";
-      send(client.fds.fd, err.c_str(), len + 1, MSG_OOB);
+      send(client.fds.fd, err.c_str(), err.size() + 1, 0);
+      return (0);
+    }
+    else if (ret.size() > 1){
+      err = ":* 432 * :Erroneus nickname\n";
+      send(client.fds.fd , err.c_str(), err.size() + 1, 0);
+      return (0);
     }
     else
     {
@@ -39,6 +46,7 @@ int  Server::parse_nick(Client &client, std::string value){
     return (-1);
   }
   if (!client.username.empty()){
+    puts("here");
     users[client.fds.fd] = Client(client);
     WelcomeMessage(client);
   }
