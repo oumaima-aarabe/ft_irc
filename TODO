@@ -1,3 +1,2 @@
-
 fix: if the user hits CTRL+D :store the buffer in client.buffer until the '\n' came
-feat: parse the command for the users (JOIN, MODE ...) if from limechat remove "\r\n" and if from nc remove "\n" than give it to the buffer of user
+fix: if the password not set and  hit a cmnd(must send a error message)
