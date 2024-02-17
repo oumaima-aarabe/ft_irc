@@ -1,4 +1,4 @@
-#include "server.hpp"
+#include "Server.hpp"
 
 Server::Server(unsigned int port, std::string password){
   char hostnam[256];
@@ -115,8 +115,42 @@ int Server::is_client_connection(struct pollfd fds){
   //client authenticated , exist in users
   if (users.find(fds.fd) != users.end())
   {
-    // parse_cmnds(fds[i].fd);
-    //w(iman's work)
+    //(imy & oumi's work)
+    std::istrstream iss(buffer);
+    char *command;
+    iss >> command;
+    //check which command is the buffer
+    if (strcmp(command, "JOIN") == 0)
+    {
+      //parse buffer...
+    }
+    else if (strcmp(command, "MODE") == 0)
+    {
+      //parse buffer...
+    }
+    else if (strcmp(command, "PRIVMSG") == 0)
+    {
+  
+    }
+    else if (strcmp(command, "KICK") == 0)
+    {
+     
+    }
+    else if (strcmp(command, "INVITE") == 0)
+    {
+      
+    }
+    else if (strcmp(command, "TOPIC") == 0)
+    {
+
+    }
+    else if (strcmp(command, "PART") == 0)
+    {
+
+    }
+    //add other commands if needed...
+
+  
   }
   else
   {
@@ -135,7 +169,7 @@ int Server::is_client_connection(struct pollfd fds){
   return 0;
 }
 
-void Server::waiting_for_connctions(){
+void Server::waiting_for_connections(){
 
   int timeout = (60 * 60 * 1000);
   int checker;
