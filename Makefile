@@ -1,7 +1,8 @@
-NAME = irc
-SRCS = find . -iname '*.cpp'
+NAME = ircserv
 
+SRCS = find . -iname '*.cpp'
 INC = find . -iname '*.hpp'
+
 OBJS = $(SRCS:.cpp=.o)
 
 RM = rm -f

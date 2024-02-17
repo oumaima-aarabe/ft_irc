@@ -1,22 +1,23 @@
-#include "client.hpp"
+#include "Client.hpp"
 
 Client::Client(struct pollfd fds, std::string username, std::string nickname, std::string password, std::string buffer){
-  this->fds = fds; //>>fds.fd
-  this->username = username; //>>
-  this->nickname = nickname; //>>
+  this->fds = fds;
+  this->username = username;
+  this->nickname = nickname; 
   this->password = password;
-  this->buffer = buffer; //>>
-  this->_is_authenticated = false; //change it to true when user is authenticated
-  this->_is_ope = false; //change it to true when user is an operator
-  this->_message = new Message(buffer);
+  this->buffer = buffer;
 }
 
 Client::Client(){
-
+  this->fds.fd = -1;
+  this->username = "";
+  this->nickname = "";
+  this->password = "";
+  this->buffer = "";
 }
 
 Client::~Client(){
-  //clode fd
-  //set fd to -1
-  //client disconneted message
+  close(this->fds.fd);
+  this->fds.fd = -1;
+  std::cout << "Client disconnected" << std::endl;
 }

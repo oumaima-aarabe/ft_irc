@@ -18,8 +18,10 @@
 #include <vector>
 #include <map>
 #include <string>
-#include "client.hpp"
+#include "Client.hpp"
+#include "Channel.hpp"
 #include "Replies.hpp"
+#include <strstream>
 
 #define BACKLOG 10
 #define MAX_CLIENTS_PER_CHANNEL 255
@@ -28,9 +30,11 @@
 #define MAX_CHANNELS 5
 
 class Client;
+class Channel;
 
 class Server{
   public:
+    std::vector<Channel> channels;
     int socket_fd;
     struct sockaddr_in ip4addr;
     unsigned int port;
@@ -49,7 +53,7 @@ class Server{
     Server(unsigned int port, std::string password);
     ~Server();
     void create_server();
-    void waiting_for_connctions();
+    void waiting_for_connections();
     int is_server_connection();
     int is_client_connection(struct pollfd fds);
     void parse_buffer_nc(Client &client);
@@ -63,4 +67,5 @@ class Server{
     int  parse_user(Client &client, std::string value);
     int  parse_pair(Client &client, std::pair<std::string, std::string> pair);
     void WelcomeMessage(Client &client);
+    void addtoChannels(const Channel& channel);
 };
