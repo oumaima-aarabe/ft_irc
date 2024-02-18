@@ -43,7 +43,6 @@ class Server{
     int current_size;
     std::string hostname ;
 
-
     std::map<int ,Client> connections;
 
     //>>>>>>>>>>>
@@ -67,5 +66,5 @@ class Server{
     int  parse_user(Client &client, std::string value);
     int  parse_pair(Client &client, std::pair<std::string, std::string> pair);
     void WelcomeMessage(Client &client);
-    void addtoChannels(const Channel& channel);
+    void addToChannels(const Channel& channel);
 };

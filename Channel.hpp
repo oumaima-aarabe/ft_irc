@@ -20,7 +20,7 @@ class Channel {
         std::string _topic;
         std::vector<ChannelMode> _modes;
         std::vector<Client> inviteList;
-        std::vector<Client> clientList;
+        std::vector<Client> allClientsList;
         std::vector<Client> opeList;
 
     public:
@@ -30,25 +30,28 @@ class Channel {
         void setPassword(std::string &passwd);
         void setChannel_limit(int limit);
         // Getters
-        std::string &getPassword(void) const;
-        std::string &getName(void) const;
-        std::string &getTopic(void) const;
+        std::string getPassword(void) const;
+        std::string getName(void) const;
+        std::string getTopic(void) const;
         std::vector<ChannelMode> getModes(void) const;
+        char Channel::getModeIdentifier(ChannelMode _mode) const;
+        std::string Channel::getStringModes(void) const;
         int getChannelLimit(void) const;
-        std::vector<Client> getClientList(void) const;
+        std::vector<Client> getAllClientsList(void) const;
         std::vector<Client> getOpeList(void) const;
         std::vector<Client> getInviteList(void) const;
         // Client stuff
-		void join(Client client);
+		void addClient(Client client);
         bool isJoined(Client client);
         bool isOpe(Client client);
         bool isInvited(Client client);
-        bool isInviteOnly(void);
         void addOpe(Client client);
         void removeOpe(Client client);
         void kick(Client client);
         void invite(Client client);
         void removeInvite(Client client);
+        // Channel modes stuff
+        bool isInviteOnly(void);
         // Utils
         bool hasMode(ChannelMode mode);
         void addMode(ChannelMode mode);
