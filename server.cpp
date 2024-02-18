@@ -139,7 +139,20 @@ int Server::is_client_connection(struct pollfd fds){
   //client authenticated , exist in users
   if (users.find(fds.fd) != users.end())
   {
-    // parse_cmnds(fds[i].fd);
+    //Remove \r\n from limechat
+    size_t found = content.find('\r');
+    if (found != std::string::npos){
+      if (content[found+1] == '\n'){
+        content.erase(found, 2);
+      }
+    }
+    //Remove \n from nc
+    found = content.find('\n');
+    if (found != std::string::npos){
+      content.erase(found, 1);
+    }
+    users[fds.fd].buffer = content;
+    // parse_cmnds(users[fds.fd]);
     //w(iman's work)
   }
   else
@@ -149,7 +162,10 @@ int Server::is_client_connection(struct pollfd fds){
     {
       connections.insert(std::pair<int, Client>(fds.fd, Client(fds, "", "", "", content)));
     }
-    connections[fds.fd].buffer += content;
+    else
+    {
+      connections[fds.fd].buffer += content;
+    }
     if (connections[fds.fd].buffer.find('\r') != std::string::npos)
       parse_buffer_limechat(connections[fds.fd]); //parse buffer with back slach r
     else

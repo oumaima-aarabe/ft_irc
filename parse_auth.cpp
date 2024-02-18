@@ -1,6 +1,5 @@
 #include "client.hpp"
 
-
 void my_trim_(std::string& s, char delimiter) {
     size_t p = s.find_first_not_of(delimiter);
     s.erase(0, p);
@@ -37,11 +36,7 @@ void Server::my_split_buffer(Client &client, std::string delimiter) {
       my_trim_(rec, ' ');
       pair = my_split_pair(rec, ' ');
       parse_pair(client, pair);
-      //Deliminer xxx xxx\r\n (if limechat) 
-      if(delimiter.size() == 2)
-        client.buffer = client.buffer.substr(found + 2);
-      else if (delimiter.size() == 1)
-        client.buffer = client.buffer.substr(found + 1);
+      //Deliminer xxx xxx\r\n (if limechat)
       found = client.buffer.find(delimiter);
     }
     return;
