@@ -136,7 +136,9 @@ int Server::is_client_connection(struct pollfd fds){
   std::cout << "connections count: " << connections.size() << std::endl;
   std::cout << "buffer: <" << buffer << ">" << std::endl;
 
-  
+  //client authenticated , exist in users
+    if (users.find(fds.fd) != users.end())
+  {
     //Remove \r\n from limechat
     size_t found = content.find('\r');
     if (found != std::string::npos){
@@ -149,46 +151,46 @@ int Server::is_client_connection(struct pollfd fds){
     if (found != std::string::npos){
       content.erase(found, 1);
     }
-    
     users[fds.fd].buffer = content;
 
-    //w(iman's work)
-
-    if (users.find(fds.fd) != users.end())
-  {
     //(imy & oumi's work)
-    std::istrstream iss(buffer);
-    char *command;
+    std::istrstream iss(users[fds.fd].buffer.c_str());
+    char *command = NULL;
     iss >> command;
+    std::cout << "command: " << command << std::endl;
     //check which command is the buffer
-    if (strcmp(command, "JOIN") == 0)
-    {
-      //parse buffer...
-    }
-    else if (strcmp(command, "MODE") == 0)
-    {
-      //parse buffer...
-    }
-    else if (strcmp(command, "PRIVMSG") == 0)
-    {
+    // if (strcmp(command, "PONG") == 0)
+    // {
+    //   // return; //ignore pong messages from limechat
+    // }
+    // else if (strcmp(command, "JOIN") == 0)
+    // {
+    //   //parse buffer...
+    // }
+    // else if (strcmp(command, "MODE") == 0)
+    // {
+    //   //parse buffer...
+    // }
+    // else if (strcmp(command, "PRIVMSG") == 0)
+    // {
   
-    }
-    else if (strcmp(command, "KICK") == 0)
-    {
+    // }
+    // else if (strcmp(command, "KICK") == 0)
+    // {
      
-    }
-    else if (strcmp(command, "INVITE") == 0)
-    {
+    // }
+    // else if (strcmp(command, "INVITE") == 0)
+    // {
       
-    }
-    else if (strcmp(command, "TOPIC") == 0)
-    {
+    // }
+    // else if (strcmp(command, "TOPIC") == 0)
+    // {
 
-    }
-    else if (strcmp(command, "PART") == 0)
-    {
+    // }
+    // else if (strcmp(command, "PART") == 0)
+    // {
 
-    }
+    // }
     //add other commands if needed...
   }
   else

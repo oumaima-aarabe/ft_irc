@@ -24,9 +24,9 @@
 #include <strstream>
 
 #define BACKLOG 10
-#define MAX_CLIENTS_PER_CHANNEL 255
+#define MAX_CLIENTS_PER_CHANNEL 10
 #define MAX_BUFFER_SIZE 512
-#define MAX_CONNECTIONS 300
+#define MAX_CONNECTIONS 50
 #define MAX_CHANNELS 5
 
 class Client;
@@ -66,5 +66,5 @@ class Server{
     int  parse_user(Client &client, std::string value);
     int  parse_pair(Client &client, std::pair<std::string, std::string> pair);
     void WelcomeMessage(Client &client);
-    void addToChannels(const Channel& channel);
+    void addToChannels(Channel& channel);
 };
