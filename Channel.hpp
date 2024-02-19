@@ -1,6 +1,6 @@
 #pragma once
 
-#include "client.hpp"
+#include "Client.hpp"
 
 class Client;
 
