@@ -97,9 +97,10 @@ int Server::is_client_connection(struct pollfd fds){
 
   //read the buffer from client (user || new connection)
   int checker = recv(fds.fd, buffer, sizeof(buffer), 0);
+
   if (checker < 0)
   {
-    //message
+    std::cout << "recv failed()\n";
     return -1;
   }
 
@@ -109,11 +110,51 @@ int Server::is_client_connection(struct pollfd fds){
     printf("  Connection closed\n");
     return -1;
   }
+
+  //handle cntrl+D
+  std::string content = buffer;
+  if (content.find('\n') == std::string::npos){
+    if (users.find(fds.fd) != users.end())
+    {
+      users[fds.fd].buffer += buffer;
+      return 0;
+    }
+    else if (connections.find(fds.fd) != connections.end())
+    {
+      connections[fds.fd].buffer += buffer;
+      return 0;
+    }
+    else
+    {
+      connections.insert(std::pair<int, Client>(fds.fd, Client(fds, "", "", "", content)));
+      return 0;
+    }
+  }
+
+
   std::cout << "users count: " << users.size() << std::endl;
   std::cout << "connections count: " << connections.size() << std::endl;
   std::cout << "buffer: <" << buffer << ">" << std::endl;
-  //client authenticated , exist in users
-  if (users.find(fds.fd) != users.end())
+
+  
+    //Remove \r\n from limechat
+    size_t found = content.find('\r');
+    if (found != std::string::npos){
+      if (content[found+1] == '\n'){
+        content.erase(found, 2);
+      }
+    }
+    //Remove \n from nc
+    found = content.find('\n');
+    if (found != std::string::npos){
+      content.erase(found, 1);
+    }
+    
+    users[fds.fd].buffer = content;
+
+    //w(iman's work)
+
+    if (users.find(fds.fd) != users.end())
   {
     //(imy & oumi's work)
     std::istrstream iss(buffer);
@@ -149,18 +190,18 @@ int Server::is_client_connection(struct pollfd fds){
 
     }
     //add other commands if needed...
-
-  
   }
   else
   {
     //new client
-    std::string buf = buffer;
     if (connections.find(fds.fd) == connections.end())
     {
-      connections.insert(std::pair<int, Client>(fds.fd, Client(fds, "", "", "", buf)));
+      connections.insert(std::pair<int, Client>(fds.fd, Client(fds, "", "", "", content)));
     }
-    connections[fds.fd].buffer = buf;
+    else
+    {
+      connections[fds.fd].buffer += content;
+    }
     if (connections[fds.fd].buffer.find('\r') != std::string::npos)
       parse_buffer_limechat(connections[fds.fd]); //parse buffer with back slach r
     else
