@@ -41,10 +41,10 @@ int Channel::getChannelLimit(void) const
     return (_channel_limit);
 }
 
-// std::vector<std::pair<ChannelMode, int> > Channel::getModes(void) const
-// {
-//     return (_modes);
-// }
+std::vector<std::pair<ChannelMode, int> > Channel::getModes(void) const
+{
+    return (_modes);
+}
 
 char Channel::getModeIdentifier(ChannelMode _mode) const
 {
@@ -70,17 +70,17 @@ char Channel::getModeIdentifier(ChannelMode _mode) const
     return (identifier);
 }
 
-// std::string Channel::getStringModes(void) const
-// {
-//     std::string stringModes = "";
-//     for (std::vector<ChannelMode>::const_iterator it = _modes.begin(); it != _modes.end(); ++it)
-//     {
-//         char identifier = getModeIdentifier(*it);
-//         if (identifier)
-//         stringModes += getModeIdentifier(*it);
-//     }
-//     return (stringModes);
-// }
+std::string Channel::getStringModes(void) const
+{
+    std::string stringModes = "";
+    for (std::vector<std::pair<ChannelMode, int> >::const_iterator it = _modes.begin(); it != _modes.end(); it++)
+    {
+        char identifier = getModeIdentifier(it->first);
+        if (identifier)
+        stringModes += getModeIdentifier(it->first);
+    }
+    return (stringModes);
+}
 
 std::vector<Client> Channel::getAllClientsList(void) const
 {
@@ -183,18 +183,6 @@ void Channel::invite(Client client)
 {
     if (isInvited(client) == false)
         this->inviteList.push_back(client);
-}
-
-void Channel::removeInvite(Client client)
-{
-     for (std::vector<Client >::iterator it = inviteList.begin(); it != inviteList.end(); it++)
-    {
-        if (it->fds.fd == client.fds.fd)
-        {
-            inviteList.erase(it);
-            return;
-        }
-    }
 }
 
 // ---------------------
