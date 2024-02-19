@@ -1,4 +1,4 @@
-#include "client.hpp"
+#include "Client.hpp"
 
 int  Server::parse_pair(Client &client, std::pair<std::string, std::string> pair)
 {
