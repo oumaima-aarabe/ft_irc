@@ -1,4 +1,4 @@
-#include "Server.hpp"
+#include "server.hpp"
 
 Server::Server(unsigned int port, std::string password){
   char hostnam[256];
@@ -155,42 +155,42 @@ int Server::is_client_connection(struct pollfd fds){
 
     //(imy & oumi's work)
     std::istrstream iss(users[fds.fd].buffer.c_str());
-    char *command = NULL;
+    std::string command = NULL;
     iss >> command;
     std::cout << "command: " << command << std::endl;
     //check which command is the buffer
-    // if (strcmp(command, "PONG") == 0)
-    // {
-    //   // return; //ignore pong messages from limechat
-    // }
-    // else if (strcmp(command, "JOIN") == 0)
-    // {
-    //   //parse buffer...
-    // }
-    // else if (strcmp(command, "MODE") == 0)
-    // {
-    //   //parse buffer...
-    // }
-    // else if (strcmp(command, "PRIVMSG") == 0)
-    // {
+    if (command == "PONG")
+    {
+      // return; //ignore pong messages from limechat
+    }
+    else if (command == "JOIN")
+    {
+      //parse buffer...
+    }
+    else if (command == "MODE")
+    {
+      //parse buffer...
+    }
+    else if (command == "PRIVMSG")
+    {
   
-    // }
-    // else if (strcmp(command, "KICK") == 0)
-    // {
+    }
+    else if (command == "KICK")
+    {
      
-    // }
-    // else if (strcmp(command, "INVITE") == 0)
-    // {
+    }
+    else if (command == "INVITE")
+    {
       
-    // }
-    // else if (strcmp(command, "TOPIC") == 0)
-    // {
+    }
+    else if (command == "TOPIC")
+    {
 
-    // }
-    // else if (strcmp(command, "PART") == 0)
-    // {
+    }
+    else if (command == "PART")
+    {
 
-    // }
+    }
     //add other commands if needed...
   }
   else

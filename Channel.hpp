@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Client.hpp"
+#include "client.hpp"
 
 class Client;
 
@@ -18,7 +18,7 @@ class Channel {
         std::string _password;
         int _channel_limit;
         std::string _topic;
-        std::vector<ChannelMode> _modes;
+        std::vector<std::pair<ChannelMode, int> > _modes;
         std::vector<Client> inviteList;
         std::vector<Client> allClientsList;
         std::vector<Client> opeList;
@@ -33,9 +33,9 @@ class Channel {
         std::string getPassword(void) const;
         std::string getName(void) const;
         std::string getTopic(void) const;
-        std::vector<ChannelMode> getModes(void) const;
-        char Channel::getModeIdentifier(ChannelMode _mode) const;
-        std::string Channel::getStringModes(void) const;
+        std::vector<std::pair<ChannelMode, int> > getModes(void) const;
+        char getModeIdentifier(ChannelMode _mode) const;
+        std::string getStringModes(void) const;
         int getChannelLimit(void) const;
         std::vector<Client> getAllClientsList(void) const;
         std::vector<Client> getOpeList(void) const;
@@ -49,7 +49,6 @@ class Channel {
         void removeOpe(Client client);
         void kick(Client client);
         void invite(Client client);
-        void removeInvite(Client client);
         // Channel modes stuff
         bool isInviteOnly(void);
         // Utils
@@ -58,5 +57,4 @@ class Channel {
         void removeMode(ChannelMode mode);
         void broadcastMessage(std::string message);
         bool hasKey(void);
-        void removeKey(void);
 };

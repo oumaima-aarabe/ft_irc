@@ -41,10 +41,10 @@ int Channel::getChannelLimit(void) const
     return (_channel_limit);
 }
 
-std::vector<std::pair<ChannelMode, int> > Channel::getModes(void) const
-{
-    return (_modes);
-}
+// std::vector<std::pair<ChannelMode, int> > Channel::getModes(void) const
+// {
+//     return (_modes);
+// }
 
 char Channel::getModeIdentifier(ChannelMode _mode) const
 {
@@ -70,17 +70,17 @@ char Channel::getModeIdentifier(ChannelMode _mode) const
     return (identifier);
 }
 
-std::string Channel::getStringModes(void) const
-{
-    std::string stringModes = "";
-    for (std::vector<ChannelMode>::const_iterator it = _modes.begin(); it != _modes.end(); ++it)
-    {
-        char identifier = getModeIdentifier(*it);
-        if (identifier)
-        stringModes += getModeIdentifier(*it);
-    }
-    return (stringModes);
-}
+// std::string Channel::getStringModes(void) const
+// {
+//     std::string stringModes = "";
+//     for (std::vector<ChannelMode>::const_iterator it = _modes.begin(); it != _modes.end(); ++it)
+//     {
+//         char identifier = getModeIdentifier(*it);
+//         if (identifier)
+//         stringModes += getModeIdentifier(*it);
+//     }
+//     return (stringModes);
+// }
 
 std::vector<Client> Channel::getAllClientsList(void) const
 {
@@ -200,38 +200,56 @@ void Channel::removeInvite(Client client)
 // ---------------------
 // Channel modes stuff
 // ---------------------
+
 bool Channel::isInviteOnly(void)
 {
-    return (std::find(_modes.begin(), _modes.end(), CHANNEL_MODE_INVITE_ONLY) != _modes.end()); //change this
+    return (hasMode(CHANNEL_MODE_INVITE_ONLY));
 }
 
 // --------------
 // Utils
 // --------------
 
-//to modify
-
 bool Channel::hasMode(ChannelMode mode)
 {
-    return std::find(this->_modes.begin(), this->_modes.end(), mode) != this->_modes.end();
+    for (std::vector <std::pair <ChannelMode, int> >::iterator it = _modes.begin(); it != _modes.end(); it++)
+    {
+        if (it->first == mode) {
+            if (it->second == 1)
+                return true;
+            else
+                return false;
+        }
+    }
+    return false;
 }
 
 //to modify
 
-// void Channel::addMode(ChannelMode mode)
-// {
-//     if (!this->hasMode(mode))
-//         this->_modes.push_back(mode);
-// }
+void Channel::addMode(ChannelMode mode)
+{
+    for (std::vector <std::pair <ChannelMode, int> >::iterator it = _modes.begin(); it != _modes.end(); it++)
+    {
+        if (it->first == mode) {
+            if (it->second == 0)
+                it->second = 1;
+        }
+    }
+    return;
+}
 
 //to modify
 
-// void Channel::removeMode(ChannelMode mode)
-// {
-//     std::vector<ChannelMode>::iterator it = std::find(_modes.begin(), _modes.end(), mode);
-//     if (it != _modes.end())
-//         _modes.erase(it);
-// }
+void Channel::removeMode(ChannelMode mode)
+{
+    for (std::vector <std::pair <ChannelMode, int> >::iterator it = _modes.begin(); it != _modes.end(); it++)
+    {
+        if (it->first == mode) {
+            if (it->second == 1)
+                it->second = 0;
+        }
+    }
+}
 
 void Channel::broadcastMessage(std::string message)
 {
@@ -242,17 +260,8 @@ void Channel::broadcastMessage(std::string message)
 
 bool Channel::hasKey(void)
 {
-    return (std::find(_modes.begin(), _modes.end(), CHANNEL_MODE_KEY) != _modes.end());
+    return (hasMode(CHANNEL_MODE_KEY));
 }
-
-//to modify
-
-// void Channel::removeKey(void)
-// {
-//     std::vector<ChannelMode>::iterator it = std::find(_modes.begin(), _modes.end(), CHANNEL_MODE_KEY);
-//     if (it != _modes.end())
-//         _modes.erase(it);
-// }
 
 void Server::addToChannels(Channel& channel) 
 {
