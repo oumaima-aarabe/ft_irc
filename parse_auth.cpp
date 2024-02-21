@@ -35,7 +35,8 @@ void Server::my_split_buffer(Client &client, std::string delimiter) {
       std::string rec = client.buffer.substr(0, found);
       my_trim_(rec, ' ');
       pair = my_split_pair(rec, ' ');
-      parse_pair(client, pair);
+      if (parse_pair(client, pair) == -1)
+        break;
       //Deliminer xxx xxx\r\n (if limechat)
       found = client.buffer.find(delimiter);
     }

@@ -10,19 +10,26 @@ void Server::WelcomeMessage(Client &client)
     msg += ":" + hostname + " 251 " + client.nickname + " :There are " +  std::to_string(users.size() + 1) + " users and 1 bot on 1 servers\r\n";
     msg += ":" + hostname + " 375 " + client.nickname + " :- " + hostname + " Message of the day -\r\n";
     msg += ":" + hostname + " 376 " + client.nickname + " :End of MOTD command\r\n";
-    send(client.fds.fd, msg.c_str() , msg.size() , MSG_OOB);
+    send(client.fds.fd, msg.c_str() , msg.size() + 1 , 0);
 }
 
 int  Server::parse_pass(Client &client, std::string value){
-  std::string error = ":* 464 * :Password incorrect\n";
+  std::string error;
 
+  // if (client.password == ""){
+  //   error = ":* 462 * :You may not reregister";
+  //   send(client.fds.fd, error.c_str(), error.size() + 1, 0);
+  // }
   if (value != password)
   {
+    error = ":* 464 * :Password incorrect\n";
     send(client.fds.fd, error.c_str(), error.size() + 1, 0);
     return -1;
   }
   else{
+    if (client.password == ""){
     client.password = password;
+    }
   }
   return (0);
 }
