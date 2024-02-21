@@ -42,6 +42,10 @@ int Server::if_user_exist(std::string value){
 int  Server::parse_user(Client &client, std::string value){
   std::string user = client.username;
   std::string message_error;
+
+  if (!client.username.empty()){
+    return 0;
+  }
   if (!client.password.empty()){
     std::vector<std::string> ret = split_user(value, ' ');
     if (ret.size() != 4){
@@ -65,7 +69,6 @@ int  Server::parse_user(Client &client, std::string value){
   }
   if (!client.nickname.empty())
   {
-
     users[client.fds.fd] = Client(client);
     WelcomeMessage(client);
   }

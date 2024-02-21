@@ -208,6 +208,7 @@ int Server::is_client_connection(struct pollfd fds){
       parse_buffer_limechat(connections[fds.fd]); //parse buffer with back slach r
     else
       parse_buffer_nc(connections[fds.fd]); //parse buffer without backslash r
+    connections[fds.fd].buffer = "";
   }
   return 0;
 }

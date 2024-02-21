@@ -1,2 +1,2 @@
-fix: if the user hits CTRL+D :store the buffer in client.buffer until the '\n' came
-fix: if the password not set and  hit a cmnd(must send a error message)
+
+

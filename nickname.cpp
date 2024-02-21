@@ -19,6 +19,10 @@ int  Server::parse_nick(Client &client, std::string value){
   std::string nick = client.nickname;
   std::string err;
   std::vector<std::string> ret = split_user(value, ' ');
+
+  if (!client.nickname.empty()){
+    return 0;
+  }
   if (!client.password.empty()){
     if (value.empty()){
       err =  ":* 431 * :No nickname given\n";
