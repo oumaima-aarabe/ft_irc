@@ -154,7 +154,7 @@ int Server::is_client_connection(struct pollfd fds){
     users[fds.fd].buffer = content;
 
     //(imy & oumi's work)
-    std::istrstream iss(users[fds.fd].buffer.c_str());
+    std::istrstream iss(content.c_str());
     std::string command = NULL;
     iss >> command;
     std::cout << "command: " << command << std::endl;
