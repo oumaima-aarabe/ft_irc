@@ -18,7 +18,7 @@
 #include <vector>
 #include <map>
 #include <string>
-#include "Client.hpp"
+#include "client.hpp"
 #include "Channel.hpp"
 #include "Replies.hpp"
 #include <strstream>

@@ -1,4 +1,4 @@
-#include "Server.hpp"
+#include "server.hpp"
 
 // void    Server::ft_join(std::string buffer)
 // {

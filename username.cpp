@@ -1,4 +1,4 @@
-#include "Client.hpp"
+#include "client.hpp"
 
 std::vector<std::string> Server::split_user(std::string& line, char delimiter) {
     std::vector<std::string> ret;

@@ -1,4 +1,4 @@
-#include "Client.hpp"
+#include "client.hpp"
 
 Client::Client(struct pollfd fds, std::string username, std::string nickname, std::string password, std::string buffer){
   this->fds = fds;

@@ -1,4 +1,4 @@
-#include "Server.hpp"
+#include "server.hpp"
 
 Server::Server(unsigned int port, std::string password){
   char hostnam[256];

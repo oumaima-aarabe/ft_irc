@@ -1,4 +1,4 @@
-#include "Client.hpp"
+#include "client.hpp"
 #include "Utils.hpp"
 
 std::pair<std::string, std::string> my_split_pair(const std::string& line, char delimiter) {
