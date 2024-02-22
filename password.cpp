@@ -16,10 +16,11 @@ void Server::WelcomeMessage(Client &client)
 int  Server::parse_pass(Client &client, std::string value){
   std::string error;
 
-  // if (client.password == ""){
-  //   error = ":* 462 * :You may not reregister";
-  //   send(client.fds.fd, error.c_str(), error.size() + 1, 0);
-  // }
+  if (client.password != ""){
+    error = ":* 464 * :Password already set\n";
+    send(client.fds.fd, error.c_str(), error.size() + 1, 0);
+    return 0;
+  }
   if (value != password)
   {
     error = ":* 464 * :Password incorrect\n";
