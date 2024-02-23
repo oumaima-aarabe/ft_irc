@@ -4,14 +4,14 @@
 
 class Client{
   public :
-    struct pollfd fds;
+    struct pollfd fds;  //>>fds.fd
     std::string username;
     std::string nickname;
     std::string password;
     std::string buffer;
+
     Client();
     Client(struct pollfd fds, std::string username, std::string nickname, std::string password, std::string buffer);
-
     ~Client();
 };
 

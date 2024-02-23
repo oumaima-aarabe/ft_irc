@@ -14,10 +14,10 @@ int main(int ac, char **av)
   if (!port.empty() || !pass.empty()){
     Server server(std::stoi(port), pass);
     server.create_server();
-    server.waiting_for_connctions();
+    server.waiting_for_connections();
   }
   else
-    std::cout << "emty parametr\n";
+    std::cout << "empty parameter\n";
 
   return -1;
   

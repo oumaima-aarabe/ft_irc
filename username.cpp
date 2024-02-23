@@ -4,8 +4,10 @@ std::vector<std::string> Server::split_user(std::string& line, char delimiter) {
     std::vector<std::string> ret;
     my_trim_(line, ' ');
     size_t found = line.find(delimiter);
-    if (found == std::string::npos)
+    if (found == std::string::npos) {
+      ret.push_back(line);
       return ret;
+    }
     size_t i = 0;
     while (found != std::string::npos){
       std::string str = line.substr(i, found);

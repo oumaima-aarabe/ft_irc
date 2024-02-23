@@ -137,7 +137,7 @@ int Server::is_client_connection(struct pollfd fds){
   std::cout << "buffer: <" << buffer << ">" << std::endl;
 
   //client authenticated , exist in users
-  if (users.find(fds.fd) != users.end())
+    if (users.find(fds.fd) != users.end())
   {
     //Remove \r\n from limechat
     size_t found = content.find('\r');
@@ -152,8 +152,46 @@ int Server::is_client_connection(struct pollfd fds){
       content.erase(found, 1);
     }
     users[fds.fd].buffer = content;
-    // parse_cmnds(users[fds.fd]);
-    //w(iman's work)
+
+    //(imy & oumi's work)
+    std::istrstream iss(content.c_str());
+    std::string command = NULL;
+    iss >> command;
+    std::cout << "command: " << command << std::endl;
+    //check which command is the buffer
+    if (command == "PONG")
+    {
+      // return; //ignore pong messages from limechat
+    }
+    else if (command == "JOIN")
+    {
+      //parse buffer...
+    }
+    else if (command == "MODE")
+    {
+      //parse buffer...
+    }
+    else if (command == "PRIVMSG")
+    {
+  
+    }
+    else if (command == "KICK")
+    {
+     
+    }
+    else if (command == "INVITE")
+    {
+      
+    }
+    else if (command == "TOPIC")
+    {
+
+    }
+    else if (command == "PART")
+    {
+
+    }
+    //add other commands if needed...
   }
   else
   {
@@ -175,7 +213,7 @@ int Server::is_client_connection(struct pollfd fds){
   return 0;
 }
 
-void Server::waiting_for_connctions(){
+void Server::waiting_for_connections(){
 
   int timeout = (60 * 60 * 1000);
   int checker;

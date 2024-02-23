@@ -1,12 +1,5 @@
 #include "client.hpp"
-
-void my_trim_(std::string& s, char delimiter) {
-    size_t p = s.find_first_not_of(delimiter);
-    s.erase(0, p);
-    p = s.find_last_not_of(delimiter);
-    if (std::string::npos != p)
-        s.erase(p + 1);
-}
+#include "Utils.hpp"
 
 std::pair<std::string, std::string> my_split_pair(const std::string& line, char delimiter) {
     std::pair<std::string, std::string> pair;

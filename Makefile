@@ -2,14 +2,16 @@ NAME = ircserv
 SRCS = client.cpp cmnds.cpp main.cpp nickname.cpp \
 	password.cpp server.cpp username.cpp parse_auth.cpp \
 
-INC = client.hpp server.hpp
+SRCS = $(shell find . -name '*.cpp')
+
+INC = $(shell find . -name '*.hpp')
 
 OBJS = $(SRCS:.cpp=.o)
 
 RM = rm -f
 
 CPP = c++
-CPPFLAGS = -Wall -Wextra -Werror -std=c++98
+CPPFLAGS = -Wall -Wextra -Werror -std=c++98 -g
 
 all: $(NAME)
 
