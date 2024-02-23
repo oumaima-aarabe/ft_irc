@@ -153,11 +153,45 @@ int Server::is_client_connection(struct pollfd fds){
     }
     users[fds.fd].buffer = content;
 
-    std::cout << "content: <" << content << ">" << std::endl;
-    // parsing and executing cmnds
-    // int clientFd = users[fds.fd].fds.fd; // to avoid in case the client closes the connection while processing the request
-    // std::vector<std::string> cmndBuffer = split(content, ' ');
-    // executeCommands(cmndBuffer, clientFd);
+    //(imy & oumi's work)
+    std::istrstream iss(content.c_str());
+    std::string command = NULL;
+    iss >> command;
+    std::cout << "command: " << command << std::endl;
+    //check which command is the buffer
+    if (command == "PONG")
+    {
+      // return; //ignore pong messages from limechat
+    }
+    else if (command == "JOIN")
+    {
+      //parse buffer...
+    }
+    else if (command == "MODE")
+    {
+      //parse buffer...
+    }
+    else if (command == "PRIVMSG")
+    {
+  
+    }
+    else if (command == "KICK")
+    {
+     
+    }
+    else if (command == "INVITE")
+    {
+      
+    }
+    else if (command == "TOPIC")
+    {
+
+    }
+    else if (command == "PART")
+    {
+
+    }
+    //add other commands if needed...
   }
   else
   {
@@ -235,50 +269,3 @@ void Server::waiting_for_connections(){
     }
   }
 }
-
-typedef void (*CommandHandlerFunc)(commandInfo &, Client &);
-
-bool isValidCommand(std::map<std::string, CommandHandlerFunc> commandHandlerMap, const std::string &cmdName)
-{
-	return commandHandlerMap.count(cmdName);
-}
-
-void Server::sendReply(const std::string &message, int clientFd)
-{
-	if (send(clientFd, message.c_str(), strlen(message.c_str()), 0) == -1)
-		perror("send sys call failed: ");
-}
-
-// void Server::executeCommands(const std::vector<std::string> cmndBuffer, int clientFd) {
-//   Client client = users[clientFd];
-// 	std::map<std::string, CommandHandlerFunc> commandHandlerMap;
-// 	commandHandlerMap["JOIN"] = ft_join;
-// 	commandHandlerMap["MODE"] = ft_mode;
-// 	commandHandlerMap["PART"] = ft_part;
-// 	commandHandlerMap["PRIVMSG"] = ft_privMsg;
-// 	commandHandlerMap["QUIT"] = ft_quit;
-// 	commandHandlerMap["KICK"] = ft_kick;
-// 	commandHandlerMap["TOPIC"] = ft_topic;
-// 	commandHandlerMap["INVITE"] = ft_invite;
-
-//   // loop through multiple commands sent by client in quick succession, which might be received and buffered by the server as a single string separated by '\n'
-//   //e.g.: "JOIN #channel1\nMODE #channel1 +o user1\n"
-//   for (size_t i = 0; i < cmndBuffer.size(); i++) 
-// 	{
-// 		commandInfo cmdInfo = parseCmndBuffer(cmndBuffer[i]);
-
-// 		if (!isValidCommand(commandHandlerMap, cmdInfo.cmnd_name))
-// 		{
-// 			sendReply(ERR_UNKNOWNCOMMAND(cmdInfo.cmnd_name), clientFd);
-// 			continue;
-// 		}
-// 		if (requiresRegistration(cmdInfo.cmnd_name) && !client->isRegistered())
-// 		{
-// 			sendReply(ERR_NOTREGISTERED(std::string("*")), clientFd);
-// 			continue;
-// 		}
-// 		commandHandlerMap[cmdInfo.cmnd_name](cmdInfo, client); // execute the CommandHandlerFunc corresponding to the command name
-// 	}
-
-
-// }
