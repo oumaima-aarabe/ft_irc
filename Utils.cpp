@@ -18,6 +18,8 @@ std::vector<std::string> split(std::string & str, char delimiter) {
         result.push_back(token);
         str.erase(0, pos + 1);
     }
-    result.push_back(str);
+    if (!str.empty()) {
+        result.push_back(str);
+    }
     return result;
 }

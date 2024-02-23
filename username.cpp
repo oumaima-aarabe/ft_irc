@@ -1,29 +1,5 @@
 #include "client.hpp"
 
-std::vector<std::string> Server::split_user(std::string& line, char delimiter) {
-    std::vector<std::string> ret;
-    my_trim_(line, ' ');
-    size_t found = line.find(delimiter);
-    if (found == std::string::npos) {
-      ret.push_back(line);
-      return ret;
-    }
-    size_t i = 0;
-    while (found != std::string::npos){
-      std::string str = line.substr(i, found);
-      my_trim_(str, ' ');
-      ret.push_back(str);
-      i = found;
-      line = line.substr(found);
-      my_trim_(line, ' ');
-      found = line.find(delimiter);
-    }
-    if (!line.empty()){
-      ret.push_back(line);
-    }
-    return (ret);
-}
-
 int Server::if_user_exist(std::string value){
   std::map<int, Client>::iterator it;
   for (it = users.begin();it != users.end();it++)
@@ -47,7 +23,7 @@ int  Server::parse_user(Client &client, std::string value){
     return 0;
   }
   if (!client.password.empty()){
-    std::vector<std::string> ret = split_user(value, ' ');
+    std::vector<std::string> ret = split(value, ' ');
     if (ret.size() != 4){
       message_error =  ":* 461 * :Not enough parameters\n";
       send(client.fds.fd, message_error.c_str(), message_error.size() + 1, MSG_OOB);
