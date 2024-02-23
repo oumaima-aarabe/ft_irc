@@ -16,9 +16,8 @@ int Server::if_nick_exist(std::string value){
 }
 
 int  Server::parse_nick(Client &client, std::string value){
-  std::string nick = client.nickname;
   std::string err;
-  std::vector<std::string> ret = split_user(value, ' ');
+  std::string nickname = value.substr(0, value.find(' '));
 
   if (!client.nickname.empty()){
     return 0;
@@ -33,15 +32,8 @@ int  Server::parse_nick(Client &client, std::string value){
       err = ":* 433 * :Nickname is already in use\n";
       send(client.fds.fd, err.c_str(), err.size() + 1, 0);
       return (0);
-    }
-    else if (ret.size() > 1){
-      err = ":* 432 * :Erroneus nickname\n";
-      send(client.fds.fd , err.c_str(), err.size() + 1, 0);
-      return (0);
-    }
-    else
-    {
-      client.nickname = value;
+    } else {
+      client.nickname = nickname;
     }
   }
   else
