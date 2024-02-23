@@ -72,7 +72,7 @@
  ":" + servername + " 405 " + nick + " #" + channel + " :You have joined too many channels\n"
 #define ERR_WASNOSUCHNICK 406
 #define ERR_INPUTTOOLONG 417
-#define ERR_UNKNOWNCOMMAND 421
+#define ERR_UNKNOWNCOMMAND(command) "421 " + command + " :Unknown command\n"
 #define ERR_NONICKNAMEGIVEN(servername) \
  ":" + servername + " 431 " + servername + " :No nickname given\n"
 #define ERR_ERRONEUSNICKNAME(servername, nick) \
@@ -85,7 +85,7 @@
  ":" + servername + " 442 * " + nick + " #" + channel + " :You're not on that channel\n"
 #define ERR_USERONCHANNEL(servername, nick, username, channel) \
  ":" + servername + " 443 * " + nick + " " + username + " #" + channel + " :is already on channel\n"
-#define ERR_NOTREGISTERED 451
+#define ERR_NOTREGISTERED(source) "451 " + source + " :You have not registered\n"
 #define ERR_NEEDMOREPARAMS(servername, nick, command) \
  ":" + servername + " 461 " + nick + " " + command + " :Wrong num parameters\n"
 #define ERR_ALREADYREGISTRED(servername, nick) \
