@@ -23,4 +23,3 @@ void ft_topic(commandInfo& cmd, Client& client);
 void ft_invite(commandInfo &cmd, Client &client);
 void ft_kick(commandInfo& cmd, Client &client);
 void ft_mode(commandInfo& cmd, Client &client);
-void ft_notice(commandInfo& cmd, Client& client);
