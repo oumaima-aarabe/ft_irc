@@ -8,18 +8,26 @@ void my_trim_(std::string& s, char delimiter) {
         s.erase(p + 1);
 }
 
-std::vector<std::string> split(std::string & str, char delimiter) {
-    std::vector<std::string> result;
-    size_t pos = 0;
-    std::string token;
-    my_trim_(str, delimiter);
-    while ((pos = str.find(delimiter)) != std::string::npos) {
-        token = str.substr(0, pos);
-        result.push_back(token);
-        str.erase(0, pos + 1);
-    }
-    if (!str.empty()) {
-        result.push_back(str);
-    }
-    return result;
+std::vector<std::string> split(const std::string &input, const std::string &separator)
+{
+	std::vector<std::string> result;
+	std::size_t start = 0;
+	std::size_t found = input.find(separator);
+
+	while (found != std::string::npos)
+	{
+        // Only push non-empty substrings
+		if (found != start)
+            result.push_back(input.substr(start, found - start));
+		start = found + separator.size(); // Move past the separator
+		found = input.find(separator, start);
+	}
+
+	// Push the last part of the string if it's not empty
+	std::string lastPart = input.substr(start);
+	if (!lastPart.empty())
+		result.push_back(lastPart);
+    for (std::vector<std::string>::iterator it = result.begin(); it != result.end(); it++)
+        my_trim_(*it, ' ');
+	return result;
 }
