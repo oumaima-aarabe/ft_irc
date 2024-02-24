@@ -21,6 +21,8 @@
 #include "client.hpp"
 #include "Channel.hpp"
 #include "Replies.hpp"
+#include "Commands.hpp"
+#include "Utils.hpp"
 #include <strstream>
 
 #define BACKLOG 10
@@ -46,7 +48,7 @@ class Server{
     std::map<int ,Client> connections;
 
     //>>>>>>>>>>>
-    std::map<int ,Client> users;
+    std::map<int ,Client> users; // clients authenticated
     //>>>>>>>>>>>
 
     Server(unsigned int port, std::string password);
@@ -57,7 +59,6 @@ class Server{
     int is_client_connection(struct pollfd fds);
     void parse_buffer_nc(Client &client);
     void parse_buffer_limechat(Client &client);
-    std::vector<std::string> split_user(std::string& line, char delimiter);
     void my_split_buffer(Client &client, std::string delimiter);
     int  if_nick_exist(std::string value);
     int  if_user_exist(std::string value);
@@ -67,4 +68,6 @@ class Server{
     int  parse_pair(Client &client, std::pair<std::string, std::string> pair);
     void WelcomeMessage(Client &client);
     void addToChannels(Channel& channel);
+    void sendReply(const std::string &message, int clientFd);
+    void executeCommands(const std::vector<std::string> cmnds, int clientFd);
 };
