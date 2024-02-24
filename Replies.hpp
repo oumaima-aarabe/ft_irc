@@ -90,8 +90,10 @@
  ":" + servername + " 461 " + nick + " " + command + " :Wrong num parameters\n"
 #define ERR_ALREADYREGISTRED(servername, nick) \
  ":" + servername + " 462 " + nick + " :You may not reregister\n"
-#define ERR_PASSWDMISMATCH(servername, nick) \
- ":" + servername + " 464 " + nick + " :Password incorrect\n"
+#define ERR_PASSWDALREADYSET(source) \
+  ":" + source + " 464 " + source + " :Password already set\n"
+#define ERR_PASSWDMISMATCH(source) \
+ ":" + source + " 464 " + source + " :Password incorrect\n"
 #define ERR_KEYSET(servername, nick, channel) \
  ":" + servername + " 467 " + nick + " #" + channel + " :Channel key already set\n"
 #define ERR_CHANNELISFULL(servername, nick, channel) \
