@@ -36,7 +36,6 @@ class Channel;
 
 class Server{
   public:
-    std::vector<Channel> channels;
     int socket_fd;
     struct sockaddr_in ip4addr;
     unsigned int port;
@@ -45,11 +44,11 @@ class Server{
     int current_size;
     std::string hostname ;
 
+    std::vector<Channel> channels;
+
     std::map<int ,Client> connections;
 
-    //>>>>>>>>>>>
     std::map<int ,Client> users; // clients authenticated
-    //>>>>>>>>>>>
 
     Server(unsigned int port, std::string password);
     ~Server();
@@ -68,6 +67,7 @@ class Server{
     int  parse_pair(Client &client, std::pair<std::string, std::string> pair);
     void WelcomeMessage(Client &client);
     void addToChannels(Channel& channel);
+    Channel *getChannelByName(const std::string &name);
     void sendReply(const std::string &message, int clientFd);
     void executeCommands(const std::vector<std::string> cmnds, int clientFd);
 };

@@ -100,14 +100,14 @@ int Server::is_client_connection(struct pollfd fds){
 
   if (checker < 0)
   {
-    std::cout << "recv failed()\n";
+    std::cout << "recv() failed\n";
     return -1;
   }
 
   if (checker == 0)
   {
     // delete user
-    printf("  Connection closed\n");
+    std::cout << "Connection closed\n";
     return -1;
   }
 
@@ -224,8 +224,19 @@ void Server::waiting_for_connections(){
   }
 }
 
+Channel *Server::getChannelByName(const std::string &name)
+{
+  //searching in vector of channels
+  for (size_t i = 0; i < channels.size(); i++)
+  {
+    if (channels[i].getName() == name)
+      return &channels[i];
+  }
+  return NULL;
+}
+
 void Server::sendReply(const std::string &message, int clientFd)
 {
 	if (send(clientFd, message.c_str(), strlen(message.c_str()), 0) == -1)
-		perror("send sys call failed: ");
+		perror("send sys call failed\n");
 }
