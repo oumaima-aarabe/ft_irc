@@ -1,5 +1,5 @@
 #include "client.hpp"
-
+#include "Replies.hpp"
 
 void Server::WelcomeMessage(Client &client)
 {
@@ -17,13 +17,15 @@ int  Server::parse_pass(Client &client, std::string value){
   std::string error;
 
   if (client.password != ""){
-    error = ":* 464 * :Password already set\n";
+    // error = ":* 464 * :Password already set\n";     //CHECK IF 463 OR 464
+    error = ERR_PASSWDALREADYSET(std::string("*"));
     send(client.fds.fd, error.c_str(), error.size() + 1, 0);
     return 0;
   }
   if (value != password)
   {
-    error = ":* 464 * :Password incorrect\n";
+    // error = ":* 464 * :Password incorrect\n";
+    error = ERR_PASSWDMISMATCH(std::string("*"));
     send(client.fds.fd, error.c_str(), error.size() + 1, 0);
     return -1;
   }

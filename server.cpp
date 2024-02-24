@@ -131,67 +131,21 @@ int Server::is_client_connection(struct pollfd fds){
     }
   }
 
-
-  std::cout << "users count: " << users.size() << std::endl;
-  std::cout << "connections count: " << connections.size() << std::endl;
-  std::cout << "buffer: <" << buffer << ">" << std::endl;
-
   //client authenticated , exist in users
-    if (users.find(fds.fd) != users.end())
-  {
-    //Remove \r\n from limechat
-    size_t found = content.find('\r');
-    if (found != std::string::npos){
-      if (content[found+1] == '\n'){
-        content.erase(found, 2);
-      }
+    if (users.find(fds.fd) != users.end()){
+    // parsing and executing cmnds
+    std::vector<std::string> cmndBuffer;
+    int clientFd = users[fds.fd].fds.fd; // to avoid in case the client closes the connection while processing the request
+    
+    //split by \r\n (from limechat) in case of multiple commands sent by client in quick succession
+    if (content.find('\r') != std::string::npos){
+      cmndBuffer = split(content, "\r\n");       
     }
-    //Remove \n from nc
-    found = content.find('\n');
-    if (found != std::string::npos){
-      content.erase(found, 1);
+    //split by \n (from nc)
+    else if (content.find('\n') != std::string::npos){
+      cmndBuffer = split(content, "\n");       
     }
-    users[fds.fd].buffer = content;
-
-    //(imy & oumi's work)
-    std::istrstream iss(content.c_str());
-    std::string command = NULL;
-    iss >> command;
-    std::cout << "command: " << command << std::endl;
-    //check which command is the buffer
-    if (command == "PONG")
-    {
-      // return; //ignore pong messages from limechat
-    }
-    else if (command == "JOIN")
-    {
-      //parse buffer...
-    }
-    else if (command == "MODE")
-    {
-      //parse buffer...
-    }
-    else if (command == "PRIVMSG")
-    {
-  
-    }
-    else if (command == "KICK")
-    {
-     
-    }
-    else if (command == "INVITE")
-    {
-      
-    }
-    else if (command == "TOPIC")
-    {
-
-    }
-    else if (command == "PART")
-    {
-
-    }
-    //add other commands if needed...
+    executeCommands(cmndBuffer, clientFd);
   }
   else
   {
@@ -268,4 +222,10 @@ void Server::waiting_for_connections(){
       }
     }
   }
+}
+
+void Server::sendReply(const std::string &message, int clientFd)
+{
+	if (send(clientFd, message.c_str(), strlen(message.c_str()), 0) == -1)
+		perror("send sys call failed: ");
 }

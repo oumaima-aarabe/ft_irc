@@ -17,7 +17,7 @@ int main(int ac, char **av)
     server.waiting_for_connections();
   }
   else
-    std::cout << "empty parameter\n";
+    std::cout << "Empty parameter\n";
 
   return -1;
   

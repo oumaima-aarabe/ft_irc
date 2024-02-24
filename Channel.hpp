@@ -18,6 +18,8 @@ class Channel {
         std::string _password;
         int _channel_limit;
         std::string _topic;
+        std::string _key;
+        std::string _stringModes;
         std::vector<std::pair<ChannelMode, int> > _modes;
         std::vector<Client> inviteList;
         std::vector<Client> allClientsList;
@@ -29,14 +31,15 @@ class Channel {
         void setTopic(std::string &newTopic);
         void setPassword(std::string &passwd);
         void setChannel_limit(int limit);
+        void setKey(std::string &newKey);
         // Getters
         std::string getPassword(void) const;
         std::string getName(void) const;
         std::string getTopic(void) const;
         std::vector<std::pair<ChannelMode, int> > getModes(void) const;
-        char getModeIdentifier(ChannelMode _mode) const;
         std::string getStringModes(void) const;
         int getChannelLimit(void) const;
+        std::string getKey(void) const;
         std::vector<Client> getAllClientsList(void) const;
         std::vector<Client> getOpeList(void) const;
         std::vector<Client> getInviteList(void) const;
@@ -50,11 +53,14 @@ class Channel {
         void kick(Client client);
         void invite(Client client);
         // Channel modes stuff
+        char getModeIdentifier(ChannelMode _mode) const;
+        void updateStringModes(void);
         bool isInviteOnly(void);
-        // Utils
         bool hasMode(ChannelMode mode);
         void addMode(ChannelMode mode);
         void removeMode(ChannelMode mode);
-        void broadcastMessage(std::string message);
         bool hasKey(void);
+        // Utils
+        void broadcastMessage(Client sender, std::string message);
+        bool isValidChannelName(const std::string name);
 };
