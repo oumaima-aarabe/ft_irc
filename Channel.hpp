@@ -5,10 +5,10 @@
 class Client;
 
 enum ChannelMode {
-   CHANNEL_MODE_INVITE_ONLY = 0, //+i
-   CHANNEL_MODE_TOPIC_SETTABLE_BY_CHANNEL_OPERATOR_ONLY = 1, //+t
-   CHANNEL_MODE_KEY = 2, //+k
-   CHANNEL_MODE_OPERATOR = 3, //+o  //user mode
+   CHANNEL_MODE_INVITE_ONLY = 0, //+i      //doesn't need a parameter
+   CHANNEL_MODE_TOPIC_SETTABLE_BY_CHANNEL_OPERATOR_ONLY = 1, //+t     //doesn't need a parameter
+   CHANNEL_MODE_KEY = 2, //+k              //'key PARAMETER' undisplayable in channel modes set
+   CHANNEL_MODE_OPERATOR = 3, //+o         //user mode undisplayable in channel modes set
    CHANNEL_MODE_USER_LIMIT = 4, //+l
 };
 
@@ -31,7 +31,6 @@ class Channel {
         void setTopic(std::string &newTopic);
         void setPassword(std::string &passwd);
         void setChannel_limit(int limit);
-        void setKey(std::string &newKey);
         // Getters
         std::string getPassword(void) const;
         std::string getName(void) const;
@@ -39,7 +38,6 @@ class Channel {
         std::vector<std::pair<ChannelMode, int> > getModes(void) const;
         std::string getStringModes(void) const;
         int getChannelLimit(void) const;
-        std::string getKey(void) const;
         std::vector<Client> getAllClientsList(void) const;
         std::vector<Client> getOpeList(void) const;
         std::vector<Client> getInviteList(void) const;
@@ -62,5 +60,5 @@ class Channel {
         bool hasKey(void);
         // Utils
         void broadcastMessage(Client sender, std::string message);
-        bool isValidChannelName(const std::string name);
+        static bool isValidChannelName(const std::string name);
 };

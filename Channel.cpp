@@ -2,6 +2,12 @@
 
 Channel::Channel(std::string &name, std::string &password) : _name(name), _password(password), _channel_limit(MAX_CLIENTS_PER_CHANNEL)
 {
+    _modes.push_back(std::make_pair(CHANNEL_MODE_INVITE_ONLY, 0));
+    _modes.push_back(std::make_pair(CHANNEL_MODE_TOPIC_SETTABLE_BY_CHANNEL_OPERATOR_ONLY, 0));
+    _modes.push_back(std::make_pair(CHANNEL_MODE_KEY, 0));
+    _modes.push_back(std::make_pair(CHANNEL_MODE_OPERATOR, 0));
+    _modes.push_back(std::make_pair(CHANNEL_MODE_USER_LIMIT, 0));
+    updateStringModes();
 }
   
 // Setters
@@ -20,11 +26,6 @@ void Channel::setChannel_limit(int limit)
     _channel_limit = limit;
 }
 
-void Channel::setKey(std::string &newKey)
-{
-    _key = newKey;
-}
-
 // Getter
 std::string Channel::getPassword(void) const 
 {
@@ -39,11 +40,6 @@ std::string Channel::getName(void) const
 std::string Channel::getTopic(void) const
 {
     return (_topic);
-}
-
-std::string Channel::getKey(void) const
-{
-    return (_key);
 }
 
 int Channel::getChannelLimit(void) const
@@ -74,9 +70,11 @@ std::vector<Client> Channel::getInviteList(void) const
 {
     return (inviteList);
 }
+
 // --------------
 // Client stuff
 // --------------
+
 void Channel::addClient(Client client)
 {
     if (allClientsList.size() == (unsigned long)_channel_limit)
@@ -194,12 +192,18 @@ char Channel::getModeIdentifier(ChannelMode _mode) const
 void Channel::updateStringModes(void)
 {
     _stringModes = " +";
+    bool limit = false;
     for (std::vector<std::pair<ChannelMode, int> >::const_iterator it = _modes.begin(); it != _modes.end(); it++)
     {
         char identifier = getModeIdentifier(it->first);
-        if (identifier && it->second == 1)
+        if (identifier && identifier != 'o' && it->second == 1) { //o is a user mode, can't be displayed in channel modes set.
             _stringModes += identifier;
+            if (identifier == 'l')
+                limit = true;
+        }
     }
+    if (_stringModes.size() > 1 && limit == true)
+        _stringModes += " " + std::to_string(_channel_limit);
     if (_stringModes.size() == 1)
         _stringModes = " no mode is set";
 }
@@ -222,8 +226,6 @@ bool Channel::hasMode(ChannelMode mode)
     }
     return false;
 }
-
-//to modify
 
 void Channel::addMode(ChannelMode mode)
 {

@@ -1,6 +1,6 @@
-#include "server.hpp"
+#include "../server.hpp"
 
-typedef void (*CommandHandlerFunc)(commandInfo &, Client &); // function pointer typedef
+typedef void (*CommandHandlerFunc)(commandInfo &, Server&, Client&); // function pointer typedef
 
 bool isValidCommand(std::map<std::string, CommandHandlerFunc> commandHandlerMap, const std::string &cmdName)
 {
@@ -28,7 +28,7 @@ void Server::executeCommands(const std::vector<std::string> cmndBuffer, int clie
 			sendReply(ERR_UNKNOWNCOMMAND(cmdInfo.cmnd_name), clientFd);
 			continue;
 		}
-		commandHandlerMap[cmdInfo.cmnd_name](cmdInfo, client); // execute the CommandHandlerFunc corresponding to the command name
+		commandHandlerMap[cmdInfo.cmnd_name](cmdInfo, *this, client); // execute the CommandHandlerFunc corresponding to the command name
 	}
 }
 
