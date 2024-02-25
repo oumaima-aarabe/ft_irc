@@ -21,7 +21,7 @@
 #include "client.hpp"
 #include "Channel.hpp"
 #include "Replies.hpp"
-#include "Commands.hpp"
+#include "Commands/Commands.hpp"
 #include "Utils.hpp"
 #include <strstream>
 
@@ -67,6 +67,7 @@ class Server{
     int  parse_pair(Client &client, std::pair<std::string, std::string> pair);
     void WelcomeMessage(Client &client);
     void addToChannels(Channel& channel);
+    void removeFromChannels(Channel& channel);
     Channel *getChannelByName(const std::string &name);
     void sendReply(const std::string &message, int clientFd);
     void executeCommands(const std::vector<std::string> cmnds, int clientFd);

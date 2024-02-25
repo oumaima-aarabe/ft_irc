@@ -10,6 +10,7 @@ bool isValidCommand(std::map<std::string, CommandHandlerFunc> commandHandlerMap,
 void Server::executeCommands(const std::vector<std::string> cmndBuffer, int clientFd) {
   Client client = users[clientFd];
 	std::map<std::string, CommandHandlerFunc> commandHandlerMap;
+	commandHandlerMap["PONG"] = ft_pong; //to ignore
 	commandHandlerMap["JOIN"] = ft_join;
 	commandHandlerMap["MODE"] = ft_mode;
 	commandHandlerMap["PART"] = ft_part;
