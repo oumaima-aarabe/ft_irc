@@ -82,7 +82,16 @@ void Channel::addClient(Client client)
     if (isJoined(client.nickname) == false)
         allClientsList.push_back(client);
 }
-
+std::string Channel::listClients()
+{
+    std::string list_users;
+    for (size_t i = 0; i < allClientsList.size(); i++)
+    {
+        list_users += allClientsList[i].nickname;
+        list_users += " ";
+    }
+    return list_users;
+}
 bool Channel::isJoined(std::string nickname)
 {
     for (size_t i = 0; i < allClientsList.size(); i++) 
@@ -275,19 +284,19 @@ void Channel::broadcastMessage(Client *sender, std::string message)
 {
     std::vector<Client > clients = this->getAllClientsList();
     for (size_t i = 0; i < clients.size(); i++) {
-        if (sender->fds.fd && clients[i].fds.fd == sender->fds.fd)
-			continue ;
+        if (sender && sender->fds.fd && clients[i].fds.fd == sender->fds.fd)
+            continue ;
         send(clients[i].fds.fd , message.c_str(), message.size() + 1, 0);
     }
 }
 
 bool Channel::isValidChannelName(const std::string name)
 {
-	if (name[0] != '#' && name[0] != '&')
+	if (name[0] != '#')
 		return false;
 	for (size_t i = 1; i < name.size(); i++)
 	{
-		if (name[i] == ',' || name[i] == ' ')
+		if (name[i] == ',')
 			return false;
 	}
 	return true;

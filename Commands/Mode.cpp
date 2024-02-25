@@ -45,7 +45,7 @@ void limitUersMode(commandInfo& cmd, Channel *channel, Server &server, Client &c
 		channel->removeMode(CHANNEL_MODE_USER_LIMIT);
 		channel->setChannel_limit(-1);
 	}
-	channel->broadcastMessage(NULL, RPL_MODE(setPrefix(server.hostname, client.nickname, client.username), (cmd.cmnd_args[0] + " " + (addSign ? "+" : "-") + 'l' + (addSign ? *flagArgIt : ""))));
+	channel->broadcastMessage(NULL, RPL_MODE(setPrefix(server.hostname, client.nickname, client.username), (cmd.cmnd_args[0] + " " + (addSign ? "+" : "-") + "l " + (addSign ? *flagArgIt : ""))));
 }
 
 void operatorMode(commandInfo& cmd, Channel *channel, Server &server, Client &client, bool addSign, std::vector<std::string>::iterator &flagArgIt)
@@ -70,7 +70,7 @@ void operatorMode(commandInfo& cmd, Channel *channel, Server &server, Client &cl
 		channel->removeOpe(*flagArgIt);
 		channel->removeMode(CHANNEL_MODE_OPERATOR);
 	}
-	channel->broadcastMessage(NULL, RPL_MODE(setPrefix(server.hostname, client.nickname, client.username), (cmd.cmnd_args[0] + " " + (addSign ? "+" : "-") + 'o' + (addSign ? *flagArgIt : ""))));
+	channel->broadcastMessage(NULL, RPL_MODE(setPrefix(server.hostname, client.nickname, client.username), (cmd.cmnd_args[0] + " " + (addSign ? "+" : "-") + "o " + (addSign ? *flagArgIt : ""))));
 }
 
 void keyMode(commandInfo& cmd, Channel *channel, Server &server, Client &client, bool addSign, std::vector<std::string>::iterator &flagArgIt)
@@ -95,7 +95,7 @@ void keyMode(commandInfo& cmd, Channel *channel, Server &server, Client &client,
 		channel->removeMode(CHANNEL_MODE_KEY);
 		channel->setPassword("");
 	}
-	channel->broadcastMessage(NULL, RPL_MODE(setPrefix(server.hostname, client.nickname, client.username), (cmd.cmnd_args[0] + " " + (addSign ? "+" : "-") + 'k' + (addSign ? *flagArgIt : ""))));
+	channel->broadcastMessage(NULL, RPL_MODE(setPrefix(server.hostname, client.nickname, client.username), (cmd.cmnd_args[0] + " " + (addSign ? "+" : "-") + "k " + (addSign ? *flagArgIt : ""))));
 }
 
 void ft_mode(commandInfo& cmd, Server &server, Client &client) {
