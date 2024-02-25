@@ -113,7 +113,7 @@
 #define ERR_USERSDONTMATCH(servername, nick) \
  ":" + servername + " 502 " + nick + " :Cant change mode for other users\n"
 #define ERR_INVALIDKEY 525
-#define ERR_INVALIDMODEPARAM 696
+#define ERR_INVALIDMODEPARAM(source, mode, param) "696 " + source + " " + mode + " " + param + " :Invalid MODE flag paramater\n"
 #define ERR_NOMOTD 422
 #define ERR_WRONGPASS(servername, nick) \
  ":" + servername + " " + nick + " :Wrong pass\n"
@@ -124,3 +124,4 @@
  ":" + user + " MODE #" + channel + " " + mode + "\n"
 #define RPL_CUSTOM_INVITE(user, channel, nick) \
  ":" + user + " INVITE " + nick + " #" + channel + "\n"
+#define RPL_MODE(source, modestring) source + " MODE " + modestring + "\n"
