@@ -124,4 +124,4 @@
  ":" + user + " MODE #" + channel + " " + mode + "\n"
 #define RPL_CUSTOM_INVITE(user, channel, nick) \
  ":" + user + " INVITE " + nick + " " + channel + "\n"
-#define RPL_MODE(source, modestring) source + " MODE " + modestring + "\n"
+#define RPL_MODE(source, modestring) source + "MODE " + modestring + "\n"

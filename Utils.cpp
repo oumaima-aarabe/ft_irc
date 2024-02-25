@@ -32,9 +32,9 @@ std::vector<std::string> split(const std::string &input, const std::string &sepa
 	return result;
 }
 
-std::string setPrefix(std::string hostname, std::string nickname, std::string username)
+std::string setPrefix(std::string hostname, std::string nickname, std::string username, std::string buffer )
 {
-	return (":" + nickname + "!" + username + "@" + hostname);
+	return (":" + nickname + "!~" + username + "@" + hostname + " " + buffer);
 }
 
 bool isNumber(const std::string &s)

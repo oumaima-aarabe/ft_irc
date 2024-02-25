@@ -29,6 +29,7 @@ void Server::executeCommands(const std::vector<std::string> cmndBuffer, int clie
 			sendReply(ERR_UNKNOWNCOMMAND(cmdInfo.cmnd_name), clientFd);
 			continue;
 		}
+		client.buffer = cmndBuffer[i];
 		commandHandlerMap[cmdInfo.cmnd_name](cmdInfo, *this, client); // execute the CommandHandlerFunc corresponding to the command name
 	}
 }

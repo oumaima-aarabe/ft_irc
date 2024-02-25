@@ -61,7 +61,9 @@ void ft_join(commandInfo& cmd, Server& server, Client& client) {
                 {
                     ex_channel->addClient(client);
                     //reply in case channel is maximized
-                    //joned reply
+                    //prefix reply
+                    server.sendReply(setPrefix(server.hostname, client.nickname, client.username, client.buffer), client.fds.fd); //should use server fd?
+                    //display modes
                     server.sendReply(RPL_NAMREPLY(std::string("*"), client.nickname, std::string("="), ex_channel->getName(), ex_channel->listClients()), client.fds.fd);
                     server.sendReply(RPL_ENDOFNAMES(std::string("*"), client.nickname, ex_channel->getName()),client.fds.fd);
                 }
