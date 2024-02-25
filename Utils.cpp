@@ -31,3 +31,18 @@ std::vector<std::string> split(const std::string &input, const std::string &sepa
         my_trim_(*it, ' ');
 	return result;
 }
+
+std::string setPrefix(std::string hostname, std::string nickname, std::string username)
+{
+	return (":" + nickname + "!" + username + "@" + hostname);
+}
+
+bool isNumber(const std::string &s)
+{
+	for (std::string::const_iterator it = s.begin(); it != s.end(); it++)
+	{
+		if (!std::isdigit(*it))
+			return false;
+	}
+	return true;
+}
