@@ -139,7 +139,7 @@ int Server::is_client_connection(struct pollfd fds){
     
     //split by \r\n (from limechat) in case of multiple commands sent by client in quick succession
     if (content.find('\r') != std::string::npos){
-      cmndBuffer = split(content, "\r\n");       
+      cmndBuffer = split(content, "\r\n");   
     }
     //split by \n (from nc)
     else if (content.find('\n') != std::string::npos){

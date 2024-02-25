@@ -44,6 +44,7 @@ class Channel {
         // Client stuff
 		void addClient(Client client);
         bool isJoined(std::string nickname);
+        std::string listClients();
         bool isOpe(std::string nickname);
         bool isInvited(std::string nickname);
         void addOpe(std::string nickname);

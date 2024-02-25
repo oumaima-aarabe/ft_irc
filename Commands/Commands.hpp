@@ -2,6 +2,11 @@
 
 #include "../server.hpp"
 
+struct ChannelJoin {
+    std::string name;
+    std::string key;
+};
+
 typedef struct
 {
 	std::string					cmnd_name;
