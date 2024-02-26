@@ -42,7 +42,7 @@ class Channel {
         std::vector<Client> getOpeList(void) const;
         std::vector<Client> getInviteList(void) const;
         // Client stuff
-		void addClient(Client client);
+		int addClient(Client client);
 		void removeClient(Client client);
         bool isJoined(std::string nickname);
         std::string listClients();

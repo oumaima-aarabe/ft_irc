@@ -75,10 +75,16 @@ std::vector<Client> Channel::getInviteList(void) const
 // Client stuff
 // --------------
 
-void Channel::addClient(Client client)
+int Channel::addClient(Client client)
 {
+    if (allClientsList.size() == MAX_CLIENTS_PER_CHANNEL)
+        return (-2);
     if (!isJoined(client.nickname))
+    {
         allClientsList.push_back(client);
+        return (1);
+    }
+    return 0;
 }
 std::string Channel::listClients()
 {

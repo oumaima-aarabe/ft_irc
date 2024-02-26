@@ -21,9 +21,18 @@ std::vector<ChannelJoin> split_args(commandInfo &cmd)
     return (channelJoins);
 }
 
-void joinReply(Server &server, Client &client, Channel channel)
+bool joinReply(Server &server, Client &client, Channel channel, bool new)
 {
-    channel.addClient(client);
+    int is_joined = channel.addClient(client);
+    if (!is_joined)
+        return (false);
+    else if (is_joined < 0)
+    {
+        //channels maximized msg;
+        return (false);
+    }
+    if (new)
+        channel.addOpe(client.nickname);
     server.sendReply(setPrefix(server.hostname, client.nickname, client.username, client.buffer), client.fds.fd);
     server.sendReply(RPL_NAMREPLY(std::string("*"), client.nickname, std::string("="), channel.getName(), channel.listClients()), client.fds.fd);
     server.sendReply(RPL_ENDOFNAMES(std::string("*"), client.nickname, channel.getName()), client.fds.fd);
@@ -49,9 +58,7 @@ void ft_join(commandInfo &cmd, Server &server, Client &client)
         if (ex_channel == server.channels.end()) { // channel doesnt exit in server 
             Logger::debug("User [" + client.nickname + "] is creating a new channel [" + channels[i].name + "] with key [" + channels[i].key + "] and joining it.");
             Channel new_channel = Channel(channels[i].name, "");
-            new_channel.addClient(client);
-            new_channel.addOpe(client.nickname);
-            joinReply(server, client, new_channel);
+            joinReply(server, client, new_channel, true);
             server.channels.push_back(new_channel);
             return;
         }
@@ -84,7 +91,7 @@ void ft_join(commandInfo &cmd, Server &server, Client &client)
             ex_channel->removeInvite(client);
         }
         Logger::debug("User [" + client.nickname + "] is joining the channel [" + channels[i].name + "].");
-        joinReply(server, client, *ex_channel);
+        joinReply(server, client, *ex_channel, false);
     }
     // case JOIN 0
 }
