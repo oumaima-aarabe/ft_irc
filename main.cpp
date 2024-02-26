@@ -4,7 +4,7 @@ int main(int ac, char **av)
 {
   if (ac != 3)
   {
-    std::cout << "ERROR : ./exec port password" << std::endl;
+    Logger::error("ERROR : ./exec port password");
     return (1);
   }
   std::string port = av[1];
@@ -15,7 +15,7 @@ int main(int ac, char **av)
     while (port[i]) {
       if (!isdigit(port[i]))
       {
-        std::cout << "ERROR : port must be a number" << std::endl;
+        Logger::error("ERROR : port must be a number");
         return (1);
       }
       i++;
@@ -25,6 +25,6 @@ int main(int ac, char **av)
     server.waiting_for_connections();
     return (0);
   }
-    std::cout << "ERROR: empty parameter\n";
+    Logger::error("ERROR: empty parameter");
     return (1);  
 }

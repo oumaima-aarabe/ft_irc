@@ -17,11 +17,11 @@ int  Server::parse_pair(Client &client, std::pair<std::string, std::string> pair
   {
     if (parse_nick(client, pair.second) == -1)
       return (-1);
-    std::cout << "Called NICK command with success to: " << client.nickname << std::endl;
+    Logger::info("Called NICK command with success to: " + client.nickname);
   }
   else if (pair.first != "")
   {
-    std::cout << "BAD COMMAND" << std::endl;
+    Logger::error("Invalid command: " + pair.first);
     return (-1);
   }
   client.buffer = "";
@@ -65,12 +65,12 @@ void Server::my_split_buffer(Client &client, std::string delimiter) {
 
 void Server::parse_buffer_nc(Client &client)//from nc
 {
-  std::cout << "Parse using nc" << std::endl;
+  Logger::info( "Parse using nc");
   my_split_buffer(client, "\n");
 }
 
 void Server::parse_buffer_limechat(Client &client)
 {
-    std::cout << "Parse using limeChat" << std::endl;
-    my_split_buffer(client, "\r\n");
+  Logger::info("Parse using limeChat");
+  my_split_buffer(client, "\r\n");
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdio.h>
+#include <sstream>
 #include <stdlib.h>
 #include <sys/ioctl.h>
 #include <sys/poll.h> 
@@ -23,6 +24,7 @@
 #include "Replies.hpp"
 #include "Commands/Commands.hpp"
 #include "Utils.hpp"
+#include "Logger.hpp"
 #include <strstream>
 
 #define BACKLOG 10

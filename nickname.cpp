@@ -40,7 +40,7 @@ int  Server::parse_nick(Client &client, std::string value){
   }
   else
   {
-    std::cout << "password not set" << std::endl;
+    Logger::warning("password not set");
     return (-1);
   }
   if (!client.username.empty()){
