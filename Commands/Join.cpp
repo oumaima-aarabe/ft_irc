@@ -21,6 +21,14 @@ std::vector<ChannelJoin> split_args(commandInfo& cmd)
     }
     return (channelJoins);
 }
+
+void joinReply(Server& server, Client& client, Channel channel) {
+    channel.addClient(client);
+    server.sendReply(setPrefix(server.hostname, client.nickname, client.username, client.buffer), client.fds.fd);
+    server.sendReply(RPL_NAMREPLY(std::string("*"), client.nickname, std::string("="), channel.getName(), channel.listClients()), client.fds.fd);
+    server.sendReply(RPL_ENDOFNAMES(std::string("*"), client.nickname, channel.getName()),client.fds.fd);
+}
+
 void ft_join(commandInfo& cmd, Server& server, Client& client) {
     if (cmd.cmnd_args.size() < 1)
     {
@@ -53,6 +61,10 @@ void ft_join(commandInfo& cmd, Server& server, Client& client) {
                     server.sendReply(ERR_INVITEONLYCHAN(std::string("*"), client.nickname, ex_channel->getName()), client.fds.fd);
                     return;
                 }
+                else {
+                    ex_channel->removeInvite(client);  
+                    joinReply(server, client, *ex_channel);
+                }
             }
             //check if channel uses keys
             if (ex_channel->hasMode(CHANNEL_MODE_KEY))
@@ -61,11 +73,7 @@ void ft_join(commandInfo& cmd, Server& server, Client& client) {
                 {
                     //reply in case channel is maximized ERR_CHANNELISFULL and return
 
-                    ex_channel->addClient(client);
-                    //join reply
-                    server.sendReply(setPrefix(server.hostname, client.nickname, client.username, client.buffer) + "\n", client.fds.fd);
-                    server.sendReply(RPL_NAMREPLY(std::string("*"), client.nickname, std::string("="), ex_channel->getName(), ex_channel->listClients()), client.fds.fd);
-                    server.sendReply(RPL_ENDOFNAMES(std::string("*"), client.nickname, ex_channel->getName()),client.fds.fd);
+                    joinReply(server, client, *ex_channel);
                 }
                 else //wrong key reply
                     server.sendReply(ERR_BADCHANNELKEY(std::string("*"), client.nickname, ex_channel->getName()), client.fds.fd);
@@ -73,26 +81,16 @@ void ft_join(commandInfo& cmd, Server& server, Client& client) {
             else
             {
                 //reply in case channel is maximized ERR_CHANNELISFULL and return
-                
-                ex_channel->addClient(client);
-                //jone reply
-                server.sendReply(setPrefix(server.hostname, client.nickname, client.username, client.buffer), client.fds.fd);
-                server.sendReply(RPL_NAMREPLY(std::string("*"), client.nickname, std::string("="), ex_channel->getName(), ex_channel->listClients()), client.fds.fd);
-                server.sendReply(RPL_ENDOFNAMES(std::string("*"), client.nickname, ex_channel->getName()),client.fds.fd);
+
+                joinReply(server, client, *ex_channel);
             }
-            if (ex_channel->isInviteOnly() && ex_channel->isInvited(client.nickname))
-                ex_channel->removeInvite(client);
         }
         else //new channel
         {
             Channel new_channel = Channel(channels[i].name, "");
             new_channel.addClient(client);
             new_channel.addOpe(client.nickname);
-            server.addToChannels(new_channel);
-            //join reply
-            server.sendReply(setPrefix(server.hostname, client.nickname, client.username, client.buffer), client.fds.fd);
-            server.sendReply(RPL_NAMREPLY(std::string("*"), client.nickname, std::string("="), new_channel.getName(), new_channel.listClients()), client.fds.fd);
-            server.sendReply(RPL_ENDOFNAMES(std::string("*"), client.nickname, new_channel.getName()),client.fds.fd);
+            joinReply(server, client, new_channel);
         }
         //JOIN 0
     }
