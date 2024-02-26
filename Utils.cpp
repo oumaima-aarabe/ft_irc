@@ -46,3 +46,9 @@ bool isNumber(const std::string &s)
 	}
 	return true;
 }
+
+std::string to_string(int i) {
+	std::stringstream ss;
+	ss << i;
+	return ss.str();
+}

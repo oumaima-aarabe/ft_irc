@@ -77,9 +77,7 @@ std::vector<Client> Channel::getInviteList(void) const
 
 void Channel::addClient(Client client)
 {
-    if (allClientsList.size() == (size_t)_channel_limit)
-        return;
-    if (isJoined(client.nickname) == false)
+    if (!isJoined(client.nickname))
         allClientsList.push_back(client);
 }
 std::string Channel::listClients()
@@ -206,7 +204,7 @@ char Channel::getModeIdentifier(ChannelMode _mode) const
 
 void Channel::updateStringModes(void)
 {
-    _stringModes = " +";
+    _stringModes = "";
     bool limitFlag = false;
     bool keyFlag = false;
     char first; //what mode parameter will be displayed first (case of 'l' and 'k') because 'i' and 't' don't need a parameter.
@@ -228,11 +226,11 @@ void Channel::updateStringModes(void)
             }   
         }
     }
-    if (_stringModes.size() > 1 && limitFlag == true)
-        _stringModes += " " + std::to_string(_channel_limit);
-    if (_stringModes.size() > 1 && keyFlag == true)
+    if (_stringModes.size() > 0 && limitFlag == true)
+        _stringModes += " " + to_string(_channel_limit);
+    if (_stringModes.size() > 0 && keyFlag == true)
         _stringModes += " " + _password;
-    if (_stringModes.size() == 1)
+    if (_stringModes.size() == 0)
         _stringModes = " no mode is set";
 }
 
