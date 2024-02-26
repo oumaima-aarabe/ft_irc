@@ -51,6 +51,7 @@ class Channel {
         void removeOpe(std::string nickname);
         void kick(Client client);
         void invite(Client client);
+        void removeInvite(Client client);
         // Channel modes stuff
         char getModeIdentifier(ChannelMode _mode) const;
         void updateStringModes(void);

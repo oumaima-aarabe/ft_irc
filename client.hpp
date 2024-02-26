@@ -4,6 +4,7 @@
 #include "Channel.hpp"
 
 class Client{
+    
   public :
     struct pollfd fds;  //>>fds.fd
     std::string username;

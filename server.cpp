@@ -224,17 +224,6 @@ void Server::waiting_for_connections(){
   }
 }
 
-Channel *Server::getChannelByName(const std::string &name)
-{
-  //searching in vector of channels
-  for (size_t i = 0; i < channels.size(); i++)
-  {
-    if (channels[i].getName() == name)
-      return &channels[i];
-  }
-  return NULL;
-}
-
 void Server::sendReply(const std::string &message, int clientFd)
 {
 	if (send(clientFd, message.c_str(), strlen(message.c_str()), 0) == -1)

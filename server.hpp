@@ -68,7 +68,8 @@ class Server{
     void WelcomeMessage(Client &client);
     void addToChannels(Channel& channel);
     void removeFromChannels(Channel& channel);
-    Channel *getChannelByName(const std::string &name);
+    std::vector<Channel>::iterator getChannelByName(const std::string &name);
+    std::map<int, Client>::iterator getClientByNickname(const std::string &nickName);
     void sendReply(const std::string &message, int clientFd);
     void executeCommands(const std::vector<std::string> cmnds, int clientFd);
 };

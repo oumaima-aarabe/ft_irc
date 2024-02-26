@@ -9,11 +9,10 @@ Client::Client(struct pollfd fds, std::string username, std::string nickname, st
 }
 
 Client::Client(){
-
 }
 
 Client::~Client(){
-  // Close fds.fd
+  // close(fds.fd)
 }
 
 void  Client::addChannel(Channel channel)
@@ -33,4 +32,13 @@ void  Client::removeChannel(Channel channel)
 void  Client::quitAllChannels()
 {
     channels_joined.clear();
+}
+
+std::map<int, Client>::iterator Server::getClientByNickname(const std::string &nickName) {
+  for (std::map<int, Client>::iterator it = this->users.begin(); it != this->users.end(); it++)
+	{
+		if (it->second.nickname == nickName)
+			return (it);
+	}
+	return (this->users.end());
 }

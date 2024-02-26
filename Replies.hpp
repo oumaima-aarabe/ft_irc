@@ -1,5 +1,6 @@
 #pragma once
 
+//maybe update "/n" with "/n/r"
 #define RPL_WELCOME(servername, nick) \
   ":" + servername + " 001 " + nick + " :Welcome to the Internet Relay Network " + nick + "\n"
 #define RPL_YOURHOST(servername, nick, version) \
@@ -35,8 +36,8 @@
 #define RPL_TOPICWHOTIME(servername, nick, channel, user, time) \
  ":" + servername + " 333 " + nick + " " + channel + " " + user + " " + time + "\n"
 #define RPL_WHOISACTUALLY 338
-#define RPL_INVITING(servername, nick, channel, user) \
- ":" + servername + " 341 " + nick + " " + channel + " " + user + "\n"
+#define RPL_INVITING(servername, nick, user, channel) \
+ ":" + servername + " 341 " + nick + " " + user + " " + channel + "\n"
 #define RPL_INVITELIST 346
 #define RPL_ENDOFINVITELIST 347
 #define RPL_EXCEPTLIST 348
@@ -117,11 +118,11 @@
 #define ERR_NOMOTD 422
 #define ERR_WRONGPASS(servername, nick) \
  ":" + servername + " " + nick + " :Wrong pass\n"
-#define RPL_CUSTOM_JOIN(user, channel) ":" + user + " JOIN #" + channel + "\n"
+#define RPL_CUSTOM_JOIN(user, channel) ":" + user + " JOIN " + channel + "\n"
 #define RPL_CUSTOM_KICK(user, channel, nick, reason) \
- ":" + user + " KICK #" + channel + " " + nick + " :" + reason + "\n"
+ ":" + user + " KICK " + channel + " " + nick + " :" + reason + "\n"
 #define RPL_CUSTOM_MODE(user, channel, mode) \
- ":" + user + " MODE #" + channel + " " + mode + "\n"
-#define RPL_CUSTOM_INVITE(user, channel, nick) \
- ":" + user + " INVITE " + nick + " " + channel + "\n"
+ ":" + user + " MODE " + channel + " " + mode + "\n"
+#define RPL_CUSTOM_INVITE(source, nick, channel) \
+ source + " INVITE " + nick + " " + channel + "\n"
 #define RPL_MODE(source, modestring) source + "MODE " + modestring + "\n"
