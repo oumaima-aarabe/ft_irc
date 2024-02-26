@@ -35,35 +35,35 @@ void ft_join(commandInfo& cmd, Server& server, Client& client) {
             server.sendReply(ERR_NOSUCHCHANNEL(std::string("*"), client.nickname, channels[i].name), client.fds.fd);
             return ;
         }
-        Channel *ex_channel = server.getChannelByName(channels[i].name);
-        if (ex_channel)
+        std::vector<Channel>::iterator ex_channel = server.getChannelByName(channels[i].name);
+        if (ex_channel != server.channels.end()) //channel exits in server
         {
             //check if user is already in the channel
             if (ex_channel->isJoined(client.nickname))
-                return;
-
-            //check if channel is invite only 
-            if (ex_channel->hasMode(CHANNEL_MODE_INVITE_ONLY))
+            {
+		        server.sendReply(ERR_USERONCHANNEL(std::string("*"), client.nickname, client.username, ex_channel->getName()), client.fds.fd);
+		        return ;
+	        }
+            //check if channel is invite only
+            if (ex_channel->isInviteOnly())
             {
                 //check if user is in the invite list
                 if (!ex_channel->isInvited(client.nickname))
                 {
                     server.sendReply(ERR_INVITEONLYCHAN(std::string("*"), client.nickname, ex_channel->getName()), client.fds.fd);
-                    //remove for invite list
                     return;
                 }
             }
             //check if channel uses keys
             if (ex_channel->hasMode(CHANNEL_MODE_KEY))
             {
-                //if the key is correct
-                if (ex_channel->getPassword() == channels[i].key)
+                if (ex_channel->getPassword() == channels[i].key) //if the key is correct
                 {
+                    //reply in case channel is maximized ERR_CHANNELISFULL and return
+
                     ex_channel->addClient(client);
-                    //reply in case channel is maximized
-                    //prefix reply
-                    server.sendReply(setPrefix(server.hostname, client.nickname, client.username, client.buffer), client.fds.fd); //should use server fd?
-                    //display modes
+                    //join reply
+                    server.sendReply(setPrefix(server.hostname, client.nickname, client.username, client.buffer) + "\n", client.fds.fd);
                     server.sendReply(RPL_NAMREPLY(std::string("*"), client.nickname, std::string("="), ex_channel->getName(), ex_channel->listClients()), client.fds.fd);
                     server.sendReply(RPL_ENDOFNAMES(std::string("*"), client.nickname, ex_channel->getName()),client.fds.fd);
                 }
@@ -72,21 +72,25 @@ void ft_join(commandInfo& cmd, Server& server, Client& client) {
             }
             else
             {
+                //reply in case channel is maximized ERR_CHANNELISFULL and return
+                
                 ex_channel->addClient(client);
-                //reply in case channel is maximized
-                //joned reply
+                //jone reply
+                server.sendReply(setPrefix(server.hostname, client.nickname, client.username, client.buffer), client.fds.fd);
                 server.sendReply(RPL_NAMREPLY(std::string("*"), client.nickname, std::string("="), ex_channel->getName(), ex_channel->listClients()), client.fds.fd);
                 server.sendReply(RPL_ENDOFNAMES(std::string("*"), client.nickname, ex_channel->getName()),client.fds.fd);
             }
+            if (ex_channel->isInviteOnly() && ex_channel->isInvited(client.nickname))
+                ex_channel->removeInvite(client);
         }
         else //new channel
         {
             Channel new_channel = Channel(channels[i].name, "");
             new_channel.addClient(client);
-            //reply in case channel is maximized //return;
             new_channel.addOpe(client.nickname);
             server.addToChannels(new_channel);
-            //reply msgs
+            //join reply
+            server.sendReply(setPrefix(server.hostname, client.nickname, client.username, client.buffer), client.fds.fd);
             server.sendReply(RPL_NAMREPLY(std::string("*"), client.nickname, std::string("="), new_channel.getName(), new_channel.listClients()), client.fds.fd);
             server.sendReply(RPL_ENDOFNAMES(std::string("*"), client.nickname, new_channel.getName()),client.fds.fd);
         }
