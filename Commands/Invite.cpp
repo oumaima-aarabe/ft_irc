@@ -1,8 +1,40 @@
 #include "../server.hpp"
 
+//e.g.: INVITE NICK #CHANNEL      =>     INVITE is cmd.cmnd_name  ;   cmd.cmnd_args[0] is NICK  ;  cmd.cmnd_args[1] is #CHANNEL
 void ft_invite(commandInfo& cmd, Server& server, Client& client) {
-    //to silence the worning
-    (void) cmd;
-    (void) client;
-    (void) server;
+    if (cmd.cmnd_args.size() < 2)
+	{
+		server.sendReply(ERR_NEEDMOREPARAMS(std::string("*"), client.nickname, cmd.cmnd_name), client.fds.fd);
+		return ;
+	}
+	std::vector<Channel>::iterator channelIter = server.getChannelByName(cmd.cmnd_args[1]);
+    if (channelIter == server.channels.end()) //channel doesn't exist on server
+	{
+		server.sendReply(ERR_NOSUCHCHANNEL(std::string("*"), client.nickname, cmd.cmnd_args[1]), client.fds.fd);
+		return ;
+	}
+	if (!channelIter->isJoined(client.nickname)) //the client who sent the invite cmnd should be a channel member
+	{
+		server.sendReply(ERR_NOTONCHANNEL(std::string("*"), client.nickname, channelIter->getName()), client.fds.fd);
+		return ;
+	}
+	if (channelIter->isInviteOnly() && !channelIter->isOpe(client.nickname)) // the client who sent the invite cmnd should be an operator
+	{
+		server.sendReply(ERR_CHANOPRIVSNEEDED(std::string("*"), client.nickname, channelIter->getName()), client.fds.fd);
+		return ;
+	}
+	std::map<int, Client>::iterator target = server.getClientByNickname(cmd.cmnd_args[0]);
+	if (target == server.users.end()) //no such client nickname on server
+	{
+		server.sendReply(ERR_NOSUCHNICK(std::string("*"), client.nickname), client.fds.fd);
+		return ;
+	}
+	if (channelIter->isJoined(target->second.nickname)) //invited client is already in channel
+	{
+		server.sendReply(ERR_USERONCHANNEL(std::string("*"), client.nickname, client.username, channelIter->getName()), client.fds.fd);
+		return ;
+	}
+	channelIter->invite(target->second);
+    server.sendReply(RPL_INVITING(std::string("*"), client.nickname, cmd.cmnd_args[0], cmd.cmnd_args[1]), target->second.fds.fd);
+	channelIter->broadcastMessage(NULL, RPL_CUSTOM_INVITE(setPrefix(server.hostname, client.nickname, client.username, ""), client.nickname, channelIter->getName()));
 }
