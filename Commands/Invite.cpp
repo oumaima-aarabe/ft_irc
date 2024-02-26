@@ -18,7 +18,7 @@ void ft_invite(commandInfo& cmd, Server& server, Client& client) {
 		server.sendReply(ERR_NOTONCHANNEL(std::string("*"), client.nickname, channelIter->getName()), client.fds.fd);
 		return ;
 	}
-	if (channelIter->isInviteOnly() && !channelIter->isOpe(client.nickname)) // the client who sent the invite cmnd should be an operator
+	if (!channelIter->isOpe(client.nickname)) // the client who sent the invite cmnd should be an operator
 	{
 		server.sendReply(ERR_CHANOPRIVSNEEDED(std::string("*"), client.nickname, channelIter->getName()), client.fds.fd);
 		return ;
@@ -31,10 +31,10 @@ void ft_invite(commandInfo& cmd, Server& server, Client& client) {
 	}
 	if (channelIter->isJoined(target->second.nickname)) //invited client is already in channel
 	{
-		server.sendReply(ERR_USERONCHANNEL(std::string("*"), client.nickname, client.username, channelIter->getName()), client.fds.fd);
+		server.sendReply(ERR_USERONCHANNEL(std::string("*"), target->second.nickname, target->second.username, channelIter->getName()), client.fds.fd);
 		return ;
 	}
 	channelIter->invite(target->second);
-    server.sendReply(RPL_INVITING(std::string("*"), client.nickname, cmd.cmnd_args[0], cmd.cmnd_args[1]), target->second.fds.fd);
-	channelIter->broadcastMessage(&client, RPL_CUSTOM_INVITE(setPrefix(server.hostname, client.nickname, client.username, ""), client.nickname, channelIter->getName()));
+    server.sendReply(RPL_INVITING(std::string("*"), client.nickname, cmd.cmnd_args[0], cmd.cmnd_args[1]), client.fds.fd);
+	server.sendReply(RPL_CUSTOM_INVITE(setPrefix(server.hostname, client.nickname, client.username), cmd.cmnd_args[0], channelIter->getName()), target->second.fds.fd);
 }

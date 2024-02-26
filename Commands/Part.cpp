@@ -10,6 +10,8 @@ void ft_part(commandInfo& cmd, Server& server, Client& client) {
 	std::vector<std::string> channelsToLeave = split(cmd.cmnd_args[0], ",");
 	for (size_t i = 0; i < channelsToLeave.size(); i++)
 	{
+		if (channelsToLeave[i].empty())
+			continue ;
 		if (!Channel::isValidChannelName(channelsToLeave[i]))
 		{
 			server.sendReply(ERR_NOSUCHCHANNEL(std::string("*"), client.nickname, channelsToLeave[i]), client.fds.fd);
@@ -30,16 +32,21 @@ void ft_part(commandInfo& cmd, Server& server, Client& client) {
 		if (channel->getAllClientsList().size() > 1)
 		{
 			channel->removeClient(client);
+			if (channel->isOpe(client.nickname) && channel->getOpeList().size() == 1)
+			{
+				channel->removeOpe(client.nickname);
+				channel->addOpe(channel->getAllClientsList()[0].nickname);
+			}
             client.removeChannel(*channel);
-			server.sendReply(RPL_PART(setPrefix(server.hostname, client.nickname, client.username, ""), channelName, (cmd.cmnd_args.size() > 1 ? cmd.cmnd_args[1] : "")), client.fds.fd);
-			channel->broadcastMessage(&client, RPL_PART(setPrefix(server.hostname, client.nickname, client.username, ""), channel->getName(), (cmd.cmnd_args.size() > 1 ? cmd.cmnd_args[1] : "")));
+			server.sendReply(RPL_PART(setPrefix(server.hostname, client.nickname, client.username), channelName, (cmd.cmnd_args.size() > 1 ? cmd.cmnd_args[1] : "")), client.fds.fd);
+			channel->broadcastMessage(&client, RPL_PART(setPrefix(server.hostname, client.nickname, client.username), channelName, (cmd.cmnd_args.size() > 1 ? cmd.cmnd_args[1] : "")));
 		}
 		else // this client is the last member in the channel
 		{
 			channel->removeClient(client);
             client.removeChannel(*channel);
             server.removeFromChannels(*channel);
-			server.sendReply(RPL_PART(setPrefix(server.hostname, client.nickname, client.username, ""), channelName, (cmd.cmnd_args.size() > 1 ? cmd.cmnd_args[1] : "")), client.fds.fd);
+			server.sendReply(RPL_PART(setPrefix(server.hostname, client.nickname, client.username), channelName, (cmd.cmnd_args.size() > 1 ? cmd.cmnd_args[1] : "")), client.fds.fd);
 		}
 	}
 }
