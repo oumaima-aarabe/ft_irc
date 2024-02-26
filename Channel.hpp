@@ -43,13 +43,13 @@ class Channel {
         std::vector<Client> getInviteList(void) const;
         // Client stuff
 		void addClient(Client client);
+		void removeClient(Client client);
         bool isJoined(std::string nickname);
         std::string listClients();
         bool isOpe(std::string nickname);
         bool isInvited(std::string nickname);
         void addOpe(std::string nickname);
         void removeOpe(std::string nickname);
-        void kick(Client client);
         void invite(Client client);
         void removeInvite(Client client);
         // Channel modes stuff

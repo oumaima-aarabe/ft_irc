@@ -126,3 +126,4 @@
 #define RPL_CUSTOM_INVITE(source, nick, channel) \
  source + " INVITE " + nick + " " + channel + "\n"
 #define RPL_MODE(source, modestring) source + "MODE " + modestring + "\n"
+#define RPL_PART(source, channel, reason)				source + " PART " + channel + " :" + reason + "\n"

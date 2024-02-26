@@ -1,3 +1,4 @@
 - Close fd in client destructor.
 - Check if the numerical for 'Password already set' error is 463 or 464.
 - Delete user when connection is closed in Server:is_client_connection.
+- Should 'BAD COMMAND' message be displayed in server or in client? (error invalidCommand numerical reply in client)

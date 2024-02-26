@@ -148,11 +148,11 @@ void Channel::removeOpe(std::string nickname)
     }
 }
 
-void Channel::kick(Client client)
+void Channel::removeClient(Client client)
 {
     if (isOpe(client.nickname) == true)
         removeOpe(client.nickname);
-    for (std::vector<Client >::iterator it = allClientsList.begin(); it != allClientsList.end(); it++)
+    for (std::vector<Client>::iterator it = allClientsList.begin(); it != allClientsList.end(); it++)
     {
         if (it->fds.fd == client.fds.fd)
         {
@@ -164,7 +164,7 @@ void Channel::kick(Client client)
 
 void Channel::invite(Client client)
 {
-    if (isInvited(client.nickname) == false && isJoined(client.nickname) == false) //isInvited == fasle : invited client doesn't exist in inviteList and should be added to it
+    if (!isJoined(client.nickname))
         this->inviteList.push_back(client);
 }
 
