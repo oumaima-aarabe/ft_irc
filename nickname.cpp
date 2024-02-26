@@ -24,13 +24,11 @@ int  Server::parse_nick(Client &client, std::string value){
   }
   if (!client.password.empty()){
     if (value.empty()){
-      // err =  ":* 431 * :No nickname given\n";
       err = ERR_NONICKNAMEGIVEN(std::string("*"));
       send(client.fds.fd, err.c_str(), err.size() +1, 0); 
       return (0);
     }
     else if (if_nick_exist(value)) {
-      // err = ":* 433 * :Nickname is already in use\n";
       err = ERR_NICKNAMEINUSE(std::string("*"), std::string("*"));
       send(client.fds.fd, err.c_str(), err.size() + 1, 0);
       return (0);

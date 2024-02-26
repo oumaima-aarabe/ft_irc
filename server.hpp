@@ -28,7 +28,7 @@
 #include <strstream>
 
 #define BACKLOG 10
-#define MAX_CLIENTS_PER_CHANNEL 10
+#define MAX_CLIENTS_PER_CHANNEL 30
 #define MAX_BUFFER_SIZE 512
 #define MAX_CONNECTIONS 50
 #define MAX_CHANNELS 5

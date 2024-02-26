@@ -169,7 +169,7 @@ int Server::is_client_connection(struct pollfd fds){
 
 void Server::waiting_for_connections(){
 
-  int timeout = (60 * 60 * 1000);
+  int timeout = (60 * 60 * 1000); //-1
   int checker;
   
   while (true)

@@ -1,4 +1,13 @@
 - Close fd in client destructor.
-- Check if the numerical for 'Password already set' error is 463 or 464.
-- Delete user when connection is closed in Server:is_client_connection.
-- Change stringModes in case of no modes set
+- Delete user when connection is closed in Server:is_client_connection. (kawtar)
+- NICK
+- TOPIC
+- QUIT
+- KICK
+- PRIVMSG
+- "\r\n" in numeric replies and broadcast (for kaoutar)
+- check if forth argument of USER needs to be stored as a full name.
+- sometimes password gives 464 after ^C and a new connection
+ nc localhost 9009 -c
+PASS 123
+:* 464 * :Password already set

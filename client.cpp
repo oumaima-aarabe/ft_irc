@@ -15,12 +15,12 @@ Client::~Client(){
   // close(fds.fd)
 }
 
-void  Client::addChannel(Channel channel)
+void  Client::addChannel(Channel &channel)
 {
     channels_joined.push_back(channel);
 }
 
-void  Client::removeChannel(Channel channel)
+void  Client::removeChannel(Channel &channel)
 {
     for (std::vector<Channel>::iterator it = channels_joined.begin(); it != channels_joined.end(); it++) {
       if (it->getName() == channel.getName())
