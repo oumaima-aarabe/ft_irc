@@ -56,11 +56,11 @@ class Server{
     ~Server();
     void create_server();
     void waiting_for_connections();
-    int is_server_connection();
-    int is_client_connection(struct pollfd fds);
-    void parse_buffer_nc(Client &client);
+    int  is_server_connection();
+    int  is_client_connection(struct pollfd fds);
+    int  parse_buffer_nc(Client &client);
     void parse_buffer_limechat(Client &client);
-    void my_split_buffer(Client &client, std::string delimiter);
+    int  my_split_buffer(Client &client, std::string delimiter);
     int  if_nick_exist(std::string value);
     int  if_user_exist(std::string value);
     int  parse_pass(Client &client, std::string value);

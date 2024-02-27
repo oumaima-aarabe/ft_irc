@@ -12,7 +12,7 @@ Client::Client(){
 }
 
 Client::~Client(){
-  // close(fds.fd)
+  close(fds.fd);
 }
 
 void  Client::addChannel(Channel &channel)
@@ -48,4 +48,5 @@ void Server::removeClientFromServer(Client &client)
   for (std::map<int, Client>::iterator it = this->users.begin(); it != this->users.end(); it++)
 		if (it->second.nickname == client.nickname)
 			users.erase(it);
+  // close(fds.fd);
 }
