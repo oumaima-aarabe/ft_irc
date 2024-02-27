@@ -1,6 +1,6 @@
 #include "../server.hpp"
 
-void ft_privMsg(commandInfo& cmd, Server& server, Client& client) {
+void ft_notice(commandInfo& cmd, Server& server, Client& client) {
 
     if (cmd.cmnd_args.size() < 1)
     {
@@ -25,26 +25,17 @@ void ft_privMsg(commandInfo& cmd, Server& server, Client& client) {
         std::vector<Channel>::iterator channel = server.getChannelByName(cmd.cmnd_args[0]);
 
         if (channel == server.channels.end()) 
-        {
-            server.sendReply(ERR_NOSUCHCHANNEL(std::string("*"), client.nickname,cmd.cmnd_args[0]), client.fds.fd);
             return;
-        }
         std::string channelName = channel->getName();
         if (!channel->isJoined(client.nickname))
-        {
-            server.sendReply(ERR_NOTONCHANNEL(std::string("*"), client.nickname, channelName), client.fds.fd);
             return;
-        }
-        channel->broadcastMessage(&client, RPL_CUSTOM_INVITE(setPrefix(server.hostname, client.nickname, client.username), channelName, cmd.cmnd_args[1]), opeOnly);
+        channel->broadcastMessage(&client, RPL_CUSTOM_NOTICE(setPrefix(server.hostname, client.nickname, client.username), channelName, cmd.cmnd_args[1]), opeOnly);
     }
     else
     {
         std::map<int, Client>::iterator Receiver = server.getClientByNickname(cmd.cmnd_args[0]);
         if (Receiver  == server.users.end())
-        {
-            server.sendReply(ERR_NOSUCHNICK(std::string("*"), cmd.cmnd_args[0]), client.fds.fd);
             return;
-        }
-        server.sendReply(RPL_CUSTOM_PRIVMSG(setPrefix(server.hostname, client.nickname, client.username), Receiver->second.nickname, cmd.cmnd_args[1]), Receiver->second.fds.fd);
+        server.sendReply(RPL_CUSTOM_NOTICE(setPrefix(server.hostname, client.nickname, client.username), Receiver->second.nickname, cmd.cmnd_args[1]), Receiver->second.fds.fd);
     }
 }
