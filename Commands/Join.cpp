@@ -6,10 +6,10 @@ std::vector<ChannelJoin> split_args(commandInfo &cmd)
     std::vector<std::string> keys;
     if (cmd.cmnd_args.size() > 1)
         keys = split(cmd.cmnd_args[1], ",");
-    while (channels.size() < keys.size())
-        keys.pop_back();
-    while (channels.size() > keys.size())
-        keys.push_back("");
+    if (channels.size() < keys.size())
+        keys.resize(channels.size());
+    if (channels.size() > keys.size())
+        keys.resize(channels.size(), "");
     std::vector<ChannelJoin> channelJoins;
     for (size_t i = 0; i < channels.size(); ++i)
     {
@@ -37,7 +37,7 @@ bool joinReply(Server &server, Client &client, Channel &channel, bool newCnx)
     server.sendReply(RPL_CUSTOM_JOIN(setPrefix(server.hostname, client.nickname, client.username), channel.getName()), client.fds.fd);
     server.sendReply(RPL_NAMREPLY(std::string("*"), client.nickname, std::string("="), channel.getName(), channel.listClients()), client.fds.fd);
     server.sendReply(RPL_ENDOFNAMES(std::string("*"), client.nickname, channel.getName()), client.fds.fd);
-    channel.broadcastMessage(&client, RPL_CUSTOM_JOIN(setPrefix(server.hostname, client.nickname, client.username), channel.getName()));
+    channel.broadcastMessage(&client, RPL_CUSTOM_JOIN(setPrefix(server.hostname, client.nickname, client.username), channel.getName()), false);
     return (true);
 }
 
