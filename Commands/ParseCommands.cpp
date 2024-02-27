@@ -42,7 +42,8 @@ commandInfo parseCmndBuffer(const std::string &commandMessage) {
     if (commandMessage.empty())
         return command;
 
-    size_t trailingPartStartPos = commandMessage.find(':');
+    size_t trailingPartStartPos = commandMessage.find(" :");
+
     std::string middlePart = commandMessage.substr(0, trailingPartStartPos);
 
     std::vector<std::string> middleParams = split(middlePart, " ");
@@ -50,11 +51,9 @@ commandInfo parseCmndBuffer(const std::string &commandMessage) {
         command.cmnd_name = middleParams[0];
         command.cmnd_args.insert(command.cmnd_args.end(), middleParams.begin() + 1, middleParams.end());
     }
-
-    if (trailingPartStartPos != std::string::npos) {
-        std::string trailingPart = commandMessage.substr(trailingPartStartPos + 1); // +1 to skip the colon itself
+    if (trailingPartStartPos != std::string::npos) { //if colon found
+        std::string trailingPart = commandMessage.substr(trailingPartStartPos + 2); // +2 to skip the colon and the space before it
         command.cmnd_args.push_back(trailingPart);
     }
-
     return command;
 }

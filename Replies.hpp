@@ -113,7 +113,8 @@
 #define ERR_USERSDONTMATCH(servername, nick) \
  ":" + servername + " 502 " + nick + " :Cant change mode for other users\n\r"
 #define ERR_INVALIDKEY 525
-#define ERR_INVALIDMODEPARAM(source, mode, param) "696 " + source + " " + mode + " " + param + " :Invalid MODE flag paramater\n\r"
+#define ERR_INVALIDMODEPARAM(nickname, channel, mode, param) "696 " + nickname + " " + channel + " " + mode + \
+" * :Invalid mode " + mode + " parameter: "+ param + "\n\r"
 #define ERR_NOMOTD 422
 #define ERR_WRONGPASS(servername, nick) \
  ":" + servername + " " + nick + " :Wrong pass\n\r"
