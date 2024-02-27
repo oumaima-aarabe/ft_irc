@@ -299,6 +299,17 @@ void Channel::broadcastMessage(Client *sender, std::string message, bool opeOnly
     }
 }
 
+void Server::broadcastMessage(Client *sender, std::string message)
+{
+    std::map<int, Client>::iterator it;
+    for (it = users.begin();it != users.end();it++)
+    {
+        if (sender && sender->fds.fd && it->second.fds.fd == sender->fds.fd)
+            continue;
+        send(it->second.fds.fd, message.c_str(), message.size() + 1, 0)
+    }
+}
+
 bool Channel::isValidChannelName(const std::string &name)
 {
 	if (name[0] != '#')
