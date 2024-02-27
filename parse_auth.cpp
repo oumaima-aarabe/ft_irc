@@ -19,7 +19,7 @@ int  Server::parse_pair(Client &client, std::pair<std::string, std::string> pair
       return (-1);
     // std::cout << "Called NICK command with success to: " << client.nickname << std::endl;
   }
-  else if (pair.first != "")
+  else if (pair.first != "" && !client.password.empty())
   {
     std::cout << "BAD COMMAND" << std::endl;
     return (-2);

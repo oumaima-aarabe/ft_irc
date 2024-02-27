@@ -114,7 +114,7 @@ int Server::is_client_connection(struct pollfd fds)
   if (checker == 0)
   {
     printf("  Connection closed\n");
-    close(fds.fd);
+    // close(fds.fd);
     std::map<int, Client>::iterator it = users.find(fds.fd);
     if (it != users.end())
     {
