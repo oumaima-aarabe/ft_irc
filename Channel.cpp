@@ -75,7 +75,7 @@ std::vector<Client> Channel::getInviteList(void) const
 // Client stuff
 // --------------
 
-int Channel::addClient(Client client)
+int Channel::addClient(Client const &client)
 {
     if (allClientsList.size() == (size_t)_channel_limit)
         return (-2);
@@ -96,7 +96,7 @@ std::string Channel::listClients()
     }
     return list_users;
 }
-bool Channel::isJoined(std::string nickname)
+bool Channel::isJoined(std::string const &nickname)
 {
     for (size_t i = 0; i < allClientsList.size(); i++) 
     {
@@ -106,7 +106,7 @@ bool Channel::isJoined(std::string nickname)
     return false;
 }
 
-bool Channel::isOpe(std::string nickname)
+bool Channel::isOpe(std::string const &nickname)
 {
     for (size_t i = 0; i < opeList.size(); i++) 
     {
@@ -116,7 +116,7 @@ bool Channel::isOpe(std::string nickname)
     return false;
 }
 
-bool Channel::isInvited(std::string nickname)
+bool Channel::isInvited(std::string const &nickname)
 {
     for (size_t i = 0; i < inviteList.size(); i++) 
     {
@@ -126,7 +126,7 @@ bool Channel::isInvited(std::string nickname)
     return false;
 }
 
-void Channel::addOpe(std::string nickname)
+void Channel::addOpe(std::string const &nickname)
 {
     if (isJoined(nickname) && isOpe(nickname) == false) {
         for (size_t i = 0; i < allClientsList.size(); i++)
@@ -140,7 +140,7 @@ void Channel::addOpe(std::string nickname)
     }
 }
 
-void Channel::removeOpe(std::string nickname)
+void Channel::removeOpe(std::string const &nickname)
 {
     for (std::vector<Client >::iterator it = opeList.begin(); it != opeList.end(); it++)
     {
@@ -152,7 +152,7 @@ void Channel::removeOpe(std::string nickname)
     }
 }
 
-void Channel::removeClient(Client client)
+void Channel::removeClient(Client const &client)
 {
     if (isOpe(client.nickname) == true)
         removeOpe(client.nickname);
@@ -166,13 +166,13 @@ void Channel::removeClient(Client client)
     }
 }
 
-void Channel::invite(Client client)
+void Channel::invite(Client const &client)
 {
     if (!isJoined(client.nickname))
         this->inviteList.push_back(client);
 }
 
-void Channel::removeInvite(Client client) {
+void Channel::removeInvite(Client const &client) {
     for (std::vector<Client>:: iterator it = inviteList.begin(); it != inviteList.end(); it++) {
         if (it->nickname == client.nickname)
             inviteList.erase(it);
@@ -213,30 +213,23 @@ void Channel::updateStringModes(void)
     _stringModes = "";
     bool limitFlag = false;
     bool keyFlag = false;
-    char first; //what mode parameter will be displayed first (case of 'l' and 'k') because 'i' and 't' don't need a parameter.
     for (std::vector<std::pair<ChannelMode, int> >::const_iterator it = _modes.begin(); it != _modes.end(); it++)
     {
         char identifier = getModeIdentifier(it->first);
         if (identifier && identifier != 'o' && it->second == 1) //'o' is a user mode, can't be displayed in channel modes set.
         {
             _stringModes += identifier;
-            if (identifier == 'l') {
+            if (identifier == 'l')
                 limitFlag = true;
-                if (keyFlag == false)
-                    first = 'l';
-            }
-            else if (identifier == 'k') {
+            else if (identifier == 'k')
                 keyFlag = true;           
-                if (limitFlag == false)
-                    first = 'k';
-            }   
         }
     }
-    if (_stringModes.size() > 0 && limitFlag == true)
-        _stringModes += " " + to_string(_channel_limit);
-    if (_stringModes.size() > 0 && keyFlag == true)
+    if (_stringModes.size() > 0 && keyFlag)
         _stringModes += " " + _password;
-    if (_stringModes.size() == 0)
+    if (_stringModes.size() > 0 && limitFlag)
+        _stringModes += " " + to_string(_channel_limit);
+    else if (_stringModes.size() == 0)
         _stringModes = " no mode is set";
 }
 
@@ -302,7 +295,7 @@ void Channel::broadcastMessage(Client *sender, std::string message)
     }
 }
 
-bool Channel::isValidChannelName(const std::string name)
+bool Channel::isValidChannelName(const std::string &name)
 {
 	if (name[0] != '#')
 		return false;

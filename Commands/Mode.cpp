@@ -43,9 +43,9 @@ void limitUersMode(commandInfo& cmd, Channel &channel, Server &server, Client &c
 	else
 	{
 		channel.removeMode(CHANNEL_MODE_USER_LIMIT);
-		channel.setChannel_limit(-1);
+		channel.setChannel_limit(MAX_CLIENTS_PER_CHANNEL); //default limit
 	}
-	channel.broadcastMessage(NULL, RPL_MODE(setPrefix(server.hostname, client.nickname, client.username), (cmd.cmnd_args[0] + " " + (addSign ? "+" : "-") + "l " + (addSign ? *flagArgIt : ""))));
+	channel.broadcastMessage(NULL, RPL_MODE(setPrefix(server.hostname, client.nickname, client.username), (cmd.cmnd_args[0] + " " + (addSign ? "+" : "-") + "l " + (addSign ? to_string(channel.getChannelLimit()) : ""))));
 }
 
 void operatorMode(commandInfo& cmd, Channel &channel, Server &server, Client &client, bool addSign, std::vector<std::string>::iterator &flagArgIt)
@@ -95,7 +95,7 @@ void keyMode(commandInfo& cmd, Channel &channel, Server &server, Client &client,
 		channel.removeMode(CHANNEL_MODE_KEY);
 		channel.setPassword("");
 	}
-	channel.broadcastMessage(NULL, RPL_MODE(setPrefix(server.hostname, client.nickname, client.username), (cmd.cmnd_args[0] + " " + (addSign ? "+" : "-") + "k " + (addSign ? *flagArgIt : ""))));
+	channel.broadcastMessage(NULL, RPL_MODE(setPrefix(server.hostname, client.nickname, client.username), (cmd.cmnd_args[0] + " " + (addSign ? "+" : "-") + "k " + (addSign ? channel.getPassword() : ""))));
 }
 //e.g.: MODE  #channel  +tlk  Max_limit  key_param
 void ft_mode(commandInfo& cmd, Server &server, Client &client) {

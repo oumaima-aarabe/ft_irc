@@ -42,16 +42,16 @@ class Channel {
         std::vector<Client> getOpeList(void) const;
         std::vector<Client> getInviteList(void) const;
         // Client stuff
-		int addClient(Client client);
-		void removeClient(Client client);
-        bool isJoined(std::string nickname);
+		int addClient(Client const &client);
+		void removeClient(Client const &client);
+        bool isJoined(std::string const &nickname);
         std::string listClients();
-        bool isOpe(std::string nickname);
-        bool isInvited(std::string nickname);
-        void addOpe(std::string nickname);
-        void removeOpe(std::string nickname);
-        void invite(Client client);
-        void removeInvite(Client client);
+        bool isOpe(std::string const &nickname);
+        bool isInvited(std::string const &nickname);
+        void addOpe(std::string const &nickname);
+        void removeOpe(std::string const &nickname);
+        void invite(Client const &client);
+        void removeInvite(Client const &client);
         // Channel modes stuff
         char getModeIdentifier(ChannelMode _mode) const;
         void updateStringModes(void);
@@ -62,5 +62,5 @@ class Channel {
         bool hasKey(void);
         // Utils
         void broadcastMessage(Client *sender, std::string message);
-        static bool isValidChannelName(const std::string name);
+        static bool isValidChannelName(std::string const &name);
 };

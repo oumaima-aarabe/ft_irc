@@ -1,10 +1,10 @@
 - Close fd in client destructor.
-- Delete user when connection is closed in Server:is_client_connection. (kawtar)
+- Delete user when connection is closed in Server:is_client_connection.
 - NICK
 - TOPIC
 - QUIT
-- KICK
 - PRIVMSG
+- NOTICE
 - "\r\n" in numeric replies and broadcast (for kaoutar)
 - check if forth argument of USER needs to be stored as a full name.
 - sometimes password gives 464 after ^C and a new connection
