@@ -125,5 +125,8 @@
  ":" + user + " MODE " + channel + " " + mode + "\n\r"
 #define RPL_CUSTOM_INVITE(source, nick, channel) \
  source + " INVITE " + nick + " " + channel + "\n\r"
-#define RPL_MODE(source, modestring) source + "MODE " + modestring + "\n\r"
+#define RPL_MODE(source, modestring) source + " MODE " + modestring + "\n\r"
 #define RPL_PART(source, channel, reason)				source + " PART " + channel + " :" + reason + "\n\r"
+#define RPL_PRIVMSG(source, target, message)            source + " PRIVMSG " + target + " :" + message + "\n\r"
+#define RPL_NOTICE(source, target, message)             source + " NOTICE " + target + " :" + message + "\n\r"
+#define RPL_KICK(source, channel, target, reason)       source + " KICK " + channel + " " + target + (" :" ? reason : "") + reason + "\n\r"

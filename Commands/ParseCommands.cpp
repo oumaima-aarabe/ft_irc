@@ -11,15 +11,25 @@ void Server::executeCommands(const std::vector<std::string> cmndBuffer, int clie
   Client client = users[clientFd];
 	std::map<std::string, CommandHandlerFunc> commandHandlerMap;
 	commandHandlerMap["PONG"] = ft_pong; //to ignore
+	commandHandlerMap["pong"] = ft_pong; 
 	commandHandlerMap["JOIN"] = ft_join;
+	commandHandlerMap["join"] = ft_join;
 	commandHandlerMap["MODE"] = ft_mode;
+	commandHandlerMap["mode"] = ft_mode;
 	commandHandlerMap["PART"] = ft_part;
+	commandHandlerMap["part"] = ft_part;
 	commandHandlerMap["PRIVMSG"] = ft_privMsg;
+	commandHandlerMap["privmsg"] = ft_privMsg;
 	commandHandlerMap["QUIT"] = ft_quit; //requires registration
+	commandHandlerMap["quit"] = ft_quit;
 	commandHandlerMap["KICK"] = ft_kick; 
+	commandHandlerMap["kick"] = ft_kick; 
 	commandHandlerMap["TOPIC"] = ft_topic;
+	commandHandlerMap["topic"] = ft_topic;
 	commandHandlerMap["INVITE"] = ft_invite;
-	// commandHandlerMap["NICK"] = ft_nick;
+	commandHandlerMap["invite"] = ft_invite;
+	commandHandlerMap["NICK"] = ft_nick;
+	commandHandlerMap["nick"] = ft_nick;
   // loop through multiple commands sent by client in quick succession, which might be received and buffered by the server as a single string separated by '\n'
   for (size_t i = 0; i < cmndBuffer.size(); i++) 
 	{
