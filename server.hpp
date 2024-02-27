@@ -75,5 +75,5 @@ class Server{
     void removeClientFromServer(Client &client);
     void sendReply(const std::string &message, int clientFd);
     void executeCommands(const std::vector<std::string> cmnds, int clientFd);
-    void  broadcastMessage(Client *sender, std::string message);
+    void  broadcastMessage(Client *sender, std::string message, std::vector<Client> chared_channels);
 };

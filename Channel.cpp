@@ -299,14 +299,14 @@ void Channel::broadcastMessage(Client *sender, std::string message, bool opeOnly
     }
 }
 
-void Server::broadcastMessage(Client *sender, std::string message)
+void Server::broadcastMessage(Client *sender, std::string message, std::vector<Client> chared_channels)
 {
-    std::map<int, Client>::iterator it;
-    for (it = users.begin();it != users.end();it++)
+    std::vector<Client>::iterator it;
+    for (it = chared_channels.begin();it != chared_channels.end();it++)
     {
-        if (sender && sender->fds.fd && it->second.fds.fd == sender->fds.fd)
+        if (sender && sender->fds.fd && it->fds.fd == sender->fds.fd)
             continue;
-        send(it->second.fds.fd, message.c_str(), message.size() + 1, 0)
+        send(it->fds.fd, message.c_str(), message.size() + 1, 0);
     }
 }
 
