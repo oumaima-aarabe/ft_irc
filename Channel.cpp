@@ -292,9 +292,13 @@ bool Channel::hasKey(void)
 // Utils
 // --------------
 
-void Channel::broadcastMessage(Client *sender, std::string message)
+void Channel::broadcastMessage(Client *sender, std::string message, bool opeOnly)
 {
-    std::vector<Client > clients = this->getAllClientsList();
+    std::vector<Client > clients;
+    if (opeOnly)
+        clients = this->getOpeList();
+    else
+        clients = this->getAllClientsList();
     for (size_t i = 0; i < clients.size(); i++) {
         if (sender && sender->fds.fd && clients[i].fds.fd == sender->fds.fd)
             continue ;

@@ -61,6 +61,6 @@ class Channel {
         void removeMode(ChannelMode mode);
         bool hasKey(void);
         // Utils
-        void broadcastMessage(Client *sender, std::string message);
+        void broadcastMessage(Client *sender, std::string message, bool opeOnly);
         static bool isValidChannelName(const std::string name);
 };
