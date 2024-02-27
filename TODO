@@ -1,4 +1,15 @@
 - Close fd in client destructor.
-- Check if the numerical for Password already set error is 463 or 464.
-- Check this "    msg += ":" + hostname + " 003 " +  client.nickname + " :This server has been started Wed Oct 12 2022\r\n";" in the welcomeMessage, and maybe replace it by " :This server was created January 1st, 1970\n".
 - Delete user when connection is closed in Server:is_client_connection.
+- NICK
+- TOPIC
+- QUIT
+- PRIVMSG
+- NOTICE
+- "\r\n" in numeric replies and broadcast (for kaoutar)
+- check if forth argument of USER needs to be stored as a full name.
+- sometimes password gives 464 after ^C and a new connection
+ nc localhost 9009 -c
+PASS 123
+:* 464 * :Password already set
+
+- ^C

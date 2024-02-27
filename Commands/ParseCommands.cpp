@@ -1,6 +1,6 @@
-#include "server.hpp"
+#include "../server.hpp"
 
-typedef void (*CommandHandlerFunc)(commandInfo &, Client &); // function pointer typedef
+typedef void (*CommandHandlerFunc)(commandInfo &, Server&, Client&); // function pointer typedef
 
 bool isValidCommand(std::map<std::string, CommandHandlerFunc> commandHandlerMap, const std::string &cmdName)
 {
@@ -10,6 +10,7 @@ bool isValidCommand(std::map<std::string, CommandHandlerFunc> commandHandlerMap,
 void Server::executeCommands(const std::vector<std::string> cmndBuffer, int clientFd) {
   Client client = users[clientFd];
 	std::map<std::string, CommandHandlerFunc> commandHandlerMap;
+	commandHandlerMap["PONG"] = ft_pong; //to ignore
 	commandHandlerMap["JOIN"] = ft_join;
 	commandHandlerMap["MODE"] = ft_mode;
 	commandHandlerMap["PART"] = ft_part;
@@ -18,17 +19,21 @@ void Server::executeCommands(const std::vector<std::string> cmndBuffer, int clie
 	commandHandlerMap["KICK"] = ft_kick; 
 	commandHandlerMap["TOPIC"] = ft_topic;
 	commandHandlerMap["INVITE"] = ft_invite;
+	commandHandlerMap["NICK"] = ft_nick;
+	commandHandlerMap["NOTICE"] = ft_notice;
   // loop through multiple commands sent by client in quick succession, which might be received and buffered by the server as a single string separated by '\n'
   for (size_t i = 0; i < cmndBuffer.size(); i++) 
 	{
 		commandInfo cmdInfo = parseCmndBuffer(cmndBuffer[i]);
-
+		toUpper(cmdInfo.cmnd_name);
 		if (!isValidCommand(commandHandlerMap, cmdInfo.cmnd_name))
 		{
+			Logger::warning("Invalid command: " + cmdInfo.cmnd_name);
 			sendReply(ERR_UNKNOWNCOMMAND(cmdInfo.cmnd_name), clientFd);
 			continue;
 		}
-		commandHandlerMap[cmdInfo.cmnd_name](cmdInfo, client); // execute the CommandHandlerFunc corresponding to the command name
+		client.buffer = cmndBuffer[i];
+		commandHandlerMap[cmdInfo.cmnd_name](cmdInfo, *this, client); // execute the CommandHandlerFunc corresponding to the command name
 	}
 }
 
@@ -38,7 +43,8 @@ commandInfo parseCmndBuffer(const std::string &commandMessage) {
     if (commandMessage.empty())
         return command;
 
-    size_t trailingPartStartPos = commandMessage.find(':');
+    size_t trailingPartStartPos = commandMessage.find(" :");
+
     std::string middlePart = commandMessage.substr(0, trailingPartStartPos);
 
     std::vector<std::string> middleParams = split(middlePart, " ");
@@ -46,11 +52,9 @@ commandInfo parseCmndBuffer(const std::string &commandMessage) {
         command.cmnd_name = middleParams[0];
         command.cmnd_args.insert(command.cmnd_args.end(), middleParams.begin() + 1, middleParams.end());
     }
-
-    if (trailingPartStartPos != std::string::npos) {
-        std::string trailingPart = commandMessage.substr(trailingPartStartPos + 1); // +1 to skip the colon itself
+    if (trailingPartStartPos != std::string::npos) { //if colon found
+        std::string trailingPart = commandMessage.substr(trailingPartStartPos + 2); // +2 to skip the colon and the space before it
         command.cmnd_args.push_back(trailingPart);
     }
-
     return command;
 }

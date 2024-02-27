@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdio.h>
+#include <sstream>
 #include <stdlib.h>
 #include <sys/ioctl.h>
 #include <sys/poll.h> 
@@ -21,12 +22,13 @@
 #include "client.hpp"
 #include "Channel.hpp"
 #include "Replies.hpp"
-#include "Commands.hpp"
+#include "Commands/Commands.hpp"
 #include "Utils.hpp"
+#include "Logger.hpp"
 #include <strstream>
 
 #define BACKLOG 10
-#define MAX_CLIENTS_PER_CHANNEL 10
+#define MAX_CLIENTS_PER_CHANNEL 30
 #define MAX_BUFFER_SIZE 512
 #define MAX_CONNECTIONS 50
 #define MAX_CHANNELS 5
@@ -36,7 +38,6 @@ class Channel;
 
 class Server{
   public:
-    std::vector<Channel> channels;
     int socket_fd;
     struct sockaddr_in ip4addr;
     unsigned int port;
@@ -45,11 +46,11 @@ class Server{
     int current_size;
     std::string hostname ;
 
+    std::vector<Channel> channels;
+
     std::map<int ,Client> connections;
 
-    //>>>>>>>>>>>
     std::map<int ,Client> users; // clients authenticated
-    //>>>>>>>>>>>
 
     Server(unsigned int port, std::string password);
     ~Server();
@@ -68,6 +69,11 @@ class Server{
     int  parse_pair(Client &client, std::pair<std::string, std::string> pair);
     void WelcomeMessage(Client &client);
     void addToChannels(Channel& channel);
+    void removeFromChannels(Channel& channel);
+    std::vector<Channel>::iterator getChannelByName(const std::string &name);
+    std::map<int, Client>::iterator getClientByNickname(const std::string &nickName);
+    void removeClientFromServer(Client &client);
     void sendReply(const std::string &message, int clientFd);
     void executeCommands(const std::vector<std::string> cmnds, int clientFd);
+    void  broadcastMessage(Client *sender, std::string message, std::vector<Client> chared_channels);
 };

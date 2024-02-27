@@ -17,11 +17,11 @@ int  Server::parse_pair(Client &client, std::pair<std::string, std::string> pair
   {
     if (parse_nick(client, pair.second) == -1)
       return (-1);
-    // std::cout << "Called NICK command with success to: " << client.nickname << std::endl;
+    Logger::info("Called NICK command with success to: " + client.nickname);
   }
   else if (pair.first != "" && !client.password.empty())
   {
-    std::cout << "BAD COMMAND" << std::endl;
+    Logger::error("Invalid command: " + pair.first);
     return (-2);
   }
   client.buffer = "";

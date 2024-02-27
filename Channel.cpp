@@ -1,16 +1,22 @@
 #include "Channel.hpp"
 
-Channel::Channel(std::string &name, std::string &password) : _name(name), _password(password), _channel_limit(MAX_CLIENTS_PER_CHANNEL)
+Channel::Channel(std::string const &name, std::string const &password) : _name(name), _password(password), _channel_limit(MAX_CLIENTS_PER_CHANNEL)
 {
+    _modes.push_back(std::make_pair(CHANNEL_MODE_INVITE_ONLY, 0));
+    _modes.push_back(std::make_pair(CHANNEL_MODE_TOPIC_SETTABLE_BY_CHANNEL_OPERATOR_ONLY, 0));
+    _modes.push_back(std::make_pair(CHANNEL_MODE_KEY, 0));
+    _modes.push_back(std::make_pair(CHANNEL_MODE_OPERATOR, 0));
+    _modes.push_back(std::make_pair(CHANNEL_MODE_USER_LIMIT, 0));
+    updateStringModes();
 }
   
 // Setters
-void Channel::setTopic(std::string &newTopic)
+void Channel::setTopic(std::string const &newTopic)
 {
     _topic = newTopic;
 }
 
-void Channel::setPassword(std::string &passwd)
+void Channel::setPassword(std::string const &passwd)
 {
     _password = passwd;
 }
@@ -18,11 +24,6 @@ void Channel::setPassword(std::string &passwd)
 void Channel::setChannel_limit(int limit)
 {
     _channel_limit = limit;
-}
-
-void Channel::setKey(std::string &newKey)
-{
-    _key = newKey;
 }
 
 // Getter
@@ -39,11 +40,6 @@ std::string Channel::getName(void) const
 std::string Channel::getTopic(void) const
 {
     return (_topic);
-}
-
-std::string Channel::getKey(void) const
-{
-    return (_key);
 }
 
 int Channel::getChannelLimit(void) const
@@ -74,68 +70,81 @@ std::vector<Client> Channel::getInviteList(void) const
 {
     return (inviteList);
 }
+
 // --------------
 // Client stuff
 // --------------
-void Channel::addClient(Client client)
-{
-    if (allClientsList.size() == (unsigned long)_channel_limit)
-        return;
-    if (isJoined(client) == false)
-        return;
-    if (isOpe(client) == false)
-        opeList.push_back(client);
-    if (isInvited(client) == false)
-        inviteList.push_back(client);
-    if (isJoined(client) == false)
-        allClientsList.push_back(client);
-}
 
-bool Channel::isJoined(Client client)
+int Channel::addClient(Client const &client)
+{
+    if (allClientsList.size() == (size_t)_channel_limit)
+        return (-2);
+    if (!isJoined(client.nickname))
+    {
+        allClientsList.push_back(client);
+        return (1);
+    }
+    return 0;
+}
+std::string Channel::listClients()
+{
+    std::string list_users;
+    for (size_t i = 0; i < allClientsList.size(); i++)
+    {
+        list_users += allClientsList[i].nickname;
+        list_users += " ";
+    }
+    return list_users;
+}
+bool Channel::isJoined(std::string const &nickname)
 {
     for (size_t i = 0; i < allClientsList.size(); i++) 
     {
-        if (allClientsList[i].nickname == client.nickname)
+        if (allClientsList[i].nickname == nickname)
             return true;
     }
     return false;
 }
 
-bool Channel::isOpe(Client client)
+bool Channel::isOpe(std::string const &nickname)
 {
     for (size_t i = 0; i < opeList.size(); i++) 
     {
-        if (opeList[i].nickname == client.nickname)
+        if (opeList[i].nickname == nickname)
             return true;
     }
     return false;
 }
 
-bool Channel::isInvited(Client client)
+bool Channel::isInvited(std::string const &nickname)
 {
     for (size_t i = 0; i < inviteList.size(); i++) 
     {
-        if (inviteList[i].nickname == client.nickname)
+        if (inviteList[i].nickname == nickname)
             return true;
     }
     return false;
 }
 
-void Channel::addOpe(Client client)
+void Channel::addOpe(std::string const &nickname)
 {
-    if (isJoined(client) == false){
-        //error message
-        return;
+    if (isJoined(nickname) && isOpe(nickname) == false) {
+        for (size_t i = 0; i < allClientsList.size(); i++)
+        {
+            if (allClientsList[i].nickname == nickname)
+            {
+                opeList.push_back(allClientsList[i]);
+                return;
+            }
+        }
     }
-    if (isOpe(client) == false)
-        opeList.push_back(client);
 }
 
-void Channel::removeOpe(Client client)
+void Channel::removeOpe(std::string const &nickname)
 {
     for (std::vector<Client >::iterator it = opeList.begin(); it != opeList.end(); it++)
     {
-        if (it->fds.fd == client.fds.fd)
+        if (it->nickname == nickname)
         {
             opeList.erase(it);
             return;
@@ -143,11 +152,11 @@ void Channel::removeOpe(Client client)
     }
 }
 
-void Channel::kick(Client client)
+void Channel::removeClient(Client const &client)
 {
-    if (isOpe(client) == true)
-        removeOpe(client);
-    for (std::vector<Client >::iterator it = allClientsList.begin(); it != allClientsList.end(); it++)
+    if (isOpe(client.nickname) == true)
+        removeOpe(client.nickname);
+    for (std::vector<Client>::iterator it = allClientsList.begin(); it != allClientsList.end(); it++)
     {
         if (it->fds.fd == client.fds.fd)
         {
@@ -157,10 +166,18 @@ void Channel::kick(Client client)
     }
 }
 
-void Channel::invite(Client client)
+void Channel::invite(Client const &client)
 {
-    if (isInvited(client) == false && isJoined(client) == false)
+    if (!isJoined(client.nickname))
         this->inviteList.push_back(client);
+}
+
+void Channel::removeInvite(Client const &client) {
+    for (std::vector<Client>:: iterator it = inviteList.begin(); it != inviteList.end(); it++) {
+        if (it->nickname == client.nickname)
+            inviteList.erase(it);
+            return ;
+    }
 }
 
 // ---------------------
@@ -193,14 +210,26 @@ char Channel::getModeIdentifier(ChannelMode _mode) const
 
 void Channel::updateStringModes(void)
 {
-    _stringModes = " +";
+    _stringModes = "";
+    bool limitFlag = false;
+    bool keyFlag = false;
     for (std::vector<std::pair<ChannelMode, int> >::const_iterator it = _modes.begin(); it != _modes.end(); it++)
     {
         char identifier = getModeIdentifier(it->first);
-        if (identifier && it->second == 1)
+        if (identifier && identifier != 'o' && it->second == 1) //'o' is a user mode, can't be displayed in channel modes set.
+        {
             _stringModes += identifier;
+            if (identifier == 'l')
+                limitFlag = true;
+            else if (identifier == 'k')
+                keyFlag = true;           
+        }
     }
-    if (_stringModes.size() == 1)
+    if (_stringModes.size() > 0 && keyFlag)
+        _stringModes += " " + _password;
+    if (_stringModes.size() > 0 && limitFlag)
+        _stringModes += " " + to_string(_channel_limit);
+    else if (_stringModes.size() == 0)
         _stringModes = " no mode is set";
 }
 
@@ -222,8 +251,6 @@ bool Channel::hasMode(ChannelMode mode)
     }
     return false;
 }
-
-//to modify
 
 void Channel::addMode(ChannelMode mode)
 {
@@ -258,19 +285,34 @@ bool Channel::hasKey(void)
 // Utils
 // --------------
 
-void Channel::broadcastMessage(Client sender, std::string message)
+void Channel::broadcastMessage(Client *sender, std::string message, bool opeOnly)
 {
-    std::vector<Client > clients = this->getAllClientsList();
+    std::vector<Client > clients;
+    if (opeOnly)
+        clients = this->getOpeList();
+    else
+        clients = this->getAllClientsList();
     for (size_t i = 0; i < clients.size(); i++) {
-        if (sender.fds.fd && clients[i].fds.fd == sender.fds.fd)
-			continue ;
+        if (sender && sender->fds.fd && clients[i].fds.fd == sender->fds.fd)
+            continue ;
         send(clients[i].fds.fd , message.c_str(), message.size() + 1, 0);
     }
 }
 
-bool Channel::isValidChannelName(const std::string name)
+void Server::broadcastMessage(Client *sender, std::string message, std::vector<Client> chared_channels)
 {
-	if (name[0] != '#' && name[0] != '&')
+    std::vector<Client>::iterator it;
+    for (it = chared_channels.begin();it != chared_channels.end();it++)
+    {
+        if (sender && sender->fds.fd && it->fds.fd == sender->fds.fd)
+            continue;
+        send(it->fds.fd, message.c_str(), message.size() + 1, 0);
+    }
+}
+
+bool Channel::isValidChannelName(const std::string &name)
+{
+	if (name[0] != '#')
 		return false;
 	for (size_t i = 1; i < name.size(); i++)
 	{
@@ -283,4 +325,32 @@ bool Channel::isValidChannelName(const std::string name)
 void Server::addToChannels(Channel& channel) 
 {
     channels.push_back(channel);
+}
+
+void Server::removeFromChannels(Channel& channel) 
+{
+    for (std::vector<Channel>::iterator it = channels.begin(); it != channels.end(); it++)
+    {
+        if (it->getName() == channel.getName())
+        {
+            channels.erase(it);
+            return;
+        }
+    }
+}
+
+std::vector<Channel>::iterator Server::getChannelByName(const std::string &name)
+{
+  for (std::vector<Channel>::iterator it = channels.begin(); it != channels.end(); it++) {
+    if (it->getName() == name)
+      return it;
+  }
+  return channels.end();
+}
+
+Channel::~Channel()
+{
+    allClientsList.clear();
+    opeList.clear();
+    inviteList.clear();
 }

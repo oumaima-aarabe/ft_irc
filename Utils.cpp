@@ -18,7 +18,9 @@ std::vector<std::string> split(const std::string &input, const std::string &sepa
 	{
         // Only push non-empty substrings
 		if (found != start)
-            result.push_back(input.substr(start, found - start));
+        	result.push_back(input.substr(start, found - start));
+		else
+			result.push_back("");
 		start = found + separator.size(); // Move past the separator
 		found = input.find(separator, start);
 	}
@@ -30,4 +32,32 @@ std::vector<std::string> split(const std::string &input, const std::string &sepa
     for (std::vector<std::string>::iterator it = result.begin(); it != result.end(); it++)
         my_trim_(*it, ' ');
 	return result;
+}
+
+std::string setPrefix(std::string hostname, std::string nickname, std::string username)
+{
+	return (":" + nickname + "!~" + username + "@" + hostname);
+	// return (":" + nickname + "!~" + username + "@" + hostname + " " + buffer);
+}
+
+bool isNumber(const std::string &s)
+{
+	for (std::string::const_iterator it = s.begin(); it != s.end(); it++)
+	{
+		if (!std::isdigit(*it))
+			return false;
+	}
+	return true;
+}
+
+std::string to_string(int i) {
+	std::stringstream ss;
+	ss << i;
+	return ss.str();
+}
+
+void toUpper(std::string &str)
+{
+	for (size_t i = 0; i < str.length(); i++)
+		str[i] = toupper(str[i]);
 }

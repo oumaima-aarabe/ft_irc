@@ -28,7 +28,7 @@ void Server::create_server()
   socket_fd = socket(AF_INET, SOCK_STREAM, 0);
   if (socket_fd == -1)
   {
-    std::cerr << "socket failed" << std::endl;
+    Logger::error("socket() failed");
     close(socket_fd);
     exit(-1);
   }
@@ -36,14 +36,14 @@ void Server::create_server()
   int checker = setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, (char *)&on, sizeof(on));
   if (checker < 0)
   {
-    perror("setsockopt() failed");
+    Logger::error("setsockopt() failed");
     close(socket_fd);
     exit(-6);
   }
   // Set the socket to non-blocking mode
   if (fcntl(socket_fd, F_SETFL, O_NONBLOCK) == -1)
   {
-    std::cerr << "fcntl failed" << std::endl;
+    Logger::error("fcntl() failed");
     close(socket_fd);
     exit(-2);
   }
@@ -51,7 +51,7 @@ void Server::create_server()
   checker = bind(socket_fd, (struct sockaddr *)&ip4addr, sizeof ip4addr);
   if (checker == -1)
   {
-    std::cerr << "bind failed" << std::endl;
+    Logger::error("bind() failed");
     perror(NULL);
     close(socket_fd);
     exit(-3);
@@ -60,7 +60,7 @@ void Server::create_server()
   checker = listen(socket_fd, 10);
   if (checker == -1)
   {
-    std::cerr << "listen failed" << std::endl;
+    Logger::error("listen() failed");
     close(socket_fd);
     exit(-4);
   }
@@ -80,12 +80,12 @@ int Server::is_server_connection()
   {
     if (errno != EWOULDBLOCK)
     {
-      std::cout << "accept() failed" << std::endl;
+      Logger::error("accept() failed");
     }
     return (-1);
   }
-  std::cout << "New incoming connection " << new_sd << std::endl;
-  struct pollfd k;
+  Logger::info("New incoming connection " + to_string(new_sd));
+  struct  pollfd k;
   k.fd = new_sd;
   k.events = POLLIN;
   k.revents = 0;
@@ -107,7 +107,7 @@ int Server::is_client_connection(struct pollfd fds)
 
   if (checker < 0)
   {
-    std::cout << "recv failed()\n";
+    Logger::error("recv() failed");
     return -1;
   }
   //CTRL+C
@@ -200,12 +200,12 @@ void Server::waiting_for_connections()
     checker = poll(fds.data(), fds.size(), timeout);
     if (checker < 0)
     {
-      std::cout << "poll() failed" << std::endl;
+      Logger::error("poll() failed");
       break;
     }
     if (checker == 0)
     {
-      std::cout << "poll() timeout" << std::endl;
+      Logger::warning("poll() timeout");
       break;
     }
     else
