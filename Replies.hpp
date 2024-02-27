@@ -72,7 +72,6 @@
 #define ERR_TOOMANYCHANNELS(servername, nick, channel) \
  ":" + servername + " 405 " + nick + " " + channel + " :You have joined too many channels\n\r"
 #define ERR_WASNOSUCHNICK 406
-#define ERR_INPUTTOOLONG 417
 #define ERR_UNKNOWNCOMMAND(command) "421 " + command + " :Unknown command\n\r"
 #define ERR_NONICKNAMEGIVEN(servername) \
  ":" + servername + " 431 " + servername + " :No nickname given\n\r"

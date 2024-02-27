@@ -62,5 +62,5 @@ class Channel {
         bool hasKey(void);
         // Utils
         void broadcastMessage(Client *sender, std::string message, bool opeOnly);
-        static bool isValidChannelName(const std::string name);
+        static bool isValidChannelName(const std::string &name);
 };
