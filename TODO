@@ -11,3 +11,5 @@
  nc localhost 9009 -c
 PASS 123
 :* 464 * :Password already set
+
+- ^C

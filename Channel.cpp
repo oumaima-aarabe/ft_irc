@@ -305,7 +305,7 @@ bool Channel::isValidChannelName(const std::string &name)
 		return false;
 	for (size_t i = 1; i < name.size(); i++)
 	{
-		if (name[i] == ',')
+		if (name[i] == ',' || name[i] == ' ')
 			return false;
 	}
 	return true;
