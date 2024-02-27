@@ -136,3 +136,6 @@
  source + " PRIVMSG " + channelORclient + " :" + message +  "\n\r"
   #define RPL_CUSTOM_NOTICE(source, channelORclient, message) \
  source + " NOTICE " +  channelORclient + " :" + message +  "\n\r"
+
+#define RPL_CUSTOM_TOPIC(source, channel, message) \
+ source + " TOPIC " + channel + " :" + message +  "\n\r"

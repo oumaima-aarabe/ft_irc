@@ -43,9 +43,9 @@ std::map<int, Client>::iterator Server::getClientByNickname(const std::string &n
 	return (this->users.end());
 }
 
-void server::removeClientFromServer(Client &client)
+void Server::removeClientFromServer(Client &client)
 {
   for (std::map<int, Client>::iterator it = this->users.begin(); it != this->users.end(); it++)
-		if (it->second.nickname == client.nickName)
+		if (it->second.nickname == client.nickname)
 			users.erase(it);
 }
