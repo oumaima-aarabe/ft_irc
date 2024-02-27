@@ -55,3 +55,9 @@ std::string to_string(int i) {
 	ss << i;
 	return ss.str();
 }
+
+void toUpper(std::string &str)
+{
+	for (size_t i = 0; i < str.length(); i++)
+		str[i] = toupper(str[i]);
+}
