@@ -28,3 +28,5 @@ void ft_topic(commandInfo& cmd, Server& server, Client& client);
 void ft_invite(commandInfo &cmd, Server& server, Client& client);
 void ft_kick(commandInfo& cmd, Server& server, Client& client);
 void ft_mode(commandInfo& cmd, Server& server, Client& client);
+void ft_nick(commandInfo& cmd, Server& server, Client& client);
+void ft_notice(commandInfo& cmd, Server& server, Client& client);

@@ -125,5 +125,13 @@
  ":" + user + " MODE " + channel + " " + mode + "\n\r"
 #define RPL_CUSTOM_INVITE(source, nick, channel) \
  source + " INVITE " + nick + " " + channel + "\n\r"
+#define ERR_NOTEXTTOSEND(servername, nick)\
+ ":" + servername + " 412 " + nick + " :No text to send\n\r"
+#define ERR_INPUTTOOLONG(servername, nick) \
+ ":" + servername + " 417 " + nick + " :Input line too long\n\r"
 #define RPL_MODE(source, modestring) source + "MODE " + modestring + "\n\r"
 #define RPL_PART(source, channel, reason)				source + " PART " + channel + " :" + reason + "\n\r"
+ #define RPL_CUSTOM_PRIVMSG(source, channelORclient, message) \
+ source + " PRIVMSG " + channelORclient + " :" + message +  "\n\r"
+  #define RPL_CUSTOM_NOTICE(source, channelORclient, message) \
+ source + " NOTICE " +  channelORclient + " :" + message +  "\n\r"
