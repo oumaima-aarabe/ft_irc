@@ -35,6 +35,8 @@ bool joinReply(Server &server, Client &client, Channel &channel, bool newCnx)
         channel.addOpe(client.nickname);
     Logger::debug("User [" + client.nickname + "] is joining the channel [" + channel.getName() + "].");
     server.sendReply(RPL_CUSTOM_JOIN(setPrefix(server.hostname, client.nickname, client.username), channel.getName()), client.fds.fd);
+    if (!channel.getTopic().empty())
+        server.sendReply(RPL_TOPIC(std::string("*"), client.nickname, channel.getName(), channel.getTopic()), client.fds.fd);
     server.sendReply(RPL_NAMREPLY(std::string("*"), client.nickname, std::string("="), channel.getName(), channel.listClients()), client.fds.fd);
     server.sendReply(RPL_ENDOFNAMES(std::string("*"), client.nickname, channel.getName()), client.fds.fd);
     channel.broadcastMessage(&client, RPL_CUSTOM_JOIN(setPrefix(server.hostname, client.nickname, client.username), channel.getName()), false);

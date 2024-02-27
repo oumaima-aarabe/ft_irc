@@ -28,6 +28,7 @@ void Server::executeCommands(const std::vector<std::string> cmndBuffer, int clie
 		toUpper(cmdInfo.cmnd_name);
 		if (!isValidCommand(commandHandlerMap, cmdInfo.cmnd_name))
 		{
+			Logger::warning("Invalid command: " + cmdInfo.cmnd_name);
 			sendReply(ERR_UNKNOWNCOMMAND(cmdInfo.cmnd_name), clientFd);
 			continue;
 		}
