@@ -29,12 +29,12 @@ void limitUersMode(commandInfo& cmd, Channel &channel, Server &server, Client &c
 		}
 		if (!isNumber(*flagArgIt))
 		{
-			server.sendReply(ERR_INVALIDMODEPARAM(client.nickname, 'l', *flagArgIt), client.fds.fd);
+			server.sendReply(ERR_INVALIDMODEPARAM(client.nickname, channel.getName(), 'l', *flagArgIt), client.fds.fd);
 			return ;
 		}
 		if (std::atoi((*flagArgIt).c_str()) < 0)
 		{
-			server.sendReply(ERR_INVALIDMODEPARAM(client.nickname, 'l', *flagArgIt), client.fds.fd);
+			server.sendReply(ERR_INVALIDMODEPARAM(client.nickname, channel.getName(), 'l', *flagArgIt), client.fds.fd);
 			return ;
 		}
 		channel.addMode(CHANNEL_MODE_USER_LIMIT);
@@ -82,6 +82,11 @@ void keyMode(commandInfo& cmd, Channel &channel, Server &server, Client &client,
 			server.sendReply(ERR_NEEDMOREPARAMS(std::string("*"), client.nickname, cmd.cmnd_name), client.fds.fd);
 			return ;
 		}
+		if ((*flagArgIt).find(" ") != std::string::npos || (*flagArgIt).empty()) // key contains a space
+		{
+			server.sendReply(ERR_INVALIDMODEPARAM(client.nickname, channel.getName(), 'k', *flagArgIt), client.fds.fd);
+			return ;
+		}
 		channel.addMode(CHANNEL_MODE_KEY);
 		channel.setPassword(*flagArgIt);
 	}
@@ -89,7 +94,7 @@ void keyMode(commandInfo& cmd, Channel &channel, Server &server, Client &client,
 	{
 		if (*flagArgIt != channel.getPassword()) // key doesn't match the channel's key
 		{
-			server.sendReply(ERR_INVALIDMODEPARAM(client.nickname, 'k', *flagArgIt), client.fds.fd);
+			server.sendReply(ERR_INVALIDMODEPARAM(client.nickname, channel.getName(), 'k', *flagArgIt), client.fds.fd);
 			return ;
 		}
 		channel.removeMode(CHANNEL_MODE_KEY);
