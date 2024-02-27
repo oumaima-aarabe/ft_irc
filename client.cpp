@@ -13,5 +13,5 @@ Client::Client(){
 }
 
 Client::~Client(){
-  // Close fds.fd
+  close(fds.fd);
 }

@@ -1,8 +1,10 @@
 #include "server.hpp"
 
-Server::Server(unsigned int port, std::string password){
+Server::Server(unsigned int port, std::string password)
+{
   char hostnam[256];
-  if (gethostname(hostnam, sizeof(hostnam)) == -1){
+  if (gethostname(hostnam, sizeof(hostnam)) == -1)
+  {
     std::cout << "error getting hostname\n";
     return;
   }
@@ -11,8 +13,8 @@ Server::Server(unsigned int port, std::string password){
   this->hostname = hostnam;
 }
 
-Server::~Server(){
-
+Server::~Server()
+{
 }
 
 void Server::create_server()
@@ -54,7 +56,7 @@ void Server::create_server()
     close(socket_fd);
     exit(-3);
   }
-  //listen for connections
+  // listen for connections
   checker = listen(socket_fd, 10);
   if (checker == -1)
   {
@@ -62,16 +64,17 @@ void Server::create_server()
     close(socket_fd);
     exit(-4);
   }
-  //add server fd to pollfds
-  struct  pollfd k;
+  // add server fd to pollfds
+  struct pollfd k;
   k.fd = socket_fd;
   k.events = POLLIN;
   k.revents = 0;
   fds.push_back(k);
 }
 
-int Server::is_server_connection(){
-  //accept connection from server and add it to fds 
+int Server::is_server_connection()
+{
+  // accept connection from server and add it to fds
   int new_sd = accept(socket_fd, NULL, NULL);
   if (new_sd < 0)
   {
@@ -79,10 +82,10 @@ int Server::is_server_connection(){
     {
       std::cout << "accept() failed" << std::endl;
     }
-    return(-1);
+    return (-1);
   }
   std::cout << "New incoming connection " << new_sd << std::endl;
-  struct  pollfd k;
+  struct pollfd k;
   k.fd = new_sd;
   k.events = POLLIN;
   k.revents = 0;
@@ -91,11 +94,12 @@ int Server::is_server_connection(){
   return 0;
 }
 
-int Server::is_client_connection(struct pollfd fds){
+int Server::is_client_connection(struct pollfd fds)
+{
 
-  char buffer[1024] = {0}; //memset \0
+  char buffer[1024] = {0}; // memset \0
 
-  //read the buffer from client (user || new connection)
+  // read the buffer from client (user || new connection)
   int checker = recv(fds.fd, buffer, sizeof(buffer), 0);
   // std::cout << "buffer: <" << buffer << "fd=" << fds.fd << std::endl;
   // std::cout << "users count: " << users.size() << std::endl;
@@ -106,17 +110,28 @@ int Server::is_client_connection(struct pollfd fds){
     std::cout << "recv failed()\n";
     return -1;
   }
-
+  //CTRL+C
   if (checker == 0)
   {
-    // delete user
     printf("  Connection closed\n");
+    close(fds.fd);
+    std::map<int, Client>::iterator it = users.find(fds.fd);
+    if (it != users.end())
+    {
+      users.erase(it);
+    }
+    it = connections.find(fds.fd);
+    if (it != connections.end())
+    {
+      connections.erase(it);
+    }
     return -1;
   }
 
-  //handle cntrl+D
+  // handle cntrl+D
   std::string content = buffer;
-  if (content.find('\n') == std::string::npos){
+  if (content.find('\n') == std::string::npos)
+  {
     if (users.find(fds.fd) != users.end())
     {
       users[fds.fd].buffer += buffer;
@@ -134,25 +149,28 @@ int Server::is_client_connection(struct pollfd fds){
     }
   }
 
-  //client authenticated , exist in users
-    if (users.find(fds.fd) != users.end()){
+  // client authenticated , exist in users
+  if (users.find(fds.fd) != users.end())
+  {
     // parsing and executing cmnds
     std::vector<std::string> cmndBuffer;
     int clientFd = users[fds.fd].fds.fd; // to avoid in case the client closes the connection while processing the request
-    
-    //split by \r\n (from limechat) in case of multiple commands sent by client in quick succession
-    if (content.find('\r') != std::string::npos){
-      cmndBuffer = split(content, "\r\n");       
+
+    // split by \r\n (from limechat) in case of multiple commands sent by client in quick succession
+    if (content.find('\r') != std::string::npos)
+    {
+      cmndBuffer = split(content, "\r\n");
     }
-    //split by \n (from nc)
-    else if (content.find('\n') != std::string::npos){
-      cmndBuffer = split(content, "\n");       
+    // split by \n (from nc)
+    else if (content.find('\n') != std::string::npos)
+    {
+      cmndBuffer = split(content, "\n");
     }
     executeCommands(cmndBuffer, clientFd);
   }
   else
   {
-    //new client
+    // new client
     if (connections.find(fds.fd) == connections.end())
     {
       connections.insert(std::pair<int, Client>(fds.fd, Client(fds, "", "", "", content)));
@@ -162,21 +180,21 @@ int Server::is_client_connection(struct pollfd fds){
       connections[fds.fd].buffer += content;
     }
     if (connections[fds.fd].buffer.find('\r') != std::string::npos)
-      parse_buffer_limechat(connections[fds.fd]); //parse buffer with back slach r
+      parse_buffer_limechat(connections[fds.fd]); // parse buffer with back slach r
     else
     {
-      parse_buffer_nc(connections[fds.fd]); //parse buffer without backslash r
+      parse_buffer_nc(connections[fds.fd]); // parse buffer without backslash r
     }
     connections[fds.fd].buffer = "";
   }
   return 0;
 }
 
-void Server::waiting_for_connections(){
-
+void Server::waiting_for_connections()
+{
   int timeout = (60 * 60 * 1000);
   int checker;
-  
+
   while (true)
   {
     checker = poll(fds.data(), fds.size(), timeout);
@@ -199,30 +217,22 @@ void Server::waiting_for_connections(){
         {
           continue;
         }
-        if (fds[i].revents != POLLIN)
+        if (!(fds[i].revents & POLLIN))
         {
+          //remove this fd from fds then in client connection we will remove it from connections and users
           std::cout << "Error! revents = " << fds[i].revents << std::endl;
-          close(fds[i].fd);
           fds.erase(fds.begin() + i);
-          std::map<int, Client>::iterator it = users.find(fds[i].fd);
-          if (it != users.end()) {
-              users.erase(it);
-          }
-          it = connections.find(fds[i].fd);
-          if (it != connections.end()) {
-              connections.erase(it);
-          }
           continue;
         }
         if (fds[i].fd == socket_fd)
         {
-            if(is_server_connection() == -1)
-              break;
+          if (is_server_connection() == -1)
+            break;
         }
         else
         {
-            if (is_client_connection(fds[i]) == -1)
-              break;
+          if (is_client_connection(fds[i]) == -1)
+            break;
         }
       }
     }
@@ -231,6 +241,6 @@ void Server::waiting_for_connections(){
 
 void Server::sendReply(const std::string &message, int clientFd)
 {
-	if (send(clientFd, message.c_str(), strlen(message.c_str()), 0) == -1)
-		perror("send sys call failed: ");
+  if (send(clientFd, message.c_str(), strlen(message.c_str()), 0) == -1)
+    perror("send sys call failed: ");
 }
