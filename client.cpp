@@ -12,7 +12,6 @@ Client::Client(){
 }
 
 Client::~Client(){
-  close(fds.fd);
 }
 
 void  Client::addChannel(Channel &channel)

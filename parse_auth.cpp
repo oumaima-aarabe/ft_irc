@@ -17,12 +17,12 @@ int  Server::parse_pair(Client &client, std::pair<std::string, std::string> pair
   {
     if (parse_nick(client, pair.second) == -1)
       return (-1);
-    Logger::info("Called NICK command with success to: " + client.nickname);
+    // std::cout << "Called NICK command with success to: " << client.nickname << std::endl;
   }
-  else if (pair.first != "" && !client.password.empty())
+  else
   {
-    Logger::error("Invalid command: " + pair.first);
-    return (-2);
+    std::cout << "BAD COMMAND" << std::endl;
+    return (-1);
   }
   client.buffer = "";
   return (0);
@@ -45,9 +45,8 @@ std::pair<std::string, std::string> my_split_pair(const std::string& line, char 
     return pair;
 }
 
-int Server::my_split_buffer(Client &client, std::string delimiter) {
+void Server::my_split_buffer(Client &client, std::string delimiter) {
     std::string wait = "";
-    int ret;
     std::pair<std::string, std::string> pair;
     size_t found = client.buffer.find(delimiter);
  
@@ -56,19 +55,18 @@ int Server::my_split_buffer(Client &client, std::string delimiter) {
       std::string rec = client.buffer.substr(0, found);
       my_trim_(rec, ' ');
       pair = my_split_pair(rec, ' ');
-      ret = parse_pair(client, pair);
-      if (ret < 0)
+      if (parse_pair(client, pair) < 0)
         break;
       //Deliminer xxx xxx\r\n (if limechat)
       found = client.buffer.find(delimiter);
     }
-    return ret;
+    return ;
 }
 
-int Server::parse_buffer_nc(Client &client)//from nc
+void Server::parse_buffer_nc(Client &client)//from nc
 {
   // std::cout << "Parse using nc" << std::endl;
-  return my_split_buffer(client, "\n");
+  my_split_buffer(client, "\n");
 }
 
 void Server::parse_buffer_limechat(Client &client)

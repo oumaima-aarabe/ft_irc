@@ -174,9 +174,10 @@ void Channel::invite(Client const &client)
 
 void Channel::removeInvite(Client const &client) {
     for (std::vector<Client>:: iterator it = inviteList.begin(); it != inviteList.end(); it++) {
-        if (it->nickname == client.nickname)
+        if (it->nickname == client.nickname) {
             inviteList.erase(it);
             return ;
+        }
     }
 }
 
