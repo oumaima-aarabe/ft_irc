@@ -1,7 +1,12 @@
 #include "../server.hpp"
 
-// void ft_quit(commandInfo& cmd, Server& server, Client& client) 
-// {
+void ft_quit(commandInfo& cmd, Server& server, Client& client) 
+{
+        (void) cmd;
+    (void) server;
+    (void) client;
+    return ;
+}
 //     std::vector<Client> chared_channels;
 
 

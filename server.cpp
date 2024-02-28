@@ -27,7 +27,8 @@ void Server::create_server()
   if (socket_fd == -1)
   {
     std::cerr << "socket failed" << std::endl;
-    close(socket_fd);
+    if (socket_fd)
+      close(socket_fd);
     exit(-1);
   }
   // set socket options
@@ -35,14 +36,16 @@ void Server::create_server()
   if (checker < 0)
   {
     perror("setsockopt() failed");
-    close(socket_fd);
+    if (socket_fd)
+      close(socket_fd);
     exit(-6);
   }
   // Set the socket to non-blocking mode
   if (fcntl(socket_fd, F_SETFL, O_NONBLOCK) == -1)
   {
     std::cerr << "fcntl failed" << std::endl;
-    close(socket_fd);
+    if (socket_fd)
+      close(socket_fd);
     exit(-2);
   }
   // define this socket with ip and  port
@@ -51,7 +54,8 @@ void Server::create_server()
   {
     std::cerr << "bind failed" << std::endl;
     perror(NULL);
-    close(socket_fd);
+    if (socket_fd)
+      close(socket_fd);
     exit(-3);
   }
   //listen for connections
@@ -59,7 +63,8 @@ void Server::create_server()
   if (checker == -1)
   {
     std::cerr << "listen failed" << std::endl;
-    close(socket_fd);
+    if (socket_fd)
+      close(socket_fd);
     exit(-4);
   }
   //add server fd to pollfds
@@ -110,7 +115,8 @@ int Server::is_client_connection(struct pollfd fds){
   if (checker == 0)
   {
     printf("  Connection closed\n");
-    close(fds.fd);
+    if (socket_fd)
+      close(socket_fd);
     std::map<int, Client>::iterator it = users.find(fds.fd);
     if (it != users.end()) {
         users.erase(it);
@@ -118,6 +124,8 @@ int Server::is_client_connection(struct pollfd fds){
     it = connections.find(fds.fd);
     if (it != connections.end()) {
       connections.erase(it);
+      if (fds.fd)
+        close(fds.fd);
     }
     return -1;
   }
