@@ -17,7 +17,6 @@ Server::~Server(){
 
 void Server::create_server()
 {
-  int on = 1;
 
   ip4addr.sin_port = htons(port);
   ip4addr.sin_family = AF_INET;
@@ -32,6 +31,7 @@ void Server::create_server()
     exit(-1);
   }
   // set socket options
+  int on = 1;
   int checker = setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, (char *)&on, sizeof(on));
   if (checker < 0)
   {
@@ -41,7 +41,7 @@ void Server::create_server()
     exit(-6);
   }
   // Set the socket to non-blocking mode
-  if (fcntl(socket_fd, F_SETFL, O_NONBLOCK) == -1)
+  if (fcntl(socket_fd, F_GETFL) == -1)
   {
     std::cerr << "fcntl failed" << std::endl;
     if (socket_fd)
@@ -59,7 +59,7 @@ void Server::create_server()
     exit(-3);
   }
   //listen for connections
-  checker = listen(socket_fd, 10);
+  checker = listen(socket_fd, 1024);
   if (checker == -1)
   {
     std::cerr << "listen failed" << std::endl;

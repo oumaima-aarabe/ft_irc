@@ -21,6 +21,7 @@ int  Server::parse_pair(Client &client, std::pair<std::string, std::string> pair
   }
   else
   {
+    // send ();
     std::cout << "BAD COMMAND" << std::endl;
     return (-1);
   }

@@ -35,7 +35,6 @@ void Server::executeCommands(const std::vector<std::string> cmndBuffer, int clie
 		client.buffer = cmndBuffer[i];
 		commandHandlerMap[cmdInfo.cmnd_name](cmdInfo, *this, client); // execute the CommandHandlerFunc corresponding to the command name
 	}
-	Logger::info("  HERE " + client.channels_joined[0].getName());
 }
 
 commandInfo parseCmndBuffer(const std::string &commandMessage) {
