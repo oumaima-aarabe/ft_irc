@@ -44,9 +44,12 @@ std::map<int, Client>::iterator Server::getClientByNickname(const std::string &n
 
 void Server::removeClientFromServer(Client &client)
 {
-  for (std::map<int, Client>::iterator it = this->users.begin(); it != this->users.end(); it++)
-		if (it->second.nickname == client.nickname)
-			users.erase(it);
-      if (socket_fd)
-        close(socket_fd);
+  std::map<int, Client>::iterator it = users.find(client.fds.fd);
+  if (it != users.end())
+    users.erase(it);
+  it = connections.find(client.fds.fd);
+  if (it != connections.end())
+    connections.erase(it);
+    if (client.fds.fd)
+    close(client.fds.fd);
 }
