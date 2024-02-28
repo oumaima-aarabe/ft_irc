@@ -8,7 +8,7 @@ bool isValidCommand(std::map<std::string, CommandHandlerFunc> commandHandlerMap,
 }
 
 void Server::executeCommands(const std::vector<std::string> cmndBuffer, int clientFd) {
-  Client client = users[clientFd];
+  Client &client = users[clientFd];
 	std::map<std::string, CommandHandlerFunc> commandHandlerMap;
 	commandHandlerMap["PONG"] = ft_pong; //to ignore
 	commandHandlerMap["JOIN"] = ft_join;
@@ -35,6 +35,7 @@ void Server::executeCommands(const std::vector<std::string> cmndBuffer, int clie
 		client.buffer = cmndBuffer[i];
 		commandHandlerMap[cmdInfo.cmnd_name](cmdInfo, *this, client); // execute the CommandHandlerFunc corresponding to the command name
 	}
+	Logger::info("  HERE " + client.channels_joined[0].getName());
 }
 
 commandInfo parseCmndBuffer(const std::string &commandMessage) {

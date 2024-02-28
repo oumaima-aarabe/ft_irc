@@ -31,6 +31,7 @@ bool joinReply(Server &server, Client &client, Channel &channel, bool newCnx)
         server.sendReply( ERR_CHANNELISFULL(std::string("*"), client.nickname, channel.getName()), client.fds.fd);
         return (false);
     }
+    client.addChannel(channel);
     if (newCnx)
         channel.addOpe(client.nickname);
     Logger::debug("User [" + client.nickname + "] is joining the channel [" + channel.getName() + "].");
@@ -67,7 +68,7 @@ void ft_join(commandInfo &cmd, Server &server, Client &client)
             Channel new_channel = Channel(channels[i].name, "");
             joinReply(server, client, new_channel, true);
             server.channels.push_back(new_channel);
-            client.addChannel(new_channel);
+            // client.addChannel(new_channel);
             continue;
         }
         // check if channel is invite only
@@ -88,7 +89,7 @@ void ft_join(commandInfo &cmd, Server &server, Client &client)
         }
         if (joinReply(server, client, *ex_channel, false))
         {
-            client.addChannel(*ex_channel);
+            // client.addChannel(*ex_channel);
             ex_channel->removeInvite(client);
         }
     }
