@@ -44,7 +44,7 @@
 #define RPL_ENDOFEXCEPTLIST 349
 #define RPL_VERSION 351
 #define RPL_NAMREPLY(servername, nick, symbol, channel, users) \
- ":" + servername + " 353 " + nick + " " + symbol + " " + channel + " :@" + users + "\n\r"
+ ":" + servername + " 353 " + nick + " " + symbol + " " + channel + " :" + users + "\n\r"
 #define RPL_ENDOFNAMES(servername, nick, channel) \
  ":" + servername + " 366 " + nick + " " + channel + " :End of /NAMES list\n\r"
 #define RPL_ENDOFWHOWAS 369

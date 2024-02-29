@@ -91,11 +91,14 @@ std::string Channel::listClients()
     std::string list_users;
     for (size_t i = 0; i < allClientsList.size(); i++)
     {
+        if (isOpe(allClientsList[i].nickname))
+            list_users += "@";
         list_users += allClientsList[i].nickname;
         list_users += " ";
     }
     return list_users;
 }
+
 bool Channel::isJoined(std::string const &nickname)
 {
     for (size_t i = 0; i < allClientsList.size(); i++) 

@@ -36,7 +36,7 @@ std::vector<std::string> split(const std::string &input, const std::string &sepa
 
 std::string setPrefix(std::string hostname, std::string nickname, std::string username)
 {
-	return (":" + nickname + "!~" + username + "@" + hostname);
+	return (":" + nickname + "!" + username + "@" + hostname);
 	// return (":" + nickname + "!~" + username + "@" + hostname + " " + buffer);
 }
 
