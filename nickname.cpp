@@ -25,30 +25,32 @@ int  Server::parse_nick(Client &client, std::string value){
   if (!client.password.empty()){
     std::vector<std::string> ret = split(value, " ");
     if (ret.size() == 0){
-      // err =  ":* 431 * :No nickname given\n";
       err = ERR_NONICKNAMEGIVEN(std::string("*"));
-      send(client.fds.fd, err.c_str(), err.size() +1, 0); 
+      sendReply(err.c_str(), client.fds.fd); 
       return (0);
     }
-    else if (ret.size() != 1)
+    if (ret.size() != 1)
     {
       err =  ":* 461 * :Not enough parameters\n";
-      send(client.fds.fd, err.c_str(), err.size() + 1, 0);
+      sendReply(err.c_str(), client.fds.fd);
       return (0);
     }
-    else if (if_nick_exist(value)) {
-      err = ERR_NICKNAMEINUSE(std::string("*"), std::string("*"));
-      send(client.fds.fd, err.c_str(), err.size() + 1, 0);
+    if (!isValidNick(value))
+	  {
+	  	sendReply(ERR_ERRONEUSNICKNAME(std::string("*"), value), client.fds.fd);
+	  	return (0);
+	  }
+    if (if_nick_exist(value)) {
+      err = ERR_NICKNAMEINUSE(std::string("*"), value);
+      sendReply(err.c_str(), client.fds.fd);
       return (0);
-    } else {
+    }
       client.nickname = nickname;
-    }
   }
   else
   {
-    // std::cout << "password not set" << std::endl;
     std::string message_error = ":* 667 * :Enter PASS <password>, NICK <nickname>, USER <user>\n";
-    send(client.fds.fd, message_error.c_str(), message_error.size() + 1, 0);
+    sendReply(message_error.c_str(), client.fds.fd);
     return (-1);
   }
   if (!client.username.empty()){

@@ -35,6 +35,7 @@ void ft_invite(commandInfo& cmd, Server& server, Client& client) {
 		return ;
 	}
 	channelIter->invite(target->second);
+	Logger::info("  " + client.nickname + " invited " + target->second.nickname + " to " + channelIter->getName());
     server.sendReply(RPL_INVITING(std::string("*"), client.nickname, cmd.cmnd_args[0], cmd.cmnd_args[1]), client.fds.fd);
 	server.sendReply(RPL_CUSTOM_INVITE(setPrefix(server.hostname, client.nickname, client.username), cmd.cmnd_args[0], channelIter->getName()), target->second.fds.fd);
 }

@@ -1,4 +1,5 @@
 #include "Utils.hpp"
+#include "server.hpp"
 
 void my_trim_(std::string& s, char delimiter) {
     size_t p = s.find_first_not_of(delimiter);
@@ -60,4 +61,10 @@ void toUpper(std::string &str)
 {
 	for (size_t i = 0; i < str.length(); i++)
 		str[i] = toupper(str[i]);
+}
+
+void Server::sendReply(const std::string &message, int clientFd)
+{
+	if (send(clientFd, message.c_str(), message.size() + 1, 0) == -1)
+		perror("send sys call failed: ");
 }

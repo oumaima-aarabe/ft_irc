@@ -7,6 +7,10 @@ int main(int ac, char **av)
     Logger::error("ERROR : ./exec port password");
     return (1);
   }
+  if (atoi(av[1]) > 49151|| atoi(av[1]) < 1024){
+    std::cout << "invalid port value\n";
+    return 0;
+  }
   std::string port = av[1];
   std::string pass = av[2];
   int i = 0;

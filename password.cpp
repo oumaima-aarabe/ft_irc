@@ -10,7 +10,7 @@ void Server::WelcomeMessage(Client &client)
     msg += ":" + hostname + " 251 " + client.nickname + " :There are " +  to_string(users.size() + 1) + " users and 1 bot on 1 servers\r\n";
     msg += ":" + hostname + " 375 " + client.nickname + " :- " + hostname + " Message of the day -\r\n";
     msg += ":" + hostname + " 376 " + client.nickname + " :End of MOTD command\r\n";
-    send(client.fds.fd, msg.c_str() , msg.size() + 1 , 0);
+    sendReply(msg.c_str(), client.fds.fd);
 }
 
 int  Server::parse_pass(Client &client, std::string value){
@@ -18,13 +18,13 @@ int  Server::parse_pass(Client &client, std::string value){
 
   if (client.password != ""){
     error = ERR_PASSWDALREADYSET(std::string("*"));
-    send(client.fds.fd, error.c_str(), error.size() + 1, 0);
+    sendReply(error.c_str(), client.fds.fd);
     return 0;
   }
   if (value != password)
   {
     error = ERR_PASSWDMISMATCH(std::string("*"));
-    send(client.fds.fd, error.c_str(), error.size() + 1, 0);
+    sendReply(error.c_str(), client.fds.fd);
     return -1;
   }
   else{
