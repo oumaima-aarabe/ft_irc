@@ -1,7 +1,7 @@
 - Close fd in client destructor.
-- "\r\n" in numeric replies and broadcast (for kaoutar)
 - check if forth argument of USER needs to be stored as a full name.
 - check available ports range
 - Join 0
 - leaks fd /buffer
 - servername ?
+- remove fsasnitize and wildcard from Makefile before final push
