@@ -41,7 +41,7 @@ void Server::create_server()
     exit(-6);
   }
   // Set the socket to non-blocking mode
-  if (fcntl(socket_fd, F_GETFL) == -1)
+  if (fcntl(socket_fd, F_SETFL, O_NONBLOCK) == -1)
   {
     std::cerr << "fcntl failed" << std::endl;
     if (socket_fd)
