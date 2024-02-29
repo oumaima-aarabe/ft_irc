@@ -153,8 +153,12 @@ void ft_mode(commandInfo& cmd, Server &server, Client &client) {
         else
         {
 			foundMode = true;
-            if (std::string("itlok").find(firstArg[i]) != std::string::npos) //if the mode is valid
+            if (std::string("itloksn").find(firstArg[i]) != std::string::npos) //if the mode is valid
 			{
+				if (firstArg[i] == 's')
+					continue ;
+				if (firstArg[i] == 'n')
+					continue ;
 				if (firstArg[i] == 'i') {
 				    InviteMode(cmd, *channel, server, client, addSign);
 				}
@@ -177,7 +181,7 @@ void ft_mode(commandInfo& cmd, Server &server, Client &client) {
 			else
 			{
 				server.sendReply(ERR_UNKNOWNMODE(std::string("*"), client.nickname, firstArg[i]), client.fds.fd);
-				continue;
+				continue ;
 			}
         }
     }
