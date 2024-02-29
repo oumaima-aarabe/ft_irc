@@ -1,6 +1,4 @@
 NAME = ircserv
-SRCS = client.cpp cmnds.cpp main.cpp nickname.cpp \
-	password.cpp server.cpp username.cpp parse_auth.cpp \
 
 SRCS = $(shell find . -name '*.cpp')
 

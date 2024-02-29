@@ -1,13 +1,5 @@
 - Close fd in client destructor.
-- Delete user when connection is closed in Server:is_client_connection.
-- NICK
-- TOPIC
-- QUIT
-- PRIVMSG
-- NOTICE
 - "\r\n" in numeric replies and broadcast (for kaoutar)
 - check if forth argument of USER needs to be stored as a full name.
 - check available ports range
-
-- ^C
-
+- Join 0
