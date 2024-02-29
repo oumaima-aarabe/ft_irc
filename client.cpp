@@ -12,7 +12,6 @@ Client::Client(){
 }
 
 Client::~Client(){
-  close (fds.fd);
 }
 
 void  Client::addChannel(Channel &channel)
@@ -45,13 +44,20 @@ std::map<int, Client>::iterator Server::getClientByNickname(const std::string &n
 
 void Server::removeClientFromServer(Client &client)
 {
-  std::map<int, Client>::iterator it = users.find(client.fds.fd);
-  if (it != users.end())
+  std::map<int, Client>::iterator it2 = users.find(client.fds.fd);
+  if (it2 != users.end())
   {
-    close(it->second.fds.fd);
-      users.erase(it);
+    std::vector<struct pollfd>::iterator it = this->fds.begin();
+    while (it != this->fds.end())
+    {
+      if (it->fd == client.fds.fd)
+      {
+        it = this->fds.erase(it);
+        break;
+      }
+      it++;
+    }
+    close(it2->second.fds.fd);
+      users.erase(it2);
   }
-  // it = connections.find(client.fds.fd);
-  // if (it != connections.end())
-  //   connections.erase(it);
 }
