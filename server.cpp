@@ -86,7 +86,7 @@ int Server::is_server_connection(){
     }
     return(-1);
   }
-  Logger::info("New incoming connection");
+  Logger::info("New incoming connection " + to_string(new_sd));
   struct  pollfd k;
   k.fd = new_sd;
   k.events = POLLIN;
