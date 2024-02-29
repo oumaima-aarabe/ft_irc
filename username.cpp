@@ -40,7 +40,6 @@ int  Server::parse_user(Client &client, std::string value){
   }
   else
   {
-    // std::cout << "password not set" << std::endl;
     std::string message_error = ":* 667 * :Enter PASS <password>, NICK <nickname>, USER <user>\n";
     send(client.fds.fd, message_error.c_str(), message_error.size() + 1, 0);
     return (-1);

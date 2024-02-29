@@ -3,7 +3,7 @@
 Server::Server(unsigned int port, std::string password){
   char hostnam[256];
   if (gethostname(hostnam, sizeof(hostnam)) == -1){
-    std::cout << "error getting hostname\n";
+    Logger::error("Error getting hostname");
     return;
   }
   this->port = port;
@@ -82,11 +82,11 @@ int Server::is_server_connection(){
   {
     if (errno != EWOULDBLOCK)
     {
-      std::cout << "accept() failed" << std::endl;
+      Logger::error("accept() failed");
     }
     return(-1);
   }
-  std::cout << "New incoming connection " << new_sd << std::endl;
+  Logger::info("New incoming connection");
   struct  pollfd k;
   k.fd = new_sd;
   k.events = POLLIN;
@@ -102,13 +102,10 @@ int Server::is_client_connection(struct pollfd fds){
 
   //read the buffer from client (user || new connection)
   int checker = recv(fds.fd, buffer, sizeof(buffer), 0);
-  // std::cout << "buffer: <" << buffer << "fd=" << fds.fd << std::endl;
-  // std::cout << "users count: " << users.size() << std::endl;
-  // std::cout << "connections count: " << connections.size() << std::endl;
 
   if (checker < 0)
   {
-    std::cout << "recv failed()\n";
+    Logger::error("recv() failed");
     return -1;
   }
 
@@ -198,12 +195,12 @@ void Server::waiting_for_connections(){
     checker = poll(fds.data(), fds.size(), timeout);
     if (checker < 0)
     {
-      std::cout << "poll() failed" << std::endl;
+      Logger::error("poll() failed");
       break;
     }
     if (checker == 0)
     {
-      std::cout << "poll() timeout" << std::endl;
+      Logger::error("poll() timeout");
       break;
     }
     else
