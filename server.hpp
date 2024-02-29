@@ -65,6 +65,8 @@ class Server{
     int  if_user_exist(std::string value);
     int  parse_pass(Client &client, std::string value);
     int  parse_nick(Client &client, std::string value);
+    bool isValidNickChar(char c);
+    bool isValidNick(std::string &nickname);
     int  parse_user(Client &client, std::string value);
     int  parse_pair(Client &client, std::pair<std::string, std::string> pair);
     void WelcomeMessage(Client &client);

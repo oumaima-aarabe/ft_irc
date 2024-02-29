@@ -1,11 +1,11 @@
 #include "../server.hpp"
 
-bool isValidNickChar(char c)
+bool Server::isValidNickChar(char c)
 {
 	return (!(c == '#' || c == ':' || c == ' '));
 }
 
-bool isValidNick(std::string &nickname)
+bool Server::isValidNick(std::string &nickname)
 {
 	if (nickname.empty())
 		return (false);
@@ -17,18 +17,6 @@ bool isValidNick(std::string &nickname)
 	return (true);
 }
 
-bool isAlreadyUsed(commandInfo &cmd, Server &server)
-{
-	std::map<int, Client> users = server.users;
-
-	for (std::map<int, Client>::iterator it = users.begin(); it != users.end(); ++it)
-	{
-		if (it->second.nickname == cmd.cmnd_args[0])
-			return (true);
-	}
-	return (false);
-}
-
 void ft_nick(commandInfo& cmd, Server& server, Client& client) 
 {
 	if (!cmd.cmnd_args.size())
@@ -36,12 +24,12 @@ void ft_nick(commandInfo& cmd, Server& server, Client& client)
 		server.sendReply(ERR_NONICKNAMEGIVEN(std::string("*")), client.fds.fd);
 		return;
 	}
-	if (!isValidNick(cmd.cmnd_args[0]))
+	if (!server.isValidNick(cmd.cmnd_args[0]))
 	{
 		server.sendReply(ERR_ERRONEUSNICKNAME(std::string("*"), cmd.cmnd_args[0]), client.fds.fd);
 		return;
 	}
-	if (isAlreadyUsed(cmd, server))
+	if (server.if_nick_exist(cmd.cmnd_args[0]))
 	{
 		server.sendReply(ERR_NICKNAMEINUSE(std::string("*"), cmd.cmnd_args[0]), client.fds.fd);
 		return;

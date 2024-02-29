@@ -25,24 +25,27 @@ int  Server::parse_nick(Client &client, std::string value){
   if (!client.password.empty()){
     std::vector<std::string> ret = split(value, " ");
     if (ret.size() == 0){
-      // err =  ":* 431 * :No nickname given\n";
       err = ERR_NONICKNAMEGIVEN(std::string("*"));
       sendReply(err.c_str(), client.fds.fd); 
       return (0);
     }
-    else if (ret.size() != 1)
+    if (ret.size() != 1)
     {
       err =  ":* 461 * :Not enough parameters\n";
       sendReply(err.c_str(), client.fds.fd);
       return (0);
     }
-    else if (if_nick_exist(value)) {
+    if (!isValidNick(value))
+	  {
+	  	sendReply(ERR_ERRONEUSNICKNAME(std::string("*"), value), client.fds.fd);
+	  	return (0);
+	  }
+    if (if_nick_exist(value)) {
       err = ERR_NICKNAMEINUSE(std::string("*"), value);
       sendReply(err.c_str(), client.fds.fd);
       return (0);
-    } else {
-      client.nickname = nickname;
     }
+      client.nickname = nickname;
   }
   else
   {
