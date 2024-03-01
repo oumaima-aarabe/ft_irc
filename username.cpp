@@ -47,6 +47,8 @@ int  Server::parse_user(Client &client, std::string value){
   if (!client.nickname.empty())
   {
     users[client.fds.fd] = Client(client);
+    // std::map<int, Client>::iterator it = connections.find(client.fds.fd);
+    // connections.erase(it);
     WelcomeMessage(client);
   }
   return (0);

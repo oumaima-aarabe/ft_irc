@@ -21,12 +21,12 @@ int Server::is_server_connection(){
   return 0;
 }
 
-int Server::is_client_connection(struct pollfd fds){
+int Server::is_client_connection(struct pollfd fd_struct, int i){
 
   char buffer[1024] = {0};
 
   //read the buffer from client (user || new connection)
-  int checker = recv(fds.fd, buffer, sizeof(buffer), 0);
+  int checker = recv(fd_struct.fd, buffer, sizeof(buffer), 0);
 
   if (checker < 0)
   {
@@ -36,12 +36,12 @@ int Server::is_client_connection(struct pollfd fds){
 
   if (checker == 0)
   {
-    std::vector<std::string>	cmnd_arg;
-    std::string list_channels;
-    cmnd_arg.push_back(list_channels);
-    commandInfo C = {"PART", cmnd_arg};
-    std::map<int, Client>::iterator it = users.find(fds.fd);
-    ft_quit(C, *this, it->second);
+    // std::vector<std::string>	cmnd_arg;
+    // std::string list_channels;
+    // cmnd_arg.push_back(list_channels);
+    // commandInfo C = {"PART", cmnd_arg};
+    // std::map<int, Client>::iterator it = users.find(fds.fd);
+    // ft_quit(C, *this, it->second);
     // Logger::info("  Connection closed");
     // if (it != users.end())
     // {   
@@ -63,34 +63,46 @@ int Server::is_client_connection(struct pollfd fds){
     //   connections.erase(it);
     //     close(fds.fd);
     // }
+
+    Logger::info("  Connection closed");
+    std::map<int, Client>::iterator it = connections.find(fd_struct.fd);
+    if (it != connections.end()){
+      connections.erase(it);
+    }
+    it = users.find(fd_struct.fd);
+    if (it != users.end()){
+      users.erase(it);
+    }
+    fds.erase(fds.begin() + i);
+    close(fd_struct.fd);
     return -1;
   }
 
   //handle cntrl+D
   std::string content = buffer;
   if (content.find('\n') == std::string::npos){
-    if (users.find(fds.fd) != users.end())
+    if (users.find(fd_struct.fd) != users.end())
     {
-      users[fds.fd].buffer += buffer;
+      users[fd_struct.fd].buffer += buffer;
       return 0;
     }
-    else if (connections.find(fds.fd) != connections.end())
+    else if (connections.find(fd_struct.fd) != connections.end())
     {
-      connections[fds.fd].buffer += buffer;
+      connections[fd_struct.fd].buffer += buffer;
       return 0;
     }
     else
     {
-      connections.insert(std::pair<int, Client>(fds.fd, Client(fds, "", "", "", content)));
+      connections.insert(std::pair<int, Client>(fd_struct.fd, Client(fd_struct, "", "", "", content)));
       return 0;
     }
   }
 
     //client authenticated , exist in users
-    if (users.find(fds.fd) != users.end()){
+    if (users.find(fd_struct.fd) != users.end()){
     // parsing and executing cmnds
     std::vector<std::string> cmndBuffer;
-    int clientFd = users[fds.fd].fds.fd; // to avoid in case the client closes the connection while processing the request
+    int clientFd = users[fd_struct.fd].fds.fd; // to avoid in case the client closes the connection while processing the request
     
     //split by \r\n (from limechat) in case of multiple commands sent by client in quick succession
     if (content.find('\r') != std::string::npos){
@@ -105,21 +117,21 @@ int Server::is_client_connection(struct pollfd fds){
   else
   {
     //new client
-    if (connections.find(fds.fd) == connections.end())
+    if (connections.find(fd_struct.fd) == connections.end())
     {
-      connections.insert(std::pair<int, Client>(fds.fd, Client(fds, "", "", "", content)));
+      connections.insert(std::pair<int, Client>(fd_struct.fd, Client(fd_struct, "", "", "", content)));
     }
     else
     {
-      connections[fds.fd].buffer += content;
+      connections[fd_struct.fd].buffer += content;
     }
-    if (connections[fds.fd].buffer.find('\r') != std::string::npos)
-      parse_buffer_limechat(connections[fds.fd]); //parse buffer with back slach r
+    if (connections[fd_struct.fd].buffer.find('\r') != std::string::npos)
+      parse_buffer_limechat(connections[fd_struct.fd]); //parse buffer with back slach r
     else
     {
-      parse_buffer_nc(connections[fds.fd]); //parse buffer without backslash r
+      parse_buffer_nc(connections[fd_struct.fd]); //parse buffer without backslash r
     }
-    connections[fds.fd].buffer = "";
+    connections[fd_struct.fd].buffer = "";
   }
   return 0;
 }

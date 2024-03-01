@@ -87,7 +87,7 @@ void Server::waiting_for_connections(){
         {
           continue;
         }
-        if (fds[i].revents != POLLIN)
+        if (!(fds[i].revents & POLLIN))
         {
           // std::cout << "Error! revents = " << fds[i].revents << std::endl;
           continue;
@@ -99,7 +99,7 @@ void Server::waiting_for_connections(){
         }
         else
         {
-            if (is_client_connection(fds[i]) == -1)
+            if (is_client_connection(fds[i], i) == -1)
               break;
         }
       }

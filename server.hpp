@@ -57,7 +57,7 @@ class Server{
     void create_server();
     void waiting_for_connections();
     int  is_server_connection();
-    int  is_client_connection(struct pollfd fds);
+    int  is_client_connection(struct pollfd fd_struct, int index);
     void parse_buffer_nc(Client &client);
     void parse_buffer_limechat(Client &client);
     void my_split_buffer(Client &client, std::string delimiter);
