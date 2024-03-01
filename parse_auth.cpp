@@ -46,7 +46,6 @@ std::pair<std::string, std::string> my_split_pair(const std::string& line, char 
 }
 
 void Server::my_split_buffer(Client &client, std::string delimiter) {
-    std::string wait = "";
     std::pair<std::string, std::string> pair;
     size_t found = client.buffer.find(delimiter);
  

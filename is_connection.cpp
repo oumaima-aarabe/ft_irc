@@ -36,35 +36,7 @@ int Server::is_client_connection(struct pollfd fd_struct, int i){
 
   if (checker == 0)
   {
-    // std::vector<std::string>	cmnd_arg;
-    // std::string list_channels;
-    // cmnd_arg.push_back(list_channels);
-    // commandInfo C = {"PART", cmnd_arg};
-    // std::map<int, Client>::iterator it = users.find(fds.fd);
-    // ft_quit(C, *this, it->second);
-    // Logger::info("  Connection closed");
-    // if (it != users.end())
-    // {   
-    //     std::vector<struct pollfd>::iterator it2 = this->fds.begin();
-    //     while (it2 != this->fds.end())
-    //     {
-    //       if (it2->fd == it->first)
-    //       {
-    //         it2 = this->fds.erase(it2);
-    //         break;
-    //       }
-    //       it2++;
-    //     }
-    //       users.erase(it);
-    //       close(fds.fd);
-    // }
-    // it = connections.find(fds.fd);
-    // if (it != connections.end()) {
-    //   connections.erase(it);
-    //     close(fds.fd);
-    // }
-
-    Logger::info("  Connection closed");
+    Logger::info("Connection closed");
     std::map<int, Client>::iterator it = connections.find(fd_struct.fd);
     if (it != connections.end()){
       connections.erase(it);
@@ -102,8 +74,8 @@ int Server::is_client_connection(struct pollfd fd_struct, int i){
     if (users.find(fd_struct.fd) != users.end()){
     // parsing and executing cmnds
     std::vector<std::string> cmndBuffer;
-    int clientFd = users[fd_struct.fd].fds.fd; // to avoid in case the client closes the connection while processing the request
-    
+    // to avoid in case the client closes the connection while processing the request
+    int clientFd = users[fd_struct.fd].fds.fd; 
     //split by \r\n (from limechat) in case of multiple commands sent by client in quick succession
     if (content.find('\r') != std::string::npos){
       cmndBuffer = split(content, "\r\n");       

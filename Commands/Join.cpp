@@ -52,7 +52,7 @@ void ft_join(commandInfo &cmd, Server &server, Client &client)
         return;
     }
     std::vector<ChannelJoin> channels = split_args(cmd);
-    if (channels.size() == 1 && channels[0].name == "0")
+    if (channels.size() == 1 && channels[0].name == "0") // case JOIN 0
     {
         ft_quit(cmd, server, client);
         return;
@@ -98,5 +98,4 @@ void ft_join(commandInfo &cmd, Server &server, Client &client)
             ex_channel->removeInvite(client);
         }
     }
-    // case JOIN 0
 }
