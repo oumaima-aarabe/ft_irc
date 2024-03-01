@@ -24,7 +24,7 @@ int  Server::parse_user(Client &client, std::string value){
   }
   if (!client.password.empty()){
     std::vector<std::string> ret = split(value, " ");
-    if (ret.size() != 4){
+    if (ret.size() < 4){
       message_error =  ":* 461 * :Not enough parameters\n";
       send(client.fds.fd, message_error.c_str(), message_error.size() + 1, MSG_OOB);
       return (0);
@@ -46,9 +46,7 @@ int  Server::parse_user(Client &client, std::string value){
   }
   if (!client.nickname.empty())
   {
-    users[client.fds.fd] = Client(client);
-    // std::map<int, Client>::iterator it = connections.find(client.fds.fd);
-    // connections.erase(it);
+     users[client.fds.fd] = Client(client);
     WelcomeMessage(client);
   }
   return (0);

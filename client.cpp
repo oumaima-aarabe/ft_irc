@@ -47,23 +47,21 @@ std::map<int, Client>::iterator Server::getClientByNickname(const std::string &n
 
 void Server::removeClientFromServer(Client &client)
 {
-  std::map<int, Client>::iterator it2 = users.find(client.fds.fd);
-  if (it2 != users.end())
-  {
-    std::vector<struct pollfd>::iterator it = this->fds.begin();
-    while (it != this->fds.end())
-    {
-      if (it->fd == client.fds.fd)
-      {
-        it = this->fds.erase(it);
-        break;
-      }
-      it++;
-    }
-    close(it2->second.fds.fd);
-      users.erase(it2);
+  for (std::vector<struct pollfd>::iterator it2 = this->fds.begin(); it2 != this->fds.end(); it2++)
+	{
+		if (it2->fd == client.fds.fd)
+		{
+			this->fds.erase(it2);
+			break;
+		}
+	}
+  close(client.fds.fd);
+  std::map<int, Client>::iterator it = connections.find(client.fds.fd);
+  if (it != connections.end()){
+  connections.erase(it);
   }
-  it2 = connections.find(client.fds.fd);
-  if (it2 != connections.end())
-    connections.erase(it2);
+  it = users.find(client.fds.fd);
+  if (it != users.end()){
+    users.erase(it);
+  }
 }
