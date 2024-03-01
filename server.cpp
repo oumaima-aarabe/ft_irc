@@ -12,6 +12,8 @@ Server::Server(unsigned int port, std::string password){
 }
 
 Server::~Server(){
-
+  for(size_t i = 0; i < fds.size(); i++){
+    close (fds[i].fd);
+  }
 }
 
