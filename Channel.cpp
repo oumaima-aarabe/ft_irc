@@ -157,8 +157,6 @@ void Channel::removeOpe(std::string const &nickname)
 
 void Channel::removeClient(Client const &client)
 {
-    if (isOpe(client.nickname) == true)
-        removeOpe(client.nickname);
     for (std::vector<Client>::iterator it = allClientsList.begin(); it != allClientsList.end(); it++)
     {
         if (it->fds.fd == client.fds.fd)

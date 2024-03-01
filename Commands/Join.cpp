@@ -52,6 +52,11 @@ void ft_join(commandInfo &cmd, Server &server, Client &client)
         return;
     }
     std::vector<ChannelJoin> channels = split_args(cmd);
+    if (channels.size() == 1 && channels[0].name == "0")
+    {
+        ft_quit(cmd, server, client);
+        return;
+    }
     for (size_t i = 0; i < channels.size(); i++)
     {
         if (channels[i].name.empty())

@@ -21,10 +21,13 @@ void  Client::addChannel(Channel &channel)
 
 void  Client::removeChannel(Channel &channel)
 {
-    for (std::vector<Channel>::iterator it = channels_joined.begin(); it != channels_joined.end(); it++) {
+    for (std::vector<Channel>::iterator it = channels_joined.begin(); it != channels_joined.end(); it++)
+    {
       if (it->getName() == channel.getName())
+      {
         channels_joined.erase(it);
         return;
+      }
     }
 }
 
@@ -60,4 +63,7 @@ void Server::removeClientFromServer(Client &client)
     close(it2->second.fds.fd);
       users.erase(it2);
   }
+  it2 = connections.find(client.fds.fd);
+  if (it2 != connections.end())
+    connections.erase(it2);
 }

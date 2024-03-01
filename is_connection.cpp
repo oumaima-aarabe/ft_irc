@@ -36,17 +36,33 @@ int Server::is_client_connection(struct pollfd fds){
 
   if (checker == 0)
   {
-    printf("  Connection closed\n");
+    std::vector<std::string>	cmnd_arg;
+    std::string list_channels;
+    cmnd_arg.push_back(list_channels);
+    commandInfo C = {"PART", cmnd_arg};
     std::map<int, Client>::iterator it = users.find(fds.fd);
-    if (it != users.end()) {
-        users.erase(it);
-    }
-    it = connections.find(fds.fd);
-    if (it != connections.end()) {
-      connections.erase(it);
-      if (fds.fd)
-        close(fds.fd);
-    }
+    ft_quit(C, *this, it->second);
+    // Logger::info("  Connection closed");
+    // if (it != users.end())
+    // {   
+    //     std::vector<struct pollfd>::iterator it2 = this->fds.begin();
+    //     while (it2 != this->fds.end())
+    //     {
+    //       if (it2->fd == it->first)
+    //       {
+    //         it2 = this->fds.erase(it2);
+    //         break;
+    //       }
+    //       it2++;
+    //     }
+    //       users.erase(it);
+    //       close(fds.fd);
+    // }
+    // it = connections.find(fds.fd);
+    // if (it != connections.end()) {
+    //   connections.erase(it);
+    //     close(fds.fd);
+    // }
     return -1;
   }
 
