@@ -1,4 +1,3 @@
 - remove -g -fsasnitize and wildcard from Makefile before final push
 - Invalid command:
 - sigpipe;
-- ^C

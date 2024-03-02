@@ -43,6 +43,13 @@ void ft_kick(commandInfo& cmd, Server& server, Client& client) {
     target->second.removeChannel(*channel);
     if ((*channel)->isOpe(cmd.cmnd_args[1]))
         (*channel)->removeOpe(cmd.cmnd_args[1]);
+	if ((*channel)->getAllClientsList().size() == 0)
+		server.channels.erase(channel);
+	else if ((*channel)->getOpeList().size() == 0)
+	{
+		(*channel)->addOpe((*channel)->getAllClientsList()[0].nickname);
+		(*channel)->broadcastMessage(NULL, RPL_MODE(setPrefix(server.hostname, (*channel)->getAllClientsList()[0].nickname, (*channel)->getAllClientsList()[0].realname), ((*channel)->getName() + " +o " +  (*channel)->getAllClientsList()[0].nickname)), false);
+	}
 	(*channel)->broadcastMessage(NULL, RPL_KICK(setPrefix(server.hostname, client.nickname, client.realname), cmd.cmnd_args[0], cmd.cmnd_args[1], ((cmd.cmnd_args.size() > 2) ? cmd.cmnd_args[2] : "")), false);
 	server.sendReply(RPL_KICK(":" + client.nickname, cmd.cmnd_args[0], cmd.cmnd_args[1], ((cmd.cmnd_args.size() > 2) ? cmd.cmnd_args[2] : "")), target->second.fds.fd);
 }
