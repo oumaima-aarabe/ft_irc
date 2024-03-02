@@ -34,7 +34,13 @@ void ft_invite(commandInfo& cmd, Server& server, Client& client) {
 		server.sendReply(ERR_USERONCHANNEL(std::string("*"), target->second.nickname, target->second.username, (*channelIter)->getName()), client.fds.fd);
 		return ;
 	}
+	if ((*channelIter)->isInvited(target->second.nickname)) //invited client is already invited
+	{
+		// server.sendReply(ERR_USERONCHANNEL(std::string("*"), target->second.nickname, target->second.username, (*channelIter)->getName()), client.fds.fd);
+		return ;
+	}
 	(*channelIter)->invite(target->second);
+	target->second.channels_joined.push_back(*channelIter);
 	Logger::info("  " + client.nickname + " invited " + target->second.nickname + " to " + (*channelIter)->getName());
     server.sendReply(RPL_INVITING(std::string("*"), client.nickname, cmd.cmnd_args[0], cmd.cmnd_args[1]), client.fds.fd);
 	server.sendReply(RPL_CUSTOM_INVITE(setPrefix(server.hostname, client.nickname, client.username), cmd.cmnd_args[0], (*channelIter)->getName()), target->second.fds.fd);
