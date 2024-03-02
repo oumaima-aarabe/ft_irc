@@ -36,6 +36,7 @@ void ft_nick(commandInfo& cmd, Server& server, Client& client)
 	}
 	std::string oldNick = client.nickname;
 	client.setNickname(cmd.cmnd_args[0]);
+	server.connections[client.fds.fd].setNickname(cmd.cmnd_args[0]);
 	std::vector<Channel*> channels = server.channels;
 	server.sendReply(RPL_NICKCHANGE(oldNick, client.nickname), client.fds.fd);
 	for (size_t i = 0; i < channels.size(); i++)
