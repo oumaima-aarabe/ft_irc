@@ -67,7 +67,7 @@ void Server::waiting_for_connections(){
   
   while (true)
   {
-    checker = poll(fds.data(), fds.size(), timeout);
+    checker = poll(&fds[0], fds.size(), timeout);
     if (checker < 0)
     {
       Logger::error("poll() failed");

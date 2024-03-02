@@ -1,16 +1,7 @@
-- Close fd in client destructor.
-- check if forth argument of USER needs to be stored as a full name.
-- check available ports range
-- Join 0
-- leaks fd /buffer
-- servername ?
-- remove fsasnitize and wildcard from Makefile before final push
+- remove -g -fsasnitize and wildcard from Makefile before final push
 
-
-
-- remove gethostname function //forbidden
 - update nick on everything that use nick
-- update nick on connections (:* 433 * oumi :Nickname is already in use)
+- update nick on connections (:* 433 * oumi :Nickname is already in use) (kawtar)
 - Invalid command:
 - sigpipe;
 - ^C

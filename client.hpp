@@ -3,8 +3,8 @@
 #include "server.hpp"
 #include "Channel.hpp"
 
-
 class Channel;
+
 class Client{
     
   public :
@@ -23,4 +23,5 @@ class Client{
     void addChannel(Channel *channel);
     void removeChannel(Channel *channel);
     void quitAllChannels();
+    void setNickname(std::string const &nickname);
 };

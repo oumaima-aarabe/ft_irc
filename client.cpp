@@ -66,3 +66,17 @@ void Server::removeClientFromServer(Client &client)
     users.erase(it);
   }
 }
+
+void Client::setNickname(std::string const &nickname)
+{
+  this->nickname = nickname;
+}
+
+Client &Channel::getClient(std::string const &nickname) {
+  for (std::vector<Client>::iterator it = allClientsList.begin(); it != allClientsList.end(); it++)
+  {
+    if (it->nickname == nickname)
+      return *it;
+  }
+  return *allClientsList.end();
+}
