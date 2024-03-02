@@ -52,12 +52,12 @@ void ft_quit(commandInfo& cmd, Server& server, Client& client)
     (void)cmd;
     for (std::vector<Channel*>::iterator it = client.channels_joined.begin(); it != client.channels_joined.end(); it++)
     {
-        // if (!(*it)->isJoined(client.nickname))
-        // {
-        //     if ((*it)->isInvited(client.nickname))
-        //         (*it)->removeInvite(client);
-        //     continue;
-        // }
+        if (!(*it)->isJoined(client.nickname))
+        {
+            if ((*it)->isInvited(client.nickname))
+                (*it)->removeInvite(client);
+            continue;
+        }
         if ((*it)->getAllClientsList().size() > 1)
         {
             (*it)->removeClient(client);

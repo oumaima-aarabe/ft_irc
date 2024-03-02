@@ -335,7 +335,9 @@ void Server::removeFromChannels(Channel *channel)
     {
         if ((*it)->getName() == channel->getName())
         {
+            Channel *tmp = *it;
             channels.erase(it);
+            delete tmp;
             return;
         }
     }
