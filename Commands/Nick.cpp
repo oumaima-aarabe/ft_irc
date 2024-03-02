@@ -38,11 +38,11 @@ void ft_nick(commandInfo& cmd, Server& server, Client& client)
 	{
 		std::string oldNick = client.nickname;
 		client.nickname =cmd.cmnd_args[0];
-		std::vector<Channel> channels = server.channels;
+		std::vector<Channel*> channels = server.channels;
 		for (size_t i = 0; i < channels.size(); i++)
 		{
-			if (channels[i].isJoined(client.nickname))
-				channels[i].broadcastMessage(&client, RPL_NICKCHANGE(oldNick, client.nickname), false);
+			if (channels[i]->isJoined(client.nickname))
+				channels[i]->broadcastMessage(&client, RPL_NICKCHANGE(oldNick, client.nickname), false);
 		}
 		server.sendReply(RPL_NICKCHANGE(oldNick, client.nickname), client.fds.fd);
 	}

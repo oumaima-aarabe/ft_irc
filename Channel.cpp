@@ -56,7 +56,7 @@ std::string Channel::getStringModes(void) const {
     return (_stringModes);
 }
 
-std::vector<Client> Channel::getAllClientsList(void) const
+std::vector<Client> Channel::getAllClientsList(void)
 {
     return (allClientsList);
 }
@@ -324,16 +324,16 @@ bool Channel::isValidChannelName(const std::string &name)
 	return true;
 }
 
-void Server::addToChannels(Channel& channel) 
+void Server::addToChannels(Channel *channel) 
 {
     channels.push_back(channel);
 }
 
-void Server::removeFromChannels(Channel& channel) 
+void Server::removeFromChannels(Channel *channel) 
 {
-    for (std::vector<Channel>::iterator it = channels.begin(); it != channels.end(); it++)
+    for (std::vector<Channel*>::iterator it = channels.begin(); it != channels.end(); it++)
     {
-        if (it->getName() == channel.getName())
+        if ((*it)->getName() == channel->getName())
         {
             channels.erase(it);
             return;
@@ -341,10 +341,10 @@ void Server::removeFromChannels(Channel& channel)
     }
 }
 
-std::vector<Channel>::iterator Server::getChannelByName(const std::string &name)
+std::vector<Channel*>::iterator Server::getChannelByName(const std::string &name)
 {
-  for (std::vector<Channel>::iterator it = channels.begin(); it != channels.end(); it++) {
-    if (it->getName() == name)
+  for (std::vector<Channel*>::iterator it = channels.begin(); it != channels.end(); it++) {
+    if ((*it)->getName() == name)
       return it;
   }
   return channels.end();

@@ -17,33 +17,33 @@ void ft_part(commandInfo& cmd, Server& server, Client& client) {
 			server.sendReply(ERR_NOSUCHCHANNEL(std::string("*"), client.nickname, channelsToLeave[i]), client.fds.fd);
 			continue ;
 		}
-		std::vector<Channel>::iterator channel = server.getChannelByName(channelsToLeave[i]);
+		std::vector<Channel*>::iterator channel = server.getChannelByName(channelsToLeave[i]);
 		if (channel == server.channels.end()) //channel does't exist in server
 		{
 			server.sendReply(ERR_NOSUCHCHANNEL(std::string("*"), client.nickname, channelsToLeave[i]), client.fds.fd);
 			continue ;
 		}
-		if (!channel->isJoined(client.nickname))
+		if (!(*channel)->isJoined(client.nickname))
 		{
 			server.sendReply(ERR_NOTONCHANNEL(std::string("*"), client.nickname, channelsToLeave[i]), client.fds.fd);
 			continue ;
 		}
-		std::string channelName = channel->getName();
-		if (channel->getAllClientsList().size() > 1)
+		std::string channelName = (*channel)->getName();
+		if ((*channel)->getAllClientsList().size() > 1)
 		{
-			channel->removeClient(client);
-			if (channel->isOpe(client.nickname) && channel->getOpeList().size() == 1)
+			(*channel)->removeClient(client);
+			if ((*channel)->isOpe(client.nickname) && (*channel)->getOpeList().size() == 1)
 			{
-				channel->removeOpe(client.nickname);
-				channel->addOpe(channel->getAllClientsList()[0].nickname);
+				(*channel)->removeOpe(client.nickname);
+				(*channel)->addOpe((*channel)->getAllClientsList()[0].nickname);
 			}
             client.removeChannel(*channel);
 			server.sendReply(RPL_PART(setPrefix(server.hostname, client.nickname, client.username), channelName, (cmd.cmnd_args.size() > 1 ? cmd.cmnd_args[1] : "")), client.fds.fd);
-			channel->broadcastMessage(&client, RPL_PART(setPrefix(server.hostname, client.nickname, client.username), channelName, (cmd.cmnd_args.size() > 1 ? cmd.cmnd_args[1] : "")), false);
+			(*channel)->broadcastMessage(&client, RPL_PART(setPrefix(server.hostname, client.nickname, client.username), channelName, (cmd.cmnd_args.size() > 1 ? cmd.cmnd_args[1] : "")), false);
 		}
 		else // this client is the last member in the channel
 		{
-			channel->removeClient(client);
+			(*channel)->removeClient(client);
             client.removeChannel(*channel);
             server.removeFromChannels(*channel);
 			server.sendReply(RPL_PART(setPrefix(server.hostname, client.nickname, client.username), channelName, (cmd.cmnd_args.size() > 1 ? cmd.cmnd_args[1] : "")), client.fds.fd);
