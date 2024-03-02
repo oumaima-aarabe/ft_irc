@@ -21,6 +21,8 @@ void Server::executeCommands(const std::vector<std::string> cmndBuffer, int clie
 	commandHandlerMap["INVITE"] = ft_invite;
 	commandHandlerMap["NICK"] = ft_nick;
 	commandHandlerMap["NOTICE"] = ft_notice;
+	commandHandlerMap["TIME"] = ft_timeBot;
+	commandHandlerMap["DICE"] = ft_diceBot;
   // loop through multiple commands sent by client in quick succession, which might be received and buffered by the server as a single string separated by '\n'
   for (size_t i = 0; i < cmndBuffer.size(); i++) 
 	{
