@@ -72,7 +72,7 @@ void operatorMode(commandInfo& cmd, Channel &channel, Server &server, Client &cl
 		channel.removeOpe(*flagArgIt);
 		channel.removeMode(CHANNEL_MODE_OPERATOR);
 	}
-	channel.broadcastMessage(NULL, RPL_MODE(setPrefix(server.hostname, client.nickname, client.username), (cmd.cmnd_args[0] + " " + (addSign ? "+" : "-") + "o " + (addSign ? *flagArgIt : ""))), false);
+	channel.broadcastMessage(NULL, RPL_MODE(setPrefix(server.hostname, client.nickname, client.username), (cmd.cmnd_args[0] + " " + (addSign ? "+" : "-") + "o " +  *flagArgIt)), false);
 }
 
 void keyMode(commandInfo& cmd, Channel &channel, Server &server, Client &client, bool addSign, std::vector<std::string>::iterator &flagArgIt)
@@ -118,23 +118,23 @@ void ft_mode(commandInfo& cmd, Server &server, Client &client) {
 		server.sendReply(ERR_NOSUCHCHANNEL(std::string("*"), client.nickname, cmd.cmnd_args[0]), client.fds.fd);
 		return ;
 	}
-	std::vector<Channel>::iterator channel = server.getChannelByName(cmd.cmnd_args[0]);
+	std::vector<Channel*>::iterator channel = server.getChannelByName(cmd.cmnd_args[0]);
 	if (channel == server.channels.end())
 	{
 		server.sendReply(ERR_NOSUCHCHANNEL(std::string("*"), client.nickname, cmd.cmnd_args[0]), client.fds.fd);
 		return ;
 	}
-	if (!channel->isJoined(client.nickname))
+	if (!(*channel)->isJoined(client.nickname))
 	{
 		server.sendReply(ERR_NOTONCHANNEL(std::string("*"), client.nickname, cmd.cmnd_args[0]), client.fds.fd);
 		return ;
 	}
 	if (cmd.cmnd_args.size() == 1) // MODE #channel
 	{
-		server.sendReply(RPL_CHANNELMODEIS(std::string("*"), client.nickname, channel->getName(), channel->getStringModes()), client.fds.fd);
+		server.sendReply(RPL_CHANNELMODEIS(std::string("*"), client.nickname, (*channel)->getName(), (*channel)->getStringModes()), client.fds.fd);
 		return ;
 	}
-	if (!channel->isOpe(client.nickname))
+	if (!(*channel)->isOpe(client.nickname))
 	{
 		server.sendReply(ERR_CHANOPRIVSNEEDED(std::string("*"), client.nickname, cmd.cmnd_args[0]), client.fds.fd);
 		return ;
@@ -162,23 +162,23 @@ void ft_mode(commandInfo& cmd, Server &server, Client &client) {
 				if (firstArg[i] == 'n')
 					continue ;
 				if (firstArg[i] == 'i') {
-				    InviteMode(cmd, *channel, server, client, addSign);
+				    InviteMode(cmd, **channel, server, client, addSign);
 				}
 				else if (firstArg[i] == 't') {
-				    topicMode(cmd, *channel, server, client, addSign);
+				    topicMode(cmd, **channel, server, client, addSign);
 				}
 				else if (firstArg[i] == 'l') {
-				    limitUersMode(cmd, *channel, server, client, addSign, flagArgIt);
+				    limitUersMode(cmd, **channel, server, client, addSign, flagArgIt);
 					if (flagArgIt != cmd.cmnd_args.end())
 						flagArgIt++;
 				}
 				else if (firstArg[i] == 'o') {
-					operatorMode(cmd, *channel, server, client, addSign, flagArgIt);
+					operatorMode(cmd, **channel, server, client, addSign, flagArgIt);
 					if (flagArgIt != cmd.cmnd_args.end())
 						flagArgIt++;
 				}
 				else if (firstArg[i] == 'k') {
-					keyMode(cmd, *channel, server, client, addSign, flagArgIt);
+					keyMode(cmd, **channel, server, client, addSign, flagArgIt);
 					if (flagArgIt != cmd.cmnd_args.end())
 						flagArgIt++;
 				}

@@ -50,7 +50,7 @@ class Server{
     char client_ip[INET_ADDRSTRLEN];
     //-------
 
-    std::vector<Channel> channels;
+    std::vector<Channel*> channels;
 
     std::map<int ,Client> connections;
 
@@ -74,9 +74,9 @@ class Server{
     int  parse_user(Client &client, std::string value);
     int  parse_pair(Client &client, std::pair<std::string, std::string> pair);
     void WelcomeMessage(Client &client);
-    void addToChannels(Channel& channel);
-    void removeFromChannels(Channel& channel);
-    std::vector<Channel>::iterator getChannelByName(const std::string &name);
+    void addToChannels(Channel *channel);
+    void removeFromChannels(Channel *channel);
+    std::vector<Channel*>::iterator getChannelByName(const std::string &name);
     std::map<int, Client>::iterator getClientByNickname(const std::string &nickName);
     void removeClientFromServer(Client &client);
     void sendReply(const std::string &message, int clientFd);

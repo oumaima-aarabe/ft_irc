@@ -1,3 +1,8 @@
 - remove -g -fsasnitize and wildcard from Makefile before final push
-- limechat prob
-- bonus lol
+
+- remove gethostname function and data() function //forbidden (kawtar)
+- update nick on everything that use nick
+- update nick on connections (:* 433 * oumi :Nickname is already in use) (kawtar)
+- Invalid command:
+- sigpipe;
+- ^C

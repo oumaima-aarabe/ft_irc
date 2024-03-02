@@ -35,9 +35,9 @@ std::vector<std::string> split(const std::string &input, const std::string &sepa
 	return result;
 }
 
-std::string setPrefix(std::string hostname, std::string nickname, std::string username)
+std::string setPrefix(std::string hostname, std::string nickname, std::string realname)
 {
-	return (":" + nickname + "!~" + username + "@" + hostname);
+	return (":" + nickname + "!" + realname + "@" + hostname);
 }
 
 bool isNumber(const std::string &s)
@@ -64,6 +64,6 @@ void toUpper(std::string &str)
 
 void Server::sendReply(const std::string &message, int clientFd)
 {
-	if (send(clientFd, message.c_str(), message.size() + 1, 0) == -1)
+	if (send(clientFd, message.c_str(), message.size(), 0) == -1)
 		perror("send sys call failed: ");
 }

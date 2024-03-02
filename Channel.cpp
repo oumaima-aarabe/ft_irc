@@ -56,7 +56,7 @@ std::string Channel::getStringModes(void) const {
     return (_stringModes);
 }
 
-std::vector<Client> Channel::getAllClientsList(void) const
+std::vector<Client> Channel::getAllClientsList(void)
 {
     return (allClientsList);
 }
@@ -297,7 +297,7 @@ void Channel::broadcastMessage(Client *sender, std::string message, bool opeOnly
     for (size_t i = 0; i < clients.size(); i++) {
         if (sender && sender->fds.fd && clients[i].fds.fd == sender->fds.fd)
             continue ;
-        send(clients[i].fds.fd , message.c_str(), message.size() + 1, 0);
+        send(clients[i].fds.fd , message.c_str(), message.size(), 0);
     }
 }
 
@@ -308,7 +308,7 @@ void Server::broadcastMessage(Client *sender, std::string message, std::vector<C
     {
         if (sender && sender->fds.fd && it->fds.fd == sender->fds.fd)
             continue;
-        send(it->fds.fd, message.c_str(), message.size() + 1, 0);
+        send(it->fds.fd, message.c_str(), message.size(), 0);
     }
 }
 
@@ -324,27 +324,29 @@ bool Channel::isValidChannelName(const std::string &name)
 	return true;
 }
 
-void Server::addToChannels(Channel& channel) 
+void Server::addToChannels(Channel *channel) 
 {
     channels.push_back(channel);
 }
 
-void Server::removeFromChannels(Channel& channel) 
+void Server::removeFromChannels(Channel *channel) 
 {
-    for (std::vector<Channel>::iterator it = channels.begin(); it != channels.end(); it++)
+    for (std::vector<Channel*>::iterator it = channels.begin(); it != channels.end(); it++)
     {
-        if (it->getName() == channel.getName())
+        if ((*it)->getName() == channel->getName())
         {
+            Channel *tmp = *it;
             channels.erase(it);
+            delete tmp;
             return;
         }
     }
 }
 
-std::vector<Channel>::iterator Server::getChannelByName(const std::string &name)
+std::vector<Channel*>::iterator Server::getChannelByName(const std::string &name)
 {
-  for (std::vector<Channel>::iterator it = channels.begin(); it != channels.end(); it++) {
-    if (it->getName() == name)
+  for (std::vector<Channel*>::iterator it = channels.begin(); it != channels.end(); it++) {
+    if ((*it)->getName() == name)
       return it;
   }
   return channels.end();

@@ -22,20 +22,20 @@ void ft_notice(commandInfo& cmd, Server& server, Client& client) {
             cmd.cmnd_args[0].erase(0, 1);
             opeOnly = true;
         }
-        std::vector<Channel>::iterator channel = server.getChannelByName(cmd.cmnd_args[0]);
+        std::vector<Channel*>::iterator channel = server.getChannelByName(cmd.cmnd_args[0]);
 
         if (channel == server.channels.end()) 
             return;
-        std::string channelName = channel->getName();
-        if (!channel->isJoined(client.nickname))
+        std::string channelName = (*channel)->getName();
+        if (!(*channel)->isJoined(client.nickname))
             return;
-        channel->broadcastMessage(&client, RPL_CUSTOM_NOTICE(setPrefix(server.hostname, client.nickname, client.username), channelName, cmd.cmnd_args[1]), opeOnly);
+        (*channel)->broadcastMessage(&client, RPL_CUSTOM_NOTICE(setPrefix(server.hostname, client.nickname, client.realname), channelName, cmd.cmnd_args[1]), opeOnly);
     }
     else
     {
         std::map<int, Client>::iterator Receiver = server.getClientByNickname(cmd.cmnd_args[0]);
         if (Receiver  == server.users.end())
             return;
-        server.sendReply(RPL_CUSTOM_NOTICE(setPrefix(server.hostname, client.nickname, client.username), Receiver->second.nickname, cmd.cmnd_args[1]), Receiver->second.fds.fd);
+        server.sendReply(RPL_CUSTOM_NOTICE(setPrefix(server.hostname, client.nickname, client.realname), Receiver->second.nickname, cmd.cmnd_args[1]), Receiver->second.fds.fd);
     }
 }

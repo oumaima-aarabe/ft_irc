@@ -31,16 +31,16 @@ bool joinReply(Server &server, Client &client, Channel &channel, bool newCnx)
         server.sendReply( ERR_CHANNELISFULL(server.hostname, client.nickname, channel.getName()), client.fds.fd);
         return (false);
     }
-    client.addChannel(channel);
+    client.addChannel(&channel);
     if (newCnx)
         channel.addOpe(client.nickname);
     Logger::debug("User [" + client.nickname + "] is joining the channel [" + channel.getName() + "].");
-    server.sendReply(RPL_CUSTOM_JOIN(setPrefix(server.client_ip, client.nickname, client.username), channel.getName()), client.fds.fd);
+    server.sendReply(RPL_CUSTOM_JOIN(setPrefix(server.client_ip, client.nickname, client.realname), channel.getName()), client.fds.fd);
     if (!channel.getTopic().empty())
         server.sendReply(RPL_TOPIC(std::string(server.client_ip), client.nickname, channel.getName(), channel.getTopic()), client.fds.fd);
     server.sendReply(RPL_NAMREPLY(std::string(server.client_ip), client.nickname, std::string("="), channel.getName(), channel.listClients()), client.fds.fd);
     server.sendReply(RPL_ENDOFNAMES(std::string(server.client_ip), client.nickname, channel.getName()), client.fds.fd);
-    channel.broadcastMessage(&client, RPL_CUSTOM_JOIN(setPrefix(server.client_ip, client.nickname, client.username), channel.getName()), false);
+    channel.broadcastMessage(&client, RPL_CUSTOM_JOIN(setPrefix(server.client_ip, client.nickname, client.realname), channel.getName()), false);
     return (true);
 }
 
@@ -66,38 +66,38 @@ void ft_join(commandInfo &cmd, Server &server, Client &client)
             server.sendReply(ERR_NOSUCHCHANNEL(server.hostname, client.nickname, channels[i].name), client.fds.fd);
             continue;
         }
-        std::vector<Channel>::iterator ex_channel = server.getChannelByName(channels[i].name);
+        std::vector<Channel*>::iterator ex_channel = server.getChannelByName(channels[i].name);
 
         if (ex_channel == server.channels.end()) { // channel doesnt exit in server 
             Logger::debug("User [" + client.nickname + "] is creating a new channel [" + channels[i].name + "] and joining it.");
-            Channel new_channel = Channel(channels[i].name, "");
-            joinReply(server, client, new_channel, true);
+            Channel *new_channel = new Channel(channels[i].name, "");
+            joinReply(server, client, *new_channel, true);
             server.channels.push_back(new_channel);
             // client.addChannel(new_channel);
             continue;
         }
-        if(ex_channel->isJoined(client.nickname))
+        if((*ex_channel)->isJoined(client.nickname))
             continue;
         // check if channel is invite only
-        if (ex_channel->isInviteOnly()) {
+        if ((*ex_channel)->isInviteOnly()) {
             // check if user is in the invite list
-            if (!ex_channel->isInvited(client.nickname))
+            if (!(*ex_channel)->isInvited(client.nickname))
             {
                 Logger::debug("User [" + client.nickname + "] is trying to join the invite only channel [" + channels[i].name + "].");
-                server.sendReply(ERR_INVITEONLYCHAN(server.hostname, client.nickname, ex_channel->getName()), client.fds.fd);
+                server.sendReply(ERR_INVITEONLYCHAN(server.hostname, client.nickname, (*ex_channel)->getName()), client.fds.fd);
                 continue;
             }
         }
         // check if channel uses keys
-        if (ex_channel->hasKey() && (ex_channel->getPassword() != channels[i].key)) { // wrong key reply
+        if ((*ex_channel)->hasKey() && ((*ex_channel)->getPassword() != channels[i].key)) { // wrong key reply
             Logger::debug("User [" + client.nickname + "] is trying to join the channel [" + channels[i].name + "] with the wrong key [" + channels[i].key + "].");
-            server.sendReply(ERR_BADCHANNELKEY(server.hostname, client.nickname, ex_channel->getName()), client.fds.fd);
+            server.sendReply(ERR_BADCHANNELKEY(server.hostname, client.nickname, (*ex_channel)->getName()), client.fds.fd);
             continue;
         }
-        if (joinReply(server, client, *ex_channel, false))
+        if (joinReply(server, client, **ex_channel, false))
         {
             // client.addChannel(*ex_channel);
-            ex_channel->removeInvite(client);
+            (*ex_channel)->removeInvite(client);
         }
     }
 }

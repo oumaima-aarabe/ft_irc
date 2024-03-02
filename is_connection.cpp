@@ -70,7 +70,7 @@ int Server::is_client_connection(struct pollfd fd_struct, int i){
     }
     else
     {
-      connections.insert(std::pair<int, Client>(fd_struct.fd, Client(fd_struct, "", "", "", content)));
+      connections.insert(std::pair<int, Client>(fd_struct.fd, Client(fd_struct, "", "", "", "", content)));
       return 0;
     }
   }
@@ -96,7 +96,7 @@ int Server::is_client_connection(struct pollfd fd_struct, int i){
     //new client
     if (connections.find(fd_struct.fd) == connections.end())
     {
-      connections.insert(std::pair<int, Client>(fd_struct.fd, Client(fd_struct, "", "", "", content)));
+      connections.insert(std::pair<int, Client>(fd_struct.fd, Client(fd_struct, "", "", "", "", content)));
     }
     else
     {

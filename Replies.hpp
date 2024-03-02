@@ -126,7 +126,7 @@
  source + " INVITE " + nick + " " + channel + "\r\n"
 #define RPL_MODE(source, modestring) source + " MODE " + modestring + "\r\n"
 #define RPL_PART(source, channel, reason)				source + " PART " + channel + " :" + reason + "\r\n"
-#define RPL_KICK(source, channel, target, reason)       source + " KICK " + channel + " " + target + (" :" ? reason : "") + reason + "\r\n"
+#define RPL_KICK(source, channel, target, reason)       source + " KICK " + channel + " " + target + " :" + reason  + "\r\n"
 #define ERR_NOTEXTTOSEND(servername, nick)\
  ":" + servername + " 412 " + nick + " :No text to send\r\n"
 #define ERR_INPUTTOOLONG(servername, nick) \

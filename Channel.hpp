@@ -38,7 +38,7 @@ class Channel {
         std::vector<std::pair<ChannelMode, int> > getModes(void) const;
         std::string getStringModes(void) const;
         int getChannelLimit(void) const;
-        std::vector<Client> getAllClientsList(void) const;
+        std::vector<Client> getAllClientsList(void);
         std::vector<Client> getOpeList(void) const;
         std::vector<Client> getInviteList(void) const;
         // Client stuff

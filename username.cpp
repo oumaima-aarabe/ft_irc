@@ -36,6 +36,7 @@ int  Server::parse_user(Client &client, std::string value){
     }
     else{
       client.username = ret[0];
+      client.realname = ret[3];
     }
   }
   else
@@ -47,7 +48,7 @@ int  Server::parse_user(Client &client, std::string value){
   if (!client.nickname.empty())
   {
      users[client.fds.fd] = Client(client);
-    WelcomeMessage(client);
+      WelcomeMessage(client);
   }
   return (0);
 }
