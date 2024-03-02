@@ -3,7 +3,7 @@
 
 void Server::WelcomeMessage(Client &client)
 {
-    std::string msg = ":" + hostname + " 001 " +  client.nickname +  " :Welcome to the Internet Relay Network " + client.nickname + "!~" + client.nickname + "@" + "127.0.0.1\r\n";
+    std::string msg = ":" + hostname + " 001 " +  client.nickname +  " :Welcome to the Internet Relay Network " + client.nickname + "!~" + client.username + "@" + client_ip +"\r\n";
     msg += ":" + hostname + " 002 " +  client.nickname + " :Your host is " + hostname + ", running version leet-irc 1.0.0\r\n";
     msg += ":" + hostname + " 003 " +  client.nickname + " :This server has been created Jan 2024\r\n";
     msg += ":" + hostname + " 004 " +  client.nickname + " " + hostname + " leet-irc 1.0.0 aioOrsw aovimntklbeI\r\n";

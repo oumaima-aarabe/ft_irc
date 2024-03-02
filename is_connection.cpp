@@ -2,7 +2,9 @@
 
 int Server::is_server_connection(){
   //accept connection from server and add it to fds 
-  int new_sd = accept(socket_fd, NULL, NULL);
+  // int new_sd = accept(socket_fd, NULL, NULL);
+  socklen_t ip4addrSize = sizeof(ip4addr);
+  int new_sd = accept(socket_fd, (struct sockaddr*)&ip4addr, &ip4addrSize);
   if (new_sd < 0)
   {
     if (errno != EWOULDBLOCK)
@@ -11,6 +13,9 @@ int Server::is_server_connection(){
     }
     return(-1);
   }
+  //____
+  inet_ntop(AF_INET, &ip4addr.sin_addr, client_ip, INET_ADDRSTRLEN);
+  //____
   Logger::info("New incoming connection " + to_string(new_sd));
   struct  pollfd k;
   k.fd = new_sd;

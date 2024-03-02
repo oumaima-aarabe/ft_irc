@@ -46,6 +46,10 @@ class Server{
     int current_size;
     std::string hostname ;
 
+    //-------
+    char client_ip[INET_ADDRSTRLEN];
+    //-------
+
     std::vector<Channel> channels;
 
     std::map<int ,Client> connections;
