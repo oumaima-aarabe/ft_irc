@@ -297,7 +297,7 @@ void Channel::broadcastMessage(Client *sender, std::string message, bool opeOnly
     for (size_t i = 0; i < clients.size(); i++) {
         if (sender && sender->fds.fd && clients[i].fds.fd == sender->fds.fd)
             continue ;
-        send(clients[i].fds.fd , message.c_str(), message.size() + 1, 0);
+        send(clients[i].fds.fd , message.c_str(), message.size(), 0);
     }
 }
 
@@ -308,7 +308,7 @@ void Server::broadcastMessage(Client *sender, std::string message, std::vector<C
     {
         if (sender && sender->fds.fd && it->fds.fd == sender->fds.fd)
             continue;
-        send(it->fds.fd, message.c_str(), message.size() + 1, 0);
+        send(it->fds.fd, message.c_str(), message.size(), 0);
     }
 }
 

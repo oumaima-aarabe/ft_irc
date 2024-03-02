@@ -2,27 +2,29 @@
 
 void InviteMode(commandInfo& cmd, Channel &channel, Server &server, Client &client, bool addSign)
 {
+	if ((addSign && !channel.hasMode(CHANNEL_MODE_INVITE_ONLY)) || (!addSign && channel.hasMode(CHANNEL_MODE_INVITE_ONLY)))
+		channel.broadcastMessage(NULL, RPL_MODE(setPrefix(server.hostname, client.nickname, client.username), (cmd.cmnd_args[0] + " " + (addSign ? "+" : "-") + 'i')), false);
 	if (addSign)
 		channel.addMode(CHANNEL_MODE_INVITE_ONLY);
 	else
 		channel.removeMode(CHANNEL_MODE_INVITE_ONLY);
-	channel.broadcastMessage(NULL, RPL_MODE(setPrefix(server.hostname, client.nickname, client.realname), (cmd.cmnd_args[0] + " " + (addSign ? "+" : "-") + 'i')), false);
 }
 
 void topicMode(commandInfo& cmd, Channel &channel, Server &server, Client &client, bool addSign)
 {
+	if ((addSign && !channel.hasMode(CHANNEL_MODE_TOPIC_SETTABLE_BY_CHANNEL_OPERATOR_ONLY)) || (!addSign && channel.hasMode(CHANNEL_MODE_TOPIC_SETTABLE_BY_CHANNEL_OPERATOR_ONLY)))
+		channel.broadcastMessage(NULL, RPL_MODE(setPrefix(server.hostname, client.nickname, client.username), (cmd.cmnd_args[0] + " " + (addSign ? "+" : "-") + 't')), false);
 	if (addSign)
 		channel.addMode(CHANNEL_MODE_TOPIC_SETTABLE_BY_CHANNEL_OPERATOR_ONLY);
 	else
 		channel.removeMode(CHANNEL_MODE_TOPIC_SETTABLE_BY_CHANNEL_OPERATOR_ONLY);	
-	channel.broadcastMessage(NULL, RPL_MODE(setPrefix(server.hostname, client.nickname, client.realname), (cmd.cmnd_args[0] + " " + (addSign ? "+" : "-") + 't')), false);
 }
 
 void limitUersMode(commandInfo& cmd, Channel &channel, Server &server, Client &client, bool addSign, std::vector<std::string>::iterator &flagArgIt)
 {
 	if (addSign)
 	{
-		if ((cmd.cmnd_args.begin() + 2) == cmd.cmnd_args.end()) // no limit number speficied
+		if (flagArgIt == cmd.cmnd_args.end()) // no limit number speficied
 		{
 			server.sendReply(ERR_NEEDMOREPARAMS(std::string("*"), client.nickname, cmd.cmnd_name), client.fds.fd);
 			return ;
@@ -45,12 +47,12 @@ void limitUersMode(commandInfo& cmd, Channel &channel, Server &server, Client &c
 		channel.removeMode(CHANNEL_MODE_USER_LIMIT);
 		channel.setChannel_limit(MAX_CLIENTS_PER_CHANNEL); //default limit
 	}
-	channel.broadcastMessage(NULL, RPL_MODE(setPrefix(server.hostname, client.nickname, client.realname), (cmd.cmnd_args[0] + " " + (addSign ? "+" : "-") + "l " + (addSign ? *flagArgIt : ""))), false);
+	channel.broadcastMessage(NULL, RPL_MODE(setPrefix(server.hostname, client.nickname, client.username), (cmd.cmnd_args[0] + " " + (addSign ? "+" : "-") + "l " + (addSign ? *flagArgIt : ""))), false);
 }
 
 void operatorMode(commandInfo& cmd, Channel &channel, Server &server, Client &client, bool addSign, std::vector<std::string>::iterator &flagArgIt)
 {
-	if ((cmd.cmnd_args.begin() + 2) == cmd.cmnd_args.end()) // no nickname speficied for operator privileges
+	if (flagArgIt == cmd.cmnd_args.end()) // no nickname speficied for operator privileges
 	{
 		server.sendReply(ERR_NEEDMOREPARAMS(std::string("*"), client.nickname, cmd.cmnd_name), client.fds.fd);
 		return ;
@@ -70,19 +72,19 @@ void operatorMode(commandInfo& cmd, Channel &channel, Server &server, Client &cl
 		channel.removeOpe(*flagArgIt);
 		channel.removeMode(CHANNEL_MODE_OPERATOR);
 	}
-	channel.broadcastMessage(NULL, RPL_MODE(setPrefix(server.hostname, client.nickname, client.realname), (cmd.cmnd_args[0] + " " + (addSign ? "+" : "-") + "o " + (addSign ? *flagArgIt : ""))), false);
+	channel.broadcastMessage(NULL, RPL_MODE(setPrefix(server.hostname, client.nickname, client.username), (cmd.cmnd_args[0] + " " + (addSign ? "+" : "-") + "o " + (addSign ? *flagArgIt : ""))), false);
 }
 
 void keyMode(commandInfo& cmd, Channel &channel, Server &server, Client &client, bool addSign, std::vector<std::string>::iterator &flagArgIt)
 {
-	if ((cmd.cmnd_args.begin() + 2) == cmd.cmnd_args.end()) // no key speficied
+	if (flagArgIt == cmd.cmnd_args.end()) // no key speficied
 	{
 		server.sendReply(ERR_NEEDMOREPARAMS(std::string("*"), client.nickname, cmd.cmnd_name), client.fds.fd);
 		return ;
 	}
 	if (addSign)
 	{
-		if (((*flagArgIt).empty() ||(*flagArgIt).find(" ",0) != std::string::npos))     // key contains a space or empty key
+		if (((*flagArgIt).empty() || (*flagArgIt).find(" ",0) != std::string::npos))     // key contains a space or empty key
 		{
 			server.sendReply(ERR_INVALIDMODEPARAM(client.nickname, channel.getName(), 'k', *flagArgIt), client.fds.fd);
 			return ;
@@ -100,7 +102,7 @@ void keyMode(commandInfo& cmd, Channel &channel, Server &server, Client &client,
 		channel.removeMode(CHANNEL_MODE_KEY);
 		channel.setPassword("");
 	}
-	channel.broadcastMessage(NULL, RPL_MODE(setPrefix(server.hostname, client.nickname, client.realname), (cmd.cmnd_args[0] + " " + (addSign ? "+" : "-") + "k " + (addSign ? *flagArgIt : ""))), false);
+	channel.broadcastMessage(NULL, RPL_MODE(setPrefix(server.hostname, client.nickname, client.username), (cmd.cmnd_args[0] + " " + (addSign ? "+" : "-") + "k " + (addSign ? *flagArgIt : ""))), false);
 }
 
 
@@ -167,15 +169,18 @@ void ft_mode(commandInfo& cmd, Server &server, Client &client) {
 				}
 				else if (firstArg[i] == 'l') {
 				    limitUersMode(cmd, **channel, server, client, addSign, flagArgIt);
-					flagArgIt++;
+					if (flagArgIt != cmd.cmnd_args.end())
+						flagArgIt++;
 				}
 				else if (firstArg[i] == 'o') {
 					operatorMode(cmd, **channel, server, client, addSign, flagArgIt);
-					flagArgIt++;
+					if (flagArgIt != cmd.cmnd_args.end())
+						flagArgIt++;
 				}
 				else if (firstArg[i] == 'k') {
-					keyMode(cmd, **channel, server, client, addSign, flagArgIt);		
-					flagArgIt++;
+					keyMode(cmd, **channel, server, client, addSign, flagArgIt);
+					if (flagArgIt != cmd.cmnd_args.end())
+						flagArgIt++;
 				}
             }
 			else

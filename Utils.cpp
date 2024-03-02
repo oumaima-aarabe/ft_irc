@@ -64,6 +64,6 @@ void toUpper(std::string &str)
 
 void Server::sendReply(const std::string &message, int clientFd)
 {
-	if (send(clientFd, message.c_str(), message.size() + 1, 0) == -1)
+	if (send(clientFd, message.c_str(), message.size(), 0) == -1)
 		perror("send sys call failed: ");
 }
