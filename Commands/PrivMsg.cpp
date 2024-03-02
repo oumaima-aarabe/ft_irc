@@ -35,7 +35,7 @@ void ft_privMsg(commandInfo& cmd, Server& server, Client& client) {
             server.sendReply(ERR_NOTONCHANNEL(std::string("*"), client.nickname, channelName), client.fds.fd);
             return;
         }
-        channel->broadcastMessage(&client, RPL_CUSTOM_INVITE(setPrefix(server.hostname, client.nickname, client.username), channelName, cmd.cmnd_args[1]), opeOnly);
+        channel->broadcastMessage(&client, RPL_CUSTOM_PRIVMSG(setPrefix(server.hostname, client.nickname, client.username), channelName, cmd.cmnd_args[1]), opeOnly);
     }
     else
     {

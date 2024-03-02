@@ -3,8 +3,15 @@
 void ft_quit(commandInfo& cmd, Server& server, Client& client) 
 {
 
-    for (std::vector<Channel>::iterator it = client.channels_joined.begin(); it != client.channels_joined.end(); it++) 
+    for (std::vector<Channel>::iterator it = server.channels.begin(); it != server.channels.end(); it++)
     {
+        std::cout << "Channel: " << it->getAllClientsList().size() << std::endl;
+        if (!it->isJoined(client.nickname))
+        {
+            if (it->isInvited(client.nickname))
+                it->removeInvite(client);
+            continue;
+        }
         if (it->getAllClientsList().size() > 1)
         {
             it->removeClient(client);
@@ -23,11 +30,12 @@ void ft_quit(commandInfo& cmd, Server& server, Client& client)
         }
     }
     client.quitAllChannels();
+    toUpper(cmd.cmnd_name);
     if (cmd.cmnd_name != "JOIN")
     {
         server.sendReply(RPL_CUSTOM_QUIT(setPrefix(server.hostname, client.nickname, client.username),  (!cmd.cmnd_args.empty() ? (":Quit: " + cmd.cmnd_args[0]) : "Quit ")), client.fds.fd);
         server.removeClientFromServer(client);
-        Logger::error("ERROR :Quit: " + (!cmd.cmnd_args.empty() ? (cmd.cmnd_args[0]) : ""));
+        Logger::info("ERROR :Quit: " + (!cmd.cmnd_args.empty() ? (cmd.cmnd_args[0]) : ""));
         Logger::info("Connection closed");
     }
 }

@@ -77,7 +77,7 @@ std::vector<Client> Channel::getInviteList(void) const
 
 int Channel::addClient(Client const &client)
 {
-    if (allClientsList.size() == (size_t)_channel_limit)
+    if (allClientsList.size() >= (size_t)_channel_limit)
         return (-2);
     if (!isJoined(client.nickname))
     {

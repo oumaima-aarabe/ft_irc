@@ -41,8 +41,8 @@ void ft_kick(commandInfo& cmd, Server& server, Client& client) {
 	}
 	channel->removeClient(target->second);
     target->second.removeChannel(*channel);
-    if (channel->isOpe(client.nickname))
-        channel->removeOpe(client.nickname);
+    if (channel->isOpe(cmd.cmnd_args[1]))
+        channel->removeOpe(cmd.cmnd_args[1]);
 	if (cmd.cmnd_args.size() > 2)
 	{
 		channel->broadcastMessage(NULL, RPL_KICK(setPrefix(server.hostname, client.nickname, client.username), cmd.cmnd_args[0], cmd.cmnd_args[1], cmd.cmnd_args[2]), false);

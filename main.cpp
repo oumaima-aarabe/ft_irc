@@ -14,7 +14,7 @@ int main(int ac, char **av)
   std::string port = av[1];
   std::string pass = av[2];
   int i = 0;
-  if (!port.empty() || !pass.empty())
+  if (!port.empty() && !pass.empty())
   {
     while (port[i]) {
       if (!isdigit(port[i]))

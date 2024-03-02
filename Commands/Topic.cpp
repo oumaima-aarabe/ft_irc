@@ -7,7 +7,7 @@ void ft_topic(commandInfo& cmd, Server& server, Client& client) {
 		server.sendReply(ERR_NEEDMOREPARAMS(std::string("*"), client.nickname, cmd.cmnd_name), client.fds.fd);
 		return ;
 	}
-	if(cmd.cmnd_args[1].length() > 512)
+	if(cmd.cmnd_args.size() > 1 && cmd.cmnd_args[1].length() > 512)
     {
         server.sendReply(ERR_INPUTTOOLONG(std::string("*"), client.nickname), client.fds.fd);
         return;
