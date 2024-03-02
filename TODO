@@ -1,7 +1,3 @@
-- Close fd in client destructor.
-- check if forth argument of USER needs to be stored as a full name.
-- check available ports range
-- Join 0
-- leaks fd /buffer
-- servername ?
-- remove fsasnitize and wildcard from Makefile before final push
+- remove -g -fsasnitize and wildcard from Makefile before final push
+- limechat prob
+- bonus lol
