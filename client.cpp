@@ -1,8 +1,9 @@
 #include "client.hpp"
 
-Client::Client(struct pollfd fds, std::string username, std::string nickname, std::string password, std::string buffer){
+Client::Client(struct pollfd fds, std::string username, std::string nickname, std::string realname, std::string password, std::string buffer){
   this->fds = fds;
   this->username = username;
+  this->realname = realname;
   this->nickname = nickname; 
   this->password = password;
   this->buffer = buffer;
