@@ -42,8 +42,16 @@ void ft_nick(commandInfo& cmd, Server& server, Client& client)
 		server.sendReply(RPL_NICKCHANGE(oldNick, client.nickname), client.fds.fd);
 		for (size_t i = 0; i < channels.size(); i++)
 		{
-			// if (channels[i]->isJoined(client.nickname))
+			if (channels[i]->isJoined(oldNick))
+			{
 				channels[i]->broadcastMessage(&client, RPL_NICKCHANGE(oldNick, client.nickname), false);
+				channels[i]->updateNick(oldNick, client.nickname, (channels[i])->getAllClientsListRef());
+				channels[i]->updateNick(oldNick, client.nickname, (channels[i])->getOpeListRef());
+			}
+			if (channels[i]->isInvited(oldNick))
+			{
+				channels[i]->updateNick(oldNick, client.nickname, (channels[i])->getInviteListRef());
+			}
 		}
 	}
 	else

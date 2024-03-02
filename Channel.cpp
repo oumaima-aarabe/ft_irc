@@ -300,7 +300,14 @@ void Channel::broadcastMessage(Client *sender, std::string message, bool opeOnly
         send(clients[i].fds.fd , message.c_str(), message.size(), 0);
     }
 }
-
+        void Channel::updateNick(std::string oldNick, std::string newNick, std::vector<Client> &clients)
+        {
+            for (size_t i = 0; i < clients.size(); i++)
+            {
+                if (clients[i].nickname == oldNick)
+                    clients[i].nickname = newNick;
+            }
+        }
 void Server::broadcastMessage(Client *sender, std::string message, std::vector<Client> chared_channels)
 {
     std::vector<Client>::iterator it;

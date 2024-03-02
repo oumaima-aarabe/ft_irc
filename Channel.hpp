@@ -38,6 +38,9 @@ class Channel {
         std::vector<std::pair<ChannelMode, int> > getModes(void) const;
         std::string getStringModes(void) const;
         int getChannelLimit(void) const;
+        std::vector<Client> &getAllClientsListRef(void){return allClientsList;};
+        std::vector<Client> &getOpeListRef(void){return opeList;};
+        std::vector<Client> &getInviteListRef(void){return inviteList;};
         std::vector<Client> getAllClientsList(void);
         std::vector<Client> getOpeList(void) const;
         std::vector<Client> getInviteList(void) const;
@@ -63,4 +66,5 @@ class Channel {
         // Utils
         void broadcastMessage(Client *sender, std::string message, bool opeOnly);
         static bool isValidChannelName(const std::string &name);
+        void updateNick(std::string oldNick, std::string newNick, std::vector<Client> &clients);
 };
