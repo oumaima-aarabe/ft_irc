@@ -2,7 +2,6 @@
 
 void ft_quit(commandInfo& cmd, Server& server, Client& client) 
 {
-    (void)cmd;
     for (std::vector<Channel*>::iterator it = client.channels_joined.begin(); it != client.channels_joined.end(); it++)
     {
         if (!(*it)->isJoined(client.nickname))
@@ -30,7 +29,7 @@ void ft_quit(commandInfo& cmd, Server& server, Client& client)
     }
     client.quitAllChannels();
     toUpper(cmd.cmnd_name);
-    if (cmd.cmnd_name != "JOIN")
+    if (cmd.cmnd_name == "QUIT")
     {
         server.sendReply(RPL_CUSTOM_QUIT(setPrefix(server.hostname, client.nickname, client.realname),  (!cmd.cmnd_args.empty() ? (":Quit: " + cmd.cmnd_args[0]) : "Quit ")), client.fds.fd);
         server.removeClientFromServer(client);

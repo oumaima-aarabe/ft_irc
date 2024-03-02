@@ -62,7 +62,7 @@ void Server::create_server()
 
 void Server::waiting_for_connections(){
 
-  int timeout = (60 * 60 * 1000);
+  int timeout = -1;
   int checker;
   
   while (true)

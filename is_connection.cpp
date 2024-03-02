@@ -33,21 +33,20 @@ int Server::is_client_connection(struct pollfd fd_struct, int i){
   //read the buffer from client (user || new connection)
   int checker = recv(fd_struct.fd, buffer, sizeof(buffer), 0);
 
-  if (checker < 0)
+  if (checker <= 0)
   {
-    Logger::error("recv() failed");
-    return -1;
-  }
-
-  if (checker == 0)
-  {
+    if (checker < 0)
+      Logger::error("recv() failed");
     Logger::info("Connection closed");
     std::map<int, Client>::iterator it = connections.find(fd_struct.fd);
     if (it != connections.end()){
       connections.erase(it);
     }
     it = users.find(fd_struct.fd);
-    if (it != users.end()){
+    if (it != users.end())
+    {
+      commandInfo cmd = {"SIG", std::vector<std::string>()};
+      ft_quit(cmd, *this, users[fd_struct.fd]);
       users.erase(it);
     }
     fds.erase(fds.begin() + i);
@@ -83,11 +82,11 @@ int Server::is_client_connection(struct pollfd fd_struct, int i){
     int clientFd = users[fd_struct.fd].fds.fd; 
     //split by \r\n (from limechat) in case of multiple commands sent by client in quick succession
     if (content.find('\r') != std::string::npos){
-      cmndBuffer = split(content, "\r\n");       
+      cmndBuffer = split(content, "\r\n");
     }
     //split by \n (from nc)
     else if (content.find('\n') != std::string::npos){
-      cmndBuffer = split(content, "\n");       
+      cmndBuffer = split(content, "\n");
     }
     executeCommands(cmndBuffer, clientFd);
   }
