@@ -9,6 +9,28 @@ void my_trim_(std::string& s, char delimiter) {
         s.erase(p + 1);
 }
 
+std::vector<std::string> split_space(const std::string &input) {
+	//split by spaces
+	std::vector<std::string> result;
+	std::size_t start = 0;
+	std::size_t found = input.find(' ');
+
+	while (found != std::string::npos) {
+		if (found != start)
+			result.push_back(input.substr(start, found - start));
+		start = found + 1;
+		found = input.find(' ', start);
+	}
+
+	// Push the last part of the string if it's not empty
+	std::string lastPart = input.substr(start);
+	if (!lastPart.empty())
+		result.push_back(lastPart);
+	for (std::vector<std::string>::iterator it = result.begin(); it != result.end(); it++)
+		my_trim_(*it, ' ');
+	return result;
+}
+
 std::vector<std::string> split(const std::string &input, const std::string &separator)
 {
 	std::vector<std::string> result;
@@ -66,4 +88,11 @@ void Server::sendReply(const std::string &message, int clientFd)
 {
 	if (send(clientFd, message.c_str(), message.size(), 0) == -1)
 		perror("send sys call failed: ");
+}
+
+int to_int(std::string i) {
+	std::stringstream ss(i);
+	int x;
+	ss >> x;
+	return x;
 }

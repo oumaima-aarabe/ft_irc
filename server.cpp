@@ -1,5 +1,4 @@
 #include "server.hpp"
-#include <sys/utsname.h>
 
 // Server::Server(unsigned int port, std::string password){
 //   char hostnam[256];
@@ -27,5 +26,5 @@ Server::Server(unsigned int port, std::string password) {
     this->port = port;
     this->password = password;
     this->hostname = unameData.nodename;
-    std::cout << hostname << std::endl;
+    Logger::info("-------Server created with hostname: " + this->hostname + "-------");
 }

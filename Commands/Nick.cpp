@@ -34,7 +34,6 @@ void ft_nick(commandInfo& cmd, Server& server, Client& client)
 		server.sendReply(ERR_NICKNAMEINUSE(std::string("*"), cmd.cmnd_args[0]), client.fds.fd);
 		return;
 	}
-
 	std::string oldNick = client.nickname;
 	client.setNickname(cmd.cmnd_args[0]);
 	server.connections[client.fds.fd].setNickname(cmd.cmnd_args[0]);

@@ -18,6 +18,7 @@
 #include <sys/fcntl.h>
 #include <vector>
 #include <map>
+#include <sys/utsname.h>
 #include <string>
 #include "client.hpp"
 #include "Channel.hpp"
