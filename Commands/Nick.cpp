@@ -34,19 +34,7 @@ void ft_nick(commandInfo& cmd, Server& server, Client& client)
 		server.sendReply(ERR_NICKNAMEINUSE(std::string("*"), cmd.cmnd_args[0]), client.fds.fd);
 		return;
 	}
-	// std::string oldNick = client.nickname;
-	
-	// std::vector<Channel*> channels = server.channels;
-	// server.sendReply(RPL_NICKCHANGE(oldNick, cmd.cmnd_args[0]), client.fds.fd);
-	// for (size_t i = 0; i < channels.size(); i++) {
-	// 	if (channels[i]->isJoined(oldNick)) {
-	// 		channels[i]->getClient(oldNick).nickname = cmd.cmnd_args[0];
-	// 		channels[i]->broadcastMessage(&client, RPL_NICKCHANGE(oldNick, client.nickname), false);
-	// 	}
-	// }
-
 	std::string oldNick = client.nickname;
-	// client.nickname = cmd.cmnd_args[0];
 	client.setNickname(cmd.cmnd_args[0]);
 	std::vector<Channel*> channels = server.channels;
 	server.sendReply(RPL_NICKCHANGE(oldNick, client.nickname), client.fds.fd);
