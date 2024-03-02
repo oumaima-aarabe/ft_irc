@@ -72,7 +72,7 @@ void operatorMode(commandInfo& cmd, Channel &channel, Server &server, Client &cl
 		channel.removeOpe(*flagArgIt);
 		channel.removeMode(CHANNEL_MODE_OPERATOR);
 	}
-	channel.broadcastMessage(NULL, RPL_MODE(setPrefix(server.hostname, client.nickname, client.username), (cmd.cmnd_args[0] + " " + (addSign ? "+" : "-") + "o " + (addSign ? *flagArgIt : ""))), false);
+	channel.broadcastMessage(NULL, RPL_MODE(setPrefix(server.hostname, client.nickname, client.username), (cmd.cmnd_args[0] + " " + (addSign ? "+" : "-") + "o " +  *flagArgIt)), false);
 }
 
 void keyMode(commandInfo& cmd, Channel &channel, Server &server, Client &client, bool addSign, std::vector<std::string>::iterator &flagArgIt)
