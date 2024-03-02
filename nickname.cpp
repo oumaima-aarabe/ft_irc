@@ -23,7 +23,7 @@ int  Server::parse_nick(Client &client, std::string value){
     return 0;
   }
   if (!client.password.empty()){
-    std::vector<std::string> ret = split(value, " ");
+    std::vector<std::string> ret = split_space(value);
     if (ret.size() == 0){
       err = ERR_NONICKNAMEGIVEN(std::string("*"));
       sendReply(err.c_str(), client.fds.fd); 

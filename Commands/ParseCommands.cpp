@@ -43,18 +43,18 @@ commandInfo parseCmndBuffer(const std::string &commandMessage) {
     if (commandMessage.empty())
         return command;
 
-    size_t trailingPartStartPos = commandMessage.find(" :");
+    size_t lastPartStartPos = commandMessage.find(" :");
 
-    std::string middlePart = commandMessage.substr(0, trailingPartStartPos);
+    std::string middlePart = commandMessage.substr(0, lastPartStartPos);
 
-    std::vector<std::string> middleParams = split(middlePart, " ");
+    std::vector<std::string> middleParams = split_space(middlePart);
     if (!middleParams.empty()) {
         command.cmnd_name = middleParams[0];
         command.cmnd_args.insert(command.cmnd_args.end(), middleParams.begin() + 1, middleParams.end());
     }
-    if (trailingPartStartPos != std::string::npos) { //if colon found
-        std::string trailingPart = commandMessage.substr(trailingPartStartPos + 2); // +2 to skip the colon and the space before it
-        command.cmnd_args.push_back(trailingPart);
+    if (lastPartStartPos != std::string::npos) { //if colon found
+        std::string lastPart = commandMessage.substr(lastPartStartPos + 2); // +2 to skip the colon and the space before it
+        command.cmnd_args.push_back(lastPart);
     }
     return command;
 }

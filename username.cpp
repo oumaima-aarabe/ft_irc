@@ -23,7 +23,7 @@ int  Server::parse_user(Client &client, std::string value){
     return 0;
   }
   if (!client.password.empty()){
-    std::vector<std::string> ret = split(value, " ");
+    std::vector<std::string> ret = split_space(value);
     if (ret.size() < 4){
       message_error =  ":* 461 * :Not enough parameters\n";
       send(client.fds.fd, message_error.c_str(), message_error.size() + 1, MSG_OOB);
