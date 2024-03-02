@@ -2,16 +2,9 @@
 
 void ft_quit(commandInfo& cmd, Server& server, Client& client) 
 {
-
-    for (std::vector<Channel>::iterator it = server.channels.begin(); it != server.channels.end(); it++)
+    (void)cmd;
+    for (std::vector<Channel>::iterator it = client.channels_joined.begin(); it != client.channels_joined.end(); it++)
     {
-        std::cout << "Channel: " << it->getAllClientsList().size() << std::endl;
-        if (!it->isJoined(client.nickname))
-        {
-            if (it->isInvited(client.nickname))
-                it->removeInvite(client);
-            continue;
-        }
         if (it->getAllClientsList().size() > 1)
         {
             it->removeClient(client);
@@ -19,8 +12,8 @@ void ft_quit(commandInfo& cmd, Server& server, Client& client)
             {
                 it->removeOpe(client.nickname);
                 it->addOpe(it->getAllClientsList()[0].nickname);
-	            it->broadcastMessage(NULL, RPL_MODE(setPrefix(server.hostname, it->getAllClientsList()[0].nickname, it->getAllClientsList()[0].username), (it->getName() + " " + "+" + "o " + (it->getAllClientsList()[0].nickname))), false);
-            }
+                it->broadcastMessage(NULL, RPL_MODE(setPrefix(server.hostname, it->getAllClientsList()[0].nickname, it->getAllClientsList()[0].username), (it->getName() + " " + "+" + "o " + (it->getAllClientsList()[0].nickname))), false);
+        }
             it->broadcastMessage(&client, RPL_PART(setPrefix(server.hostname, client.nickname, client.username), it->getName(), ""), false);
         }
         else
@@ -29,6 +22,7 @@ void ft_quit(commandInfo& cmd, Server& server, Client& client)
             server.removeFromChannels(*it);
         }
     }
+   
     client.quitAllChannels();
     toUpper(cmd.cmnd_name);
     if (cmd.cmnd_name != "JOIN")
@@ -39,8 +33,3 @@ void ft_quit(commandInfo& cmd, Server& server, Client& client)
         Logger::info("Connection closed");
     }
 }
-// :pop!~u@qk3i8byd6tfyg.irc QUIT :Quit: bghit
-// -  :appah!~u@qk3i8byd6tfyg.irc QUIT Quit
-// <-  :pop!~u@qk3i8byd6tfyg.irc QUIT :Quit: bghit
-// ERROR :Quit: bghit
-// [ircws-tester] Connection closed
