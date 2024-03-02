@@ -2,6 +2,7 @@
 
 int main(int ac, char **av)
 {
+  signal(SIGPIPE, SIG_IGN);
   if (ac != 3)
   {
     Logger::error("ERROR : ./exec port password");

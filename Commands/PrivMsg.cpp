@@ -2,7 +2,7 @@
 
 void ft_privMsg(commandInfo& cmd, Server& server, Client& client) {
 
-    if (cmd.cmnd_args.size() < 1)
+    if (cmd.cmnd_args.size() < 2)
     {
         server.sendReply(ERR_NOTEXTTOSEND(std::string("*"), client.nickname), client.fds.fd);
         return;

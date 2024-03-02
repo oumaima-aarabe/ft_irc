@@ -35,8 +35,6 @@ int Server::is_client_connection(struct pollfd fd_struct, int i){
 
   if (checker <= 0)
   {
-    if (checker < 0)
-      Logger::error("recv() failed");
     Logger::info("Connection closed");
     std::map<int, Client>::iterator it = connections.find(fd_struct.fd);
     if (it != connections.end()){

@@ -62,7 +62,7 @@ void Server::create_server()
 
 void Server::waiting_for_connections(){
 
-  int timeout = -1;
+  int timeout = 0;
   int checker;
   
   while (true)
@@ -73,16 +73,20 @@ void Server::waiting_for_connections(){
       Logger::error("poll() failed");
       break;
     }
-    if (checker == 0)
-    {
-      Logger::error("poll() timeout");
-      break;
-    }
+    // if (checker == 0)
+    // {
+    //   Logger::error("poll() timeout");
+    //   break;
+    // }
     else
     {
       current_size = fds.size();
       for (int i = 0; i < current_size; i++)
       {
+        // if (fds[i].revents == (POLLIN | POLLHUP | POLLERR))
+        // {
+        //   break;
+        // }
         if (fds[i].revents == 0)
         {
           continue;
