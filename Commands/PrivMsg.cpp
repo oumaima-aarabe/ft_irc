@@ -35,7 +35,7 @@ void ft_privMsg(commandInfo& cmd, Server& server, Client& client) {
             server.sendReply(ERR_NOTONCHANNEL(std::string("*"), client.nickname, channelName), client.fds.fd);
             return;
         }
-        (*channel)->broadcastMessage(&client, RPL_CUSTOM_PRIVMSG(setPrefix(server.hostname, client.nickname, client.username), channelName, cmd.cmnd_args[1]), opeOnly);
+        (*channel)->broadcastMessage(&client, RPL_CUSTOM_PRIVMSG(setPrefix(server.hostname, client.nickname, client.realname), channelName, cmd.cmnd_args[1]), opeOnly);
     }
     else
     {
@@ -45,6 +45,6 @@ void ft_privMsg(commandInfo& cmd, Server& server, Client& client) {
             server.sendReply(ERR_NOSUCHNICK(std::string("*"), cmd.cmnd_args[0]), client.fds.fd);
             return;
         }
-        server.sendReply(RPL_CUSTOM_PRIVMSG(setPrefix(server.hostname, client.nickname, client.username), Receiver->second.nickname, cmd.cmnd_args[1]), Receiver->second.fds.fd);
+        server.sendReply(RPL_CUSTOM_PRIVMSG(setPrefix(server.hostname, client.nickname, client.realname), Receiver->second.nickname, cmd.cmnd_args[1]), Receiver->second.fds.fd);
     }
 }

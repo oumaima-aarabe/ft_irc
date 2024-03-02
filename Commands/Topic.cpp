@@ -39,7 +39,7 @@ void ft_topic(commandInfo& cmd, Server& server, Client& client) {
 			server.sendReply(RPL_TOPIC(std::string("*"), client.nickname, (*channel)->getName(), (*channel)->getTopic()), client.fds.fd);
 		return ;
 	}
-	(*channel)->broadcastMessage(NULL, RPL_CUSTOM_TOPIC(setPrefix(server.hostname, client.nickname, client.username), (*channel)->getName(), (*channel)->getTopic()), false);
+	(*channel)->broadcastMessage(NULL, RPL_CUSTOM_TOPIC(setPrefix(server.hostname, client.nickname, client.realname), (*channel)->getName(), (*channel)->getTopic()), false);
 }
 
 

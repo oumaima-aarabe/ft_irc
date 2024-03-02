@@ -38,15 +38,15 @@ void ft_part(commandInfo& cmd, Server& server, Client& client) {
 				(*channel)->addOpe((*channel)->getAllClientsList()[0].nickname);
 			}
             client.removeChannel(*channel);
-			server.sendReply(RPL_PART(setPrefix(server.hostname, client.nickname, client.username), channelName, (cmd.cmnd_args.size() > 1 ? cmd.cmnd_args[1] : "")), client.fds.fd);
-			(*channel)->broadcastMessage(&client, RPL_PART(setPrefix(server.hostname, client.nickname, client.username), channelName, (cmd.cmnd_args.size() > 1 ? cmd.cmnd_args[1] : "")), false);
+			server.sendReply(RPL_PART(setPrefix(server.hostname, client.nickname, client.realname), channelName, (cmd.cmnd_args.size() > 1 ? cmd.cmnd_args[1] : "")), client.fds.fd);
+			(*channel)->broadcastMessage(&client, RPL_PART(setPrefix(server.hostname, client.nickname, client.realname), channelName, (cmd.cmnd_args.size() > 1 ? cmd.cmnd_args[1] : "")), false);
 		}
 		else // this client is the last member in the channel
 		{
 			(*channel)->removeClient(client);
             client.removeChannel(*channel);
             server.removeFromChannels(*channel);
-			server.sendReply(RPL_PART(setPrefix(server.hostname, client.nickname, client.username), channelName, (cmd.cmnd_args.size() > 1 ? cmd.cmnd_args[1] : "")), client.fds.fd);
+			server.sendReply(RPL_PART(setPrefix(server.hostname, client.nickname, client.realname), channelName, (cmd.cmnd_args.size() > 1 ? cmd.cmnd_args[1] : "")), client.fds.fd);
 		}
 	}
 }
