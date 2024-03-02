@@ -56,17 +56,17 @@ std::string Channel::getStringModes(void) const {
     return (_stringModes);
 }
 
-std::vector<Client> Channel::getAllClientsList(void)
+std::vector<Client> &Channel::getAllClientsList(void)
 {
     return (allClientsList);
 }
 
-std::vector<Client> Channel::getOpeList(void) const
+std::vector<Client> &Channel::getOpeList(void)
 {
     return (opeList);
 }
 
-std::vector<Client> Channel::getInviteList(void) const
+std::vector<Client> &Channel::getInviteList(void)
 {
     return (inviteList);
 }
