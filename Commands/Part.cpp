@@ -34,9 +34,9 @@ void ft_part(commandInfo& cmd, Server& server, Client& client) {
 			(*channel)->removeClient(client);
 			if ((*channel)->isOpe(client.nickname) && (*channel)->getOpeList().size() == 1)
 			{
-				(*channel)->removeOpe(client.nickname);
 				(*channel)->addOpe((*channel)->getAllClientsList()[0].nickname);
 			}
+			(*channel)->removeOpe(client.nickname);
             client.removeChannel(*channel);
 			server.sendReply(RPL_PART(setPrefix(server.hostname, client.nickname, client.realname), channelName, (cmd.cmnd_args.size() > 1 ? cmd.cmnd_args[1] : "")), client.fds.fd);
 			(*channel)->broadcastMessage(&client, RPL_PART(setPrefix(server.hostname, client.nickname, client.realname), channelName, (cmd.cmnd_args.size() > 1 ? cmd.cmnd_args[1] : "")), false);

@@ -63,10 +63,10 @@ void ft_quit(commandInfo& cmd, Server& server, Client& client)
             (*it)->removeClient(client);
             if ((*it)->isOpe(client.nickname) && (*it)->getOpeList().size() == 1)
             {
-                (*it)->removeOpe(client.nickname);
                 (*it)->addOpe((*it)->getAllClientsList()[0].nickname);
                 (*it)->broadcastMessage(NULL, RPL_MODE(setPrefix(server.hostname, (*it)->getAllClientsList()[0].nickname, (*it)->getAllClientsList()[0].realname), ((*it)->getName() + " " + "+" + "o " + ((*it)->getAllClientsList()[0].nickname))), false);
             }
+            (*it)->removeOpe(client.nickname);
             (*it)->broadcastMessage(&client, RPL_PART(setPrefix(server.hostname, client.nickname, client.realname), (*it)->getName(), ""), false);
         }
         else
