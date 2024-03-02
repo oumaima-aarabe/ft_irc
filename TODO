@@ -5,3 +5,12 @@
 - leaks fd /buffer
 - servername ?
 - remove fsasnitize and wildcard from Makefile before final push
+
+
+
+- remove gethostname function //forbidden
+- update nick on everything that use nick
+- update nick on connections (:* 433 * oumi :Nickname is already in use)
+- Invalid command:
+- sigpipe;
+- ^C
