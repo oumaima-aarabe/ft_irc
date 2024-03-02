@@ -71,9 +71,8 @@ void ft_join(commandInfo &cmd, Server &server, Client &client)
         if (ex_channel == server.channels.end()) { // channel doesnt exit in server 
             Logger::debug("User [" + client.nickname + "] is creating a new channel [" + channels[i].name + "] and joining it.");
             Channel new_channel = Channel(channels[i].name, "");
-            Channel &ref = new_channel;
-            joinReply(server, client, ref, true);
-            server.channels.push_back(ref);
+            joinReply(server, client, new_channel, true);
+            server.channels.push_back(new_channel);
             // client.addChannel(new_channel);
             continue;
         }
