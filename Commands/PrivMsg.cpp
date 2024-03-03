@@ -1,4 +1,4 @@
-#include "../server.hpp"
+#include "../headers/Server.hpp"
 
 void ft_privMsg(commandInfo& cmd, Server& server, Client& client) {
 

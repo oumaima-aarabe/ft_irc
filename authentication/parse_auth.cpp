@@ -1,5 +1,5 @@
-#include "client.hpp"
-#include "Utils.hpp"
+#include "../headers/Client.hpp"
+#include "../headers/Utils.hpp"
 
 int  Server::parse_pair(Client &client, std::pair<std::string, std::string> pair)
 {
@@ -20,7 +20,6 @@ int  Server::parse_pair(Client &client, std::pair<std::string, std::string> pair
   }
   else
   {
-    // send ();
     Logger::error("BAD COMMAND");
     return (-1);
   }
@@ -62,7 +61,7 @@ void Server::my_split_buffer(Client &client, std::string delimiter) {
     return ;
 }
 
-void Server::parse_buffer_nc(Client &client)//from nc
+void Server::parse_buffer_nc(Client &client)
 {
   my_split_buffer(client, "\n");
 }

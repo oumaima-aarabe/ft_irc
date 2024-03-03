@@ -1,8 +1,7 @@
-#include "server.hpp"
+#include "../headers/Server.hpp"
 
 int Server::is_server_connection(){
   //accept connection from server and add it to fds 
-  // int new_sd = accept(socket_fd, NULL, NULL);
   socklen_t ip4addrSize = sizeof(ip4addr);
   int new_sd = accept(socket_fd, (struct sockaddr*)&ip4addr, &ip4addrSize);
   if (new_sd < 0)
@@ -32,6 +31,7 @@ int Server::is_client_connection(struct pollfd fd_struct, int i){
   int checker = recv(fd_struct.fd, buffer, sizeof(buffer), 0);
   if (checker <= 0)
   {
+    //handle cntrl+C
     Logger::info("Connection closed");
     std::map<int, Client>::iterator it = connections.find(fd_struct.fd);
     if (it != connections.end()){

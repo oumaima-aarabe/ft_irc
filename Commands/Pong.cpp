@@ -1,4 +1,4 @@
-#include "../server.hpp"
+#include "../headers/Server.hpp"
 
 void ft_pong(commandInfo& cmd, Server& server, Client& client) {
     //to silence the worning

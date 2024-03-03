@@ -1,4 +1,4 @@
-#include "client.hpp"
+#include "../headers/Client.hpp"
 
 int Server::if_nick_exist(std::string value){
   std::map<int, Client>::iterator it;

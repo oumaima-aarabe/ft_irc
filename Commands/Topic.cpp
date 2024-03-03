@@ -1,4 +1,4 @@
-#include "../server.hpp"
+#include "../headers/Server.hpp"
 
 // TOPIC   <channel>   [ <topic> ]
 void ft_topic(commandInfo& cmd, Server& server, Client& client) {

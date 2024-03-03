@@ -1,4 +1,4 @@
-#include "../server.hpp"
+#include "../headers/Server.hpp"
 
 bool Server::isValidNickChar(char c)
 {

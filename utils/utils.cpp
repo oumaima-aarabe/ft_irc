@@ -1,5 +1,4 @@
-#include "Utils.hpp"
-#include "server.hpp"
+#include "../headers/Utils.hpp"
 
 void my_trim_(std::string& s, char delimiter) {
     size_t p = s.find_first_not_of(delimiter);
@@ -10,7 +9,6 @@ void my_trim_(std::string& s, char delimiter) {
 }
 
 std::vector<std::string> split_space(const std::string &input) {
-	//split by spaces
 	std::vector<std::string> result;
 	std::size_t start = 0;
 	std::size_t found = input.find(' ');
@@ -21,7 +19,6 @@ std::vector<std::string> split_space(const std::string &input) {
 		start = found + 1;
 		found = input.find(' ', start);
 	}
-
 	// Push the last part of the string if it's not empty
 	std::string lastPart = input.substr(start);
 	if (!lastPart.empty())
@@ -47,7 +44,6 @@ std::vector<std::string> split(const std::string input, const std::string &separ
 		start = found + separator.size(); // Move past the separator
 		found = input.find(separator, start);
 	}
-
 	// Push the last part of the string if it's not empty
 	std::string lastPart = input.substr(start);
 	if (!lastPart.empty())

@@ -1,4 +1,4 @@
-#include "../server.hpp"
+#include "../headers/Server.hpp"
 
 void InviteMode(commandInfo& cmd, Channel &channel, Server &server, Client &client, bool addSign)
 {

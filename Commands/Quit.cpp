@@ -1,4 +1,4 @@
-#include "../server.hpp"
+#include "../headers/Server.hpp"
 
 void ft_quit(commandInfo& cmd, Server& server, Client& client) 
 {
@@ -33,7 +33,7 @@ void ft_quit(commandInfo& cmd, Server& server, Client& client)
     {
         server.sendReply(RPL_CUSTOM_QUIT(setPrefix(server.hostNames[client.fds.fd], client.nickname, client.realname),  (!cmd.cmnd_args.empty() ? (":Quit: " + cmd.cmnd_args[0]) : "Quit ")), client.fds.fd);
         server.removeClientFromServer(client);
-        Logger::info("ERROR :Quit: " + (!cmd.cmnd_args.empty() ? (cmd.cmnd_args[0]) : ""));
+        Logger::info(":Quit: " + (!cmd.cmnd_args.empty() ? (cmd.cmnd_args[0]) : ""));
         Logger::info("Connection closed");
     }
 }

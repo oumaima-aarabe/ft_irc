@@ -20,10 +20,10 @@
 #include <map>
 #include <sys/utsname.h>
 #include <string>
-#include "client.hpp"
+#include "Client.hpp"
 #include "Channel.hpp"
 #include "Replies.hpp"
-#include "Commands/Commands.hpp"
+#include "Commands.hpp"
 #include "Utils.hpp"
 #include "Logger.hpp"
 #include <strstream>
@@ -48,9 +48,7 @@ class Server{
     std::string hostname ;
     std::map<int, std::string> hostNames;
     std::vector<Channel*> channels;
-
-    std::map<int ,Client> connections;
-
+    std::map<int ,Client> connections; // clients connected but not authenticated
     std::map<int ,Client> users; // clients authenticated
 
     Server(unsigned int port, std::string password);

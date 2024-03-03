@@ -1,4 +1,4 @@
-#include "../server.hpp"
+#include "../headers/Server.hpp"
 
 //e.g.:    PART    <channel>{,<channel>}    [<reason>]
 void ft_part(commandInfo& cmd, Server& server, Client& client) {

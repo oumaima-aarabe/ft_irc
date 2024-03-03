@@ -1,4 +1,4 @@
-#include "../server.hpp"
+#include "../headers/Server.hpp"
 
 std::vector<ChannelJoin> split_args(commandInfo &cmd)
 {

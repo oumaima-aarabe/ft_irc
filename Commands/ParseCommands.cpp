@@ -1,4 +1,4 @@
-#include "../server.hpp"
+#include "../headers/Server.hpp"
 
 typedef void (*CommandHandlerFunc)(commandInfo &, Server&, Client&); // function pointer typedef
 

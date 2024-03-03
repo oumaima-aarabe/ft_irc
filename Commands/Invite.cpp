@@ -1,4 +1,4 @@
-#include "../server.hpp"
+#include "../headers/Server.hpp"
 
 //e.g.: INVITE NICK #CHANNEL      =>     INVITE is cmd.cmnd_name  ;   cmd.cmnd_args[0] is NICK  ;  cmd.cmnd_args[1] is #CHANNEL
 void ft_invite(commandInfo& cmd, Server& server, Client& client) {

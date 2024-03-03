@@ -1,4 +1,4 @@
-#include "../server.hpp"
+#include "../headers/Server.hpp"
 
 void ft_notice(commandInfo& cmd, Server& server, Client& client) {
 

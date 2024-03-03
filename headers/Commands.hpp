@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../server.hpp"
+#include "Server.hpp"
 
 struct ChannelJoin {
     std::string name;

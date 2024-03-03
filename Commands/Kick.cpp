@@ -1,4 +1,4 @@
-#include "../server.hpp"
+#include "../headers/Server.hpp"
 
 // e.g.: KICK <channel> <nick> [<reason>] - Remove a user from a channel
 void ft_kick(commandInfo& cmd, Server& server, Client& client) {

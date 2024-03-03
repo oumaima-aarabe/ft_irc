@@ -1,4 +1,4 @@
-#include "Channel.hpp"
+#include "../headers/Channel.hpp"
 
 Channel::Channel(std::string const &name, std::string const &password) : _name(name), _password(password), _channel_limit(MAX_CLIENTS_PER_CHANNEL)
 {
