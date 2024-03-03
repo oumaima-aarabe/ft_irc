@@ -30,12 +30,6 @@ int Server::is_client_connection(struct pollfd fd_struct, int i){
 
   //read the buffer from client (user || new connection)
   int checker = recv(fd_struct.fd, buffer, sizeof(buffer), 0);
-  // int j = 0;
-  // while (buffer[j])
-  // { 
-  //   j++;
-  // }
-
   if (checker <= 0)
   {
     Logger::info("Connection closed");
@@ -98,19 +92,13 @@ int Server::is_client_connection(struct pollfd fd_struct, int i){
   {
     //new client
     if (connections.find(fd_struct.fd) == connections.end())
-    {
       connections.insert(std::pair<int, Client>(fd_struct.fd, Client(fd_struct, "", "", "", "", content)));
-    }
     else
-    {
       connections[fd_struct.fd].buffer += content;
-    }
     if (connections[fd_struct.fd].buffer.find('\r') != std::string::npos)
       parse_buffer_limechat(connections[fd_struct.fd]); //parse buffer with back slach r
     else
-    {
       parse_buffer_nc(connections[fd_struct.fd]); //parse buffer without backslash r
-    }
     connections[fd_struct.fd].buffer = "";
   }
   return 0;
