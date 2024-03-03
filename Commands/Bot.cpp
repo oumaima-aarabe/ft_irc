@@ -2,11 +2,11 @@
 
 void ft_diceBot(commandInfo& cmd, Server& server, Client& client) {
     if (cmd.cmnd_args.size() != 1) {
-        server.sendReply(RPL_CUSTOM_NOTICE(setPrefix(server.hostname, client.nickname, client.realname), client.nickname, "To roll the dice, add one number please!"), client.fds.fd);
+        server.sendReply(RPL_CUSTOM_NOTICE(setPrefix(server.hostname, client.nickname, client.realname), client.nickname, "To roll the dice, add an int param between 1 and 6!"), client.fds.fd);
         return ;
     }
     if (cmd.cmnd_args[0].find_first_not_of("0123456789") != std::string::npos) {
-        server.sendReply(RPL_CUSTOM_NOTICE(setPrefix(server.hostname, client.nickname, client.realname), client.nickname, "Only numbers please!"), client.fds.fd);
+        server.sendReply(RPL_CUSTOM_NOTICE(setPrefix(server.hostname, client.nickname, client.realname), client.nickname, "Only numbers please! : [1..6]"), client.fds.fd);
         return;
     }
     
