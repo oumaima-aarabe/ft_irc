@@ -74,25 +74,22 @@ int Server::is_client_connection(struct pollfd fd_struct, int i){
   }
 
     //client authenticated , exist in users
-    if (users.find(fd_struct.fd) != users.end()){
-    // parsing and executing cmnds
-    std::vector<std::string> cmndBuffer;
-    // to avoid in case the client closes the connection while processing the request
-    int clientFd = users[fd_struct.fd].fds.fd; 
-    //split by \r\n (from limechat) in case of multiple commands sent by client in quick succession
-    content = users[fd_struct.fd].buffer + content;
-      // users[fd_struct.fd].buffer = std::string("");
-    // connections[fd_struct.fd].buffer = "";
-    if (content.find('\r') != std::string::npos){
-      cmndBuffer = split(content, "\r\n");
-    }
-    //split by \n (from nc)
-    else if (content.find('\n') != std::string::npos){
-      std::cout << "from a : " << std::endl;
-      cmndBuffer = split(content, "\n");
-    }
-
-    executeCommands(cmndBuffer, clientFd);
+    if (users.find(fd_struct.fd) != users.end())
+    {
+      // parsing and executing cmnds
+      std::vector<std::string> cmndBuffer;
+      // to avoid in case the client closes the connection while processing the request
+      int clientFd = users[fd_struct.fd].fds.fd;
+      // if there is a buffer from previous recv stopped by ^D
+      content = users[fd_struct.fd].buffer + content;
+      users[fd_struct.fd].buffer = "";
+      //split by \r\n (from limechat) in case of multiple commands sent by client in quick succession
+      if (content.find('\r') != std::string::npos)
+        cmndBuffer = split(content, "\r\n");
+      //split by \n (from nc)
+      else if (content.find('\n') != std::string::npos)
+        cmndBuffer = split(content, "\n");
+      executeCommands(cmndBuffer, clientFd);
   }
   else
   {
