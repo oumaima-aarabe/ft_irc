@@ -54,15 +54,16 @@ int Server::is_client_connection(struct pollfd fd_struct, int i){
 
   //handle cntrl+D
   std::string content = buffer;
-  if (content.find('\n') == std::string::npos){
+  if (content.find('\n') == std::string::npos)
+  {
     if (users.find(fd_struct.fd) != users.end())
     {
-      users[fd_struct.fd].buffer += buffer;
+      users[fd_struct.fd].buffer += content;
       return 0;
     }
     else if (connections.find(fd_struct.fd) != connections.end())
     {
-      connections[fd_struct.fd].buffer += buffer;
+      connections[fd_struct.fd].buffer += content;
       return 0;
     }
     else
@@ -79,13 +80,18 @@ int Server::is_client_connection(struct pollfd fd_struct, int i){
     // to avoid in case the client closes the connection while processing the request
     int clientFd = users[fd_struct.fd].fds.fd; 
     //split by \r\n (from limechat) in case of multiple commands sent by client in quick succession
+    content = users[fd_struct.fd].buffer + content;
+      // users[fd_struct.fd].buffer = std::string("");
+    // connections[fd_struct.fd].buffer = "";
     if (content.find('\r') != std::string::npos){
       cmndBuffer = split(content, "\r\n");
     }
     //split by \n (from nc)
     else if (content.find('\n') != std::string::npos){
+      std::cout << "from a : " << std::endl;
       cmndBuffer = split(content, "\n");
     }
+
     executeCommands(cmndBuffer, clientFd);
   }
   else

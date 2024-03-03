@@ -47,6 +47,7 @@ int  Server::parse_user(Client &client, std::string value){
   }
   if (!client.nickname.empty())
   {
+      client.buffer = "";
      users[client.fds.fd] = Client(client);
       WelcomeMessage(client);
   }

@@ -31,8 +31,9 @@ std::vector<std::string> split_space(const std::string &input) {
 	return result;
 }
 
-std::vector<std::string> split(const std::string &input, const std::string &separator)
+std::vector<std::string> split(const std::string input, const std::string &separator)
 {
+	std::cout << "splitting: \'" << input << "\' by \'"<< separator<<"\'" << std::endl;
 	std::vector<std::string> result;
 	std::size_t start = 0;
 	std::size_t found = input.find(separator);
