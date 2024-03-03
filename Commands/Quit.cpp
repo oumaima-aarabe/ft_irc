@@ -16,10 +16,10 @@ void ft_quit(commandInfo& cmd, Server& server, Client& client)
             if ((*it)->isOpe(client.nickname) && (*it)->getOpeList().size() == 1)
             {
                 (*it)->addOpe((*it)->getAllClientsList()[0].nickname);
-                (*it)->broadcastMessage(NULL, RPL_MODE(setPrefix(server.hostname, (*it)->getAllClientsList()[0].nickname, (*it)->getAllClientsList()[0].realname), ((*it)->getName() + " +o " + ((*it)->getAllClientsList()[0].nickname))), false);
+                (*it)->broadcastMessage(NULL, RPL_MODE(setPrefix(server.hostNames[client.fds.fd], (*it)->getAllClientsList()[0].nickname, (*it)->getAllClientsList()[0].realname), ((*it)->getName() + " +o " + ((*it)->getAllClientsList()[0].nickname))), false);
             }
             (*it)->removeOpe(client.nickname);
-            (*it)->broadcastMessage(&client, RPL_PART(setPrefix(server.hostname, client.nickname, client.realname), (*it)->getName(), ""), false);
+            (*it)->broadcastMessage(&client, RPL_PART(setPrefix(server.hostNames[client.fds.fd], client.nickname, client.realname), (*it)->getName(), ""), false);
         }
         else
         {
@@ -31,7 +31,7 @@ void ft_quit(commandInfo& cmd, Server& server, Client& client)
     toUpper(cmd.cmnd_name);
     if (cmd.cmnd_name == "QUIT")
     {
-        server.sendReply(RPL_CUSTOM_QUIT(setPrefix(server.hostname, client.nickname, client.realname),  (!cmd.cmnd_args.empty() ? (":Quit: " + cmd.cmnd_args[0]) : "Quit ")), client.fds.fd);
+        server.sendReply(RPL_CUSTOM_QUIT(setPrefix(server.hostNames[client.fds.fd], client.nickname, client.realname),  (!cmd.cmnd_args.empty() ? (":Quit: " + cmd.cmnd_args[0]) : "Quit ")), client.fds.fd);
         server.removeClientFromServer(client);
         Logger::info("ERROR :Quit: " + (!cmd.cmnd_args.empty() ? (cmd.cmnd_args[0]) : ""));
         Logger::info("Connection closed");

@@ -57,9 +57,13 @@ void Server::removeClientFromServer(Client &client)
 		}
 	}
   close(client.fds.fd);
+  std::map<int, std::string>::iterator it1 = hostNames.find(client.fds.fd);
+  if (it1 != hostNames.end()){
+    hostNames.erase(it1);
+  }
   std::map<int, Client>::iterator it = connections.find(client.fds.fd);
   if (it != connections.end()){
-  connections.erase(it);
+    connections.erase(it);
   }
   it = users.find(client.fds.fd);
   if (it != users.end()){

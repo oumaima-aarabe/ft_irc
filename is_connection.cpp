@@ -13,9 +13,7 @@ int Server::is_server_connection(){
     }
     return(-1);
   }
-  //____
-  inet_ntop(AF_INET, &ip4addr.sin_addr, client_ip, INET_ADDRSTRLEN);
-  //____
+  hostNames[new_sd] = inet_ntoa(ip4addr.sin_addr);
   Logger::info("New incoming connection " + to_string(new_sd));
   struct  pollfd k;
   k.fd = new_sd;
@@ -32,6 +30,11 @@ int Server::is_client_connection(struct pollfd fd_struct, int i){
 
   //read the buffer from client (user || new connection)
   int checker = recv(fd_struct.fd, buffer, sizeof(buffer), 0);
+  // int j = 0;
+  // while (buffer[j])
+  // { 
+  //   j++;
+  // }
 
   if (checker <= 0)
   {
