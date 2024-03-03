@@ -13,9 +13,7 @@ int Server::is_server_connection(){
     }
     return(-1);
   }
-  //____
-  inet_ntop(AF_INET, &ip4addr.sin_addr, client_ip, INET_ADDRSTRLEN);
-  //____
+  hostNames[new_sd] = inet_ntoa(ip4addr.sin_addr);
   Logger::info("New incoming connection " + to_string(new_sd));
   struct  pollfd k;
   k.fd = new_sd;
@@ -32,6 +30,11 @@ int Server::is_client_connection(struct pollfd fd_struct, int i){
 
   //read the buffer from client (user || new connection)
   int checker = recv(fd_struct.fd, buffer, sizeof(buffer), 0);
+  // int j = 0;
+  // while (buffer[j])
+  // { 
+  //   j++;
+  // }
 
   if (checker <= 0)
   {
@@ -54,15 +57,19 @@ int Server::is_client_connection(struct pollfd fd_struct, int i){
 
   //handle cntrl+D
   std::string content = buffer;
-  if (content.find('\n') == std::string::npos){
+  // char c = content[content.size() - 1];
+  // if (buffer[j - 1] != '\n')
+  if (content.find('\n') == std::string::npos)
+  {
     if (users.find(fd_struct.fd) != users.end())
     {
-      users[fd_struct.fd].buffer += buffer;
+      users[fd_struct.fd].buffer += content;
+      std::cout << "buffer: " << users[fd_struct.fd].buffer << std::endl;
       return 0;
     }
     else if (connections.find(fd_struct.fd) != connections.end())
     {
-      connections[fd_struct.fd].buffer += buffer;
+      connections[fd_struct.fd].buffer += content;
       return 0;
     }
     else
@@ -80,13 +87,17 @@ int Server::is_client_connection(struct pollfd fd_struct, int i){
     int clientFd = users[fd_struct.fd].fds.fd; 
     //split by \r\n (from limechat) in case of multiple commands sent by client in quick succession
     if (content.find('\r') != std::string::npos){
-      cmndBuffer = split(content, "\r\n");
+      content = users[fd_struct.fd].buffer + content;
+      cmndBuffer = split( content, "\r\n");
     }
     //split by \n (from nc)
     else if (content.find('\n') != std::string::npos){
+      content = users[fd_struct.fd].buffer + content;
       cmndBuffer = split(content, "\n");
     }
     executeCommands(cmndBuffer, clientFd);
+    users[fd_struct.fd].buffer = "";
+
   }
   else
   {
