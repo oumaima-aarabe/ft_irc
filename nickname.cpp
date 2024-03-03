@@ -25,7 +25,7 @@ int  Server::parse_nick(Client &client, std::string value){
   if (!client.password.empty()){
     std::vector<std::string> ret = split_space(value);
     if (ret.size() == 0){
-      err = ERR_NONICKNAMEGIVEN(std::string("*"));
+      err = ERR_NONICKNAMEGIVEN(this->hostname);
       sendReply(err.c_str(), client.fds.fd); 
       return (0);
     }
@@ -37,11 +37,11 @@ int  Server::parse_nick(Client &client, std::string value){
     }
     if (!isValidNick(value))
 	  {
-	  	sendReply(ERR_ERRONEUSNICKNAME(std::string("*"), value), client.fds.fd);
+	  	sendReply(ERR_ERRONEUSNICKNAME(this->hostname, value), client.fds.fd);
 	  	return (0);
 	  }
     if (if_nick_exist(value)) {
-      err = ERR_NICKNAMEINUSE(std::string("*"), value);
+      err = ERR_NICKNAMEINUSE(this->hostname, value);
       sendReply(err.c_str(), client.fds.fd);
       return (0);
     }
@@ -55,6 +55,7 @@ int  Server::parse_nick(Client &client, std::string value){
   }
   if (!client.username.empty()){
     users[client.fds.fd] = Client(client);
+    users[client.fds.fd].buffer = "";
     WelcomeMessage(client);
   }
   return (0);

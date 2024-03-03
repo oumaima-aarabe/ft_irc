@@ -21,17 +21,17 @@ void ft_nick(commandInfo& cmd, Server& server, Client& client)
 {
 	if (!cmd.cmnd_args.size())
 	{
-		server.sendReply(ERR_NONICKNAMEGIVEN(std::string("*")), client.fds.fd);
+		server.sendReply(ERR_NONICKNAMEGIVEN(server.hostname), client.fds.fd);
 		return;
 	}
 	if (!server.isValidNick(cmd.cmnd_args[0]))
 	{
-		server.sendReply(ERR_ERRONEUSNICKNAME(std::string("*"), cmd.cmnd_args[0]), client.fds.fd);
+		server.sendReply(ERR_ERRONEUSNICKNAME(server.hostname, cmd.cmnd_args[0]), client.fds.fd);
 		return;
 	}
 	if (server.if_nick_exist(cmd.cmnd_args[0]))
 	{
-		server.sendReply(ERR_NICKNAMEINUSE(std::string("*"), cmd.cmnd_args[0]), client.fds.fd);
+		server.sendReply(ERR_NICKNAMEINUSE(server.hostname, cmd.cmnd_args[0]), client.fds.fd);
 		return;
 	}
 	std::string oldNick = client.nickname;
