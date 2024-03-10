@@ -41,8 +41,8 @@ Once compiled, you can run the IRC server with the following command:
 
 ./ircserv [port] [pass]
 
-<port>: The port number on which the server will listen for incoming connections.
-<pass>: An optional password for server authentication.
+[port]: The port number on which the server will listen for incoming connections.
+[pass]: An optional password for server authentication.
 
 # Server Implementation Details
 The server is implemented in C++ and consists of the following key steps:
