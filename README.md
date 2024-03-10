@@ -3,11 +3,11 @@
 This project is intended for a deeper study of the operation of sockets and their interactions on the example of an IRC chat/server.
 The project is built via Makefile and is run using the following command:
 
-./ircserv <port> <pass>
+./ircserv [port] [pass]
 
 To connect clients to this IRC server, you can use Limechat client or nc (netcat) as follows:
 
-nc <hostname> <port>
+nc [hostname] [port]
 
 NB : you can use Limechat 
 
@@ -39,7 +39,7 @@ make
 - Running the Server
 Once compiled, you can run the IRC server with the following command:
 
-./ircserv <port> <pass>
+./ircserv [port] [pass]
 
 <port>: The port number on which the server will listen for incoming connections.
 <pass>: An optional password for server authentication.
