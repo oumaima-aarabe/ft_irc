@@ -68,7 +68,7 @@ The server distinguishes between server and client connections and handles them 
 For a new connections, the is_server_connection function is called.
 For client already connexted, the is_client_connection function is called.
 
-## Commands supported
+# Commands supported
 
 ft_irc supports the following command handling functionalities:
 
