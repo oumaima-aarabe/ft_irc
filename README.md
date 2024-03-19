@@ -79,6 +79,7 @@ ft_irc supports the following command handling functionalities:
 - **Kick**: Operators can kick users from a channel using the `KICK` command followed by the nickname of the client to kick.
   
 - **Mode**: Users can set channel modes using the `MODE` command, supported modes: ±itkol:
+  
 · i: Set/remove Invite-only channel
 · t: Set/remove the restrictions of the TOPIC command to channel operators
 · k: Set/remove the channel key (password)
