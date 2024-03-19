@@ -68,3 +68,32 @@ The server distinguishes between server and client connections and handles them 
 For a new connections, the is_server_connection function is called.
 For client already connexted, the is_client_connection function is called.
 
+## Commands supported
+
+ft_irc supports the following command handling functionalities:
+
+- **Join Channel**: Users can join a channel or create a none existing one by sending the `JOIN` command followed by the channel name and a key if existed.
+  
+- **Private Message to Channels and Clients**: Users can send private messages to channels by using the `PRIVMSG` command followed by the channel name, or directly to clients by specifying their nickname and the message desired to send.
+
+- **Kick**: Operators can kick users from a channel using the `KICK` command followed by the nickname of the client to kick.
+  
+- **Mode**: Users can set channel modes using the `MODE` command, supported modes: ±itkol:
+· i: Set/remove Invite-only channel
+· t: Set/remove the restrictions of the TOPIC command to channel operators
+· k: Set/remove the channel key (password)
+· o: Give/take channel operator privilege
+· l: Set/remove the user limit to channel
+
+- **Part**: Users can leave a channel using the `PART` command, followed by the channel name.
+  
+- **Notice**: Users can send notices to channels or clients using the `NOTICE` command.
+  
+- **Invite**: Users can invite other clients to join a channel using the `INVITE` command.
+  
+- **Quit**: Users can quit the server gracefully using the `QUIT` command, which disconnects them from the server.
+Refer to the IRC protocol documentation for detailed information on each command's syntax and usage.
+
+## Reference
+Refer to the [the Modern IRC client Protocol Documentation](https://modern.ircdocs.horse/) for detailed information on each command's syntax and usage.
+
